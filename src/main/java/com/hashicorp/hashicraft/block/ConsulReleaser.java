@@ -1,7 +1,5 @@
 package com.hashicorp.hashicraft.block;
 
-import java.util.Random;
-
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;

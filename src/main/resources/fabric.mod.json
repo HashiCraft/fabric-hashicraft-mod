@@ -11,7 +11,7 @@
   ],
   "contact": {
     "homepage": "https://hashicorp.com/",
-    "sources": "https://github.com/hashicraft/hashicraft-mod-fabric"
+    "sources": "https://github.com/hashicraft/fabric-hashicraft-mod"
   },
 
   "license": "CC0-1.0",

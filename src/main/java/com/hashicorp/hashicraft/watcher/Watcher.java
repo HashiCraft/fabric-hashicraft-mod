@@ -1,6 +1,5 @@
 package com.hashicorp.hashicraft.watcher;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,18 +31,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class Watcher {
-  public static final String nomadAddress = System.getenv("NOMAD_ADDR");
+  public static final String nomadAddress = System.getenv().getOrDefault("NOMAD_ADDR", "http://localhost:4646");
   public static final BlockPos nomadOrigin = new BlockPos(10, 73, 32);
   private static HashMap<String, Node> nodes = new HashMap<String, Node>();
   private static HashMap<String, Allocation> allocations = new HashMap<String, Allocation>();
   private static HashMap<String, BlockPos> positions = new HashMap<String, BlockPos>();
   private static ArrayList<String> deleted = new ArrayList<String>();
 
-  public static final String releaserAddress = System.getenv("RELEASER_ADDR");
+  public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR", "https://localhost:9443");
   public static final BlockPos releaserOrigin = new BlockPos(10, 73, 32);
   private static HashMap<String, Release> releases = new HashMap<String, Release>();
 
-  public static final String vaultAddress = System.getenv("VAULT_ADDR");
+  public static final String vaultAddress = System.getenv().getOrDefault("VAULT_ADDR", "http://localhost:8100");
 
   private static Watcher watcher = new Watcher();
 
@@ -118,12 +117,11 @@ public class Watcher {
       ArrayList<Release> list = gson.fromJson(releaseResponse.body(), releaseListType);
 
       for (Release release : list) {
-        System.out.println(release.Name);
         releases.put(release.Name, release);
       }
     } catch (Exception e) {
-      Mod.LOGGER.warn("Could not update releases", e.getMessage());
-      e.printStackTrace();
+      Mod.LOGGER.warn("Could not update releases");
+      Mod.LOGGER.debug(e.getStackTrace().toString());
     }
   }
 
@@ -157,21 +155,21 @@ public class Watcher {
 
       // Check if everything went well.
       if (response.statusCode() >= 400) {
-        System.out.println(response.body());
+        Mod.LOGGER.debug(response.body());
         return null;
       }
 
-      System.out.println(response.body());
+      Mod.LOGGER.debug(response.body());
 
       GsonBuilder builder = new GsonBuilder();
       Gson gson = builder.create();
-      Map result = gson.fromJson(response.body(), Map.class);
-      Map auth = (Map) result.get("auth");
+      Map<?, ?> result = gson.fromJson(response.body(), Map.class);
+      Map<?, ?> auth = (Map<?, ?>) result.get("auth");
       String token = (String) auth.get("client_token");
 
       return token;
-    } catch (IOException | InterruptedException e) {
-      System.out.println("ERROR: " + e.getMessage());
+    } catch (Exception e) {
+      Mod.LOGGER.debug(e.getStackTrace().toString());
       return null;
     }
   }
@@ -189,14 +187,14 @@ public class Watcher {
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
       // Check if everything went well.
       if (response.statusCode() >= 400) {
-        System.out.println(response.body());
+        Mod.LOGGER.debug(response.body());
         return false;
       }
 
-      System.out.println(response.body());
+      Mod.LOGGER.debug(response.body());
       return true;
-    } catch (IOException | InterruptedException e) {
-      System.out.println("ERROR: " + e.getMessage());
+    } catch (Exception e) {
+      Mod.LOGGER.debug(e.getStackTrace().toString());
       return false;
     }
   }
@@ -220,14 +218,14 @@ public class Watcher {
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
       // Check if everything went well.
       if (response.statusCode() >= 400) {
-        System.out.println(response.body());
+        Mod.LOGGER.debug(response.body());
         return false;
       }
 
-      System.out.println(response.body());
+      Mod.LOGGER.debug(response.body());
       return true;
-    } catch (IOException | InterruptedException e) {
-      System.out.println("ERROR: " + e.getMessage());
+    } catch (Exception e) {
+      Mod.LOGGER.debug(e.getStackTrace().toString());
       return false;
     }
   }
@@ -317,10 +315,9 @@ public class Watcher {
           }
         }
       }
-    } catch (InterruptedException e) {
-      Mod.LOGGER.warn("Could not update allocations", e.getMessage());
-    } catch (IOException e) {
-      Mod.LOGGER.warn("Could not update allocations", e.getMessage());
+    } catch (Exception e) {
+      Mod.LOGGER.warn("Could not update allocations");
+      Mod.LOGGER.debug(e.getStackTrace().toString());
     }
   }
 
@@ -352,10 +349,9 @@ public class Watcher {
 
         nodes.put(node.ID, node);
       }
-    } catch (InterruptedException e) {
-      Mod.LOGGER.warn("Could not update nodes", e.getMessage());
-    } catch (IOException e) {
-      Mod.LOGGER.warn("Could not update nodes", e.getMessage());
+    } catch (Exception e) {
+      Mod.LOGGER.warn("Could not update nodes");
+      Mod.LOGGER.debug(e.getStackTrace().toString());
     }
   }
 }

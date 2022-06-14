@@ -6,7 +6,6 @@ import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.hashicorp.hashicraft.block.Blocks;
 import com.hashicorp.hashicraft.block.ConsulProxy;
 import com.hashicorp.hashicraft.block.NomadAlloc;
-import com.hashicorp.hashicraft.block.NomadClient;
 import com.hashicorp.hashicraft.block.NomadServer;
 import com.hashicorp.hashicraft.block.NomadSpin;
 import com.hashicorp.hashicraft.block.NomadWhiskers;
