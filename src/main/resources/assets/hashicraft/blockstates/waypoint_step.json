@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "facing=north,active=false": { "model": "hashicraft:block/waypoint_step", "uvlock": false },
+    "facing=east,active=false":  { "model": "hashicraft:block/waypoint_step", "y":  90, "uvlock": false },
+    "facing=south,active=false": { "model": "hashicraft:block/waypoint_step", "y": 180, "uvlock": false },
+    "facing=west,active=false":  { "model": "hashicraft:block/waypoint_step", "y": 270, "uvlock": false },
+
+    "facing=north,active=true": { "model": "hashicraft:block/waypoint_step", "uvlock": false },
+    "facing=east,active=true":  { "model": "hashicraft:block/waypoint_step", "y":  90, "uvlock": false },
+    "facing=south,active=true": { "model": "hashicraft:block/waypoint_step", "y": 180, "uvlock": false },
+    "facing=west,active=true":  { "model": "hashicraft:block/waypoint_step", "y": 270, "uvlock": false }
+  }
+}

@@ -1,0 +1,63 @@
+package com.hashicorp.hashicraft.block.entity;
+
+import com.hashicorp.hashicraft.Mod;
+import com.hashicorp.hashicraft.block.Blocks;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.registry.Registry;
+
+public class BlockEntities {
+        // Nomad
+        public static BlockEntityType<NomadServerEntity> NOMAD_SERVER_ENTITY;
+        public static BlockEntityType<NomadSpinEntity> NOMAD_SPIN_ENTITY;
+        public static BlockEntityType<NomadWhiskersEntity> NOMAD_WHISKERS_ENTITY;
+
+        // Vault
+        public static BlockEntityType<VaultLockEntity> VAULT_LOCK_ENTITY;
+        public static BlockEntityType<VaultDispenserEntity> VAULT_DISPENSER_ENTITY;
+        public static BlockEntityType<VaultManagerEntity> VAULT_MANAGER_ENTITY;
+
+        // Consul
+        public static BlockEntityType<ConsulReleaserEntity> CONSUL_RELEASER_ENTITY;
+
+        public static void register() {
+                // Nomad
+                NOMAD_SERVER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("nomad_server"),
+                                FabricBlockEntityTypeBuilder.create(NomadServerEntity::new, Blocks.NOMAD_SERVER_BLOCK)
+                                                .build(null));
+
+                NOMAD_SPIN_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("nomad_spin"),
+                                FabricBlockEntityTypeBuilder.create(NomadSpinEntity::new, Blocks.NOMAD_SPIN_BLOCK)
+                                                .build(null));
+
+                NOMAD_WHISKERS_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("nomad_whiskers"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(NomadWhiskersEntity::new, Blocks.NOMAD_WHISKERS_BLOCK)
+                                                .build(null));
+
+                // Vault
+                VAULT_LOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("vault_lock"),
+                                FabricBlockEntityTypeBuilder.create(VaultLockEntity::new, Blocks.VAULT_LOCK_BLOCK)
+                                                .build(null));
+
+                VAULT_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                                Mod.identifier("vault_dispenser"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(VaultDispenserEntity::new, Blocks.VAULT_DISPENSER_BLOCK)
+                                                .build(null));
+
+                VAULT_MANAGER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                                Mod.identifier("vault_manager"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(VaultManagerEntity::new, Blocks.VAULT_MANAGER_BLOCK)
+                                                .build(null));
+
+                // Consul
+                CONSUL_RELEASER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                                Mod.identifier("consul_releaser"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(ConsulReleaserEntity::new, Blocks.CONSUL_RELEASER_BLOCK)
+                                                .build(null));
+        }
+}

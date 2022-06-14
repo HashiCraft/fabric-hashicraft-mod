@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "hashicraft:block/computer", "uvlock": false },
+    "facing=east":  { "model": "hashicraft:block/computer", "y":  90, "uvlock": false },
+    "facing=south": { "model": "hashicraft:block/computer", "y": 180, "uvlock": false },
+    "facing=west":  { "model": "hashicraft:block/computer", "y": 270, "uvlock": false }
+  }
+}

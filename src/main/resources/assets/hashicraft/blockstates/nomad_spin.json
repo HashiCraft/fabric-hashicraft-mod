@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "hashicraft:block/nomad_spin", "uvlock": false },
+    "facing=east":  { "model": "hashicraft:block/nomad_spin", "y":  90, "uvlock": false },
+    "facing=south": { "model": "hashicraft:block/nomad_spin", "y": 180, "uvlock": false },
+    "facing=west":  { "model": "hashicraft:block/nomad_spin", "y": 270, "uvlock": false }
+  }
+}

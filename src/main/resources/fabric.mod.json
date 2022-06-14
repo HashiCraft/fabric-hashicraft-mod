@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "hashicraft",
+  "version": "${version}",
+
+  "name": "HashiCraft",
+  "description": "",
+  "authors": [
+    "Erik Veld",
+    "Nic Jackson"
+  ],
+  "contact": {
+    "homepage": "https://hashicorp.com/",
+    "sources": "https://github.com/hashicraft/hashicraft-mod-fabric"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/hashicraft/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.hashicorp.hashicraft.Mod"
+    ],
+    "client": [
+      "com.hashicorp.hashicraft.ModClient"
+    ]
+  },
+  "mixins": [
+    "hashicraft.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

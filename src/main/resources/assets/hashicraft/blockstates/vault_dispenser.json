@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "facing=north,active=false": { "model": "hashicraft:block/vault_dispenser", "uvlock": false },
+    "facing=east,active=false":  { "model": "hashicraft:block/vault_dispenser", "y":  90, "uvlock": false },
+    "facing=south,active=false": { "model": "hashicraft:block/vault_dispenser", "y": 180, "uvlock": false },
+    "facing=west,active=false":  { "model": "hashicraft:block/vault_dispenser", "y": 270, "uvlock": false },
+
+    "facing=north,active=true": { "model": "hashicraft:block/vault_dispenser", "uvlock": false },
+    "facing=east,active=true":  { "model": "hashicraft:block/vault_dispenser", "y":  90, "uvlock": false },
+    "facing=south,active=true": { "model": "hashicraft:block/vault_dispenser", "y": 180, "uvlock": false },
+    "facing=west,active=true":  { "model": "hashicraft:block/vault_dispenser", "y": 270, "uvlock": false }
+  }
+}
