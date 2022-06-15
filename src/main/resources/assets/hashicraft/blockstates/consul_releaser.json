@@ -1,23 +1,8 @@
 {
   "variants": {
-    "facing=north,releasing=true,success=false": { "model": "hashicraft:block/consul_releaser", "uvlock": false },
-    "facing=east,releasing=true,success=false":  { "model": "hashicraft:block/consul_releaser", "y":  90, "uvlock": false },
-    "facing=south,releasing=true,success=false": { "model": "hashicraft:block/consul_releaser", "y": 180, "uvlock": false },
-    "facing=west,releasing=true,success=false":  { "model": "hashicraft:block/consul_releaser", "y": 270, "uvlock": false },
-
-    "facing=north,releasing=true,success=true": { "model": "hashicraft:block/consul_releaser", "uvlock": false },
-    "facing=east,releasing=true,success=true":  { "model": "hashicraft:block/consul_releaser", "y":  90, "uvlock": false },
-    "facing=south,releasing=true,success=true": { "model": "hashicraft:block/consul_releaser", "y": 180, "uvlock": false },
-    "facing=west,releasing=true,success=true":  { "model": "hashicraft:block/consul_releaser", "y": 270, "uvlock": false },
-
-    "facing=north,releasing=false,success=false": { "model": "hashicraft:block/consul_releaser_failed", "uvlock": false },
-    "facing=east,releasing=false,success=false":  { "model": "hashicraft:block/consul_releaser_failed", "y":  90, "uvlock": false },
-    "facing=south,releasing=false,success=false": { "model": "hashicraft:block/consul_releaser_failed", "y": 180, "uvlock": false },
-    "facing=west,releasing=false,success=false":  { "model": "hashicraft:block/consul_releaser_failed", "y": 270, "uvlock": false },
-
-    "facing=north,releasing=false,success=true": { "model": "hashicraft:block/consul_releaser_success", "uvlock": false },
-    "facing=east,releasing=false,success=true":  { "model": "hashicraft:block/consul_releaser_success", "y":  90, "uvlock": false },
-    "facing=south,releasing=false,success=true": { "model": "hashicraft:block/consul_releaser_success", "y": 180, "uvlock": false },
-    "facing=west,releasing=false,success=true":  { "model": "hashicraft:block/consul_releaser_success", "y": 270, "uvlock": false }
+    "facing=north": { "model": "hashicraft:block/consul_releaser", "uvlock": false },
+    "facing=east":  { "model": "hashicraft:block/consul_releaser", "y":  90, "uvlock": false },
+    "facing=south": { "model": "hashicraft:block/consul_releaser", "y": 180, "uvlock": false },
+    "facing=west":  { "model": "hashicraft:block/consul_releaser", "y": 270, "uvlock": false }
   }
 }

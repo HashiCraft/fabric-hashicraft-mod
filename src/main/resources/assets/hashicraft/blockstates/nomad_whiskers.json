@@ -1,23 +1,8 @@
 {
   "variants": {
-    "facing=north,active=false,countdown=false": { "model": "hashicraft:block/nomad_whiskers_off", "uvlock": false },
-    "facing=east,active=false,countdown=false":  { "model": "hashicraft:block/nomad_whiskers_off", "y":  90, "uvlock": false },
-    "facing=south,active=false,countdown=false": { "model": "hashicraft:block/nomad_whiskers_off", "y": 180, "uvlock": false },
-    "facing=west,active=false,countdown=false":  { "model": "hashicraft:block/nomad_whiskers_off", "y": 270, "uvlock": false },
-    
-    "facing=north,active=true,countdown=false": { "model": "hashicraft:block/nomad_whiskers_off", "uvlock": false },
-    "facing=east,active=true,countdown=false":  { "model": "hashicraft:block/nomad_whiskers_off", "y":  90, "uvlock": false },
-    "facing=south,active=true,countdown=false": { "model": "hashicraft:block/nomad_whiskers_off", "y": 180, "uvlock": false },
-    "facing=west,active=true,countdown=false":  { "model": "hashicraft:block/nomad_whiskers_off", "y": 270, "uvlock": false },
-
-    "facing=north,active=true,countdown=true": { "model": "hashicraft:block/nomad_whiskers_off", "uvlock": false },
-    "facing=east,active=true,countdown=true":  { "model": "hashicraft:block/nomad_whiskers_off", "y":  90, "uvlock": false },
-    "facing=south,active=true,countdown=true": { "model": "hashicraft:block/nomad_whiskers_off", "y": 180, "uvlock": false },
-    "facing=west,active=true,countdown=true":  { "model": "hashicraft:block/nomad_whiskers_off", "y": 270, "uvlock": false },
-
-    "facing=north,active=false,countdown=true": { "model": "hashicraft:block/nomad_whiskers_off", "uvlock": false },
-    "facing=east,active=false,countdown=true":  { "model": "hashicraft:block/nomad_whiskers_off", "y":  90, "uvlock": false },
-    "facing=south,active=false,countdown=true": { "model": "hashicraft:block/nomad_whiskers_off", "y": 180, "uvlock": false },
-    "facing=west,active=false,countdown=true":  { "model": "hashicraft:block/nomad_whiskers_off", "y": 270, "uvlock": false }
+    "facing=north": { "model": "hashicraft:block/nomad_whiskers_off", "uvlock": false },
+    "facing=east":  { "model": "hashicraft:block/nomad_whiskers_off", "y":  90, "uvlock": false },
+    "facing=south": { "model": "hashicraft:block/nomad_whiskers_off", "y": 180, "uvlock": false },
+    "facing=west":  { "model": "hashicraft:block/nomad_whiskers_off", "y": 270, "uvlock": false }
   }
 }

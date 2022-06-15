@@ -29,6 +29,9 @@ public class VaultLockEntity extends StatefulBlockEntity {
   }
 
   public String getPolicy() {
+    if (policy == null) {
+      return "default";
+    }
     return this.policy;
   }
 }

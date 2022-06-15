@@ -2,7 +2,6 @@ package com.hashicorp.hashicraft.block.entity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPointerImpl;
@@ -19,8 +18,11 @@ public class VaultDispenserEntity extends BlockEntity {
     // Do something every tick.
   }
 
-  public void dispense(World world, ItemStack stack, int offset, Direction side) {
-    BlockPointerImpl pointer = new BlockPointerImpl(MinecraftClient.getInstance().getServer().getOverworld(), pos);
+  public void dispense(World world, BlockPointerImpl pointer, ItemStack stack, int offset, Direction side) {
+
+    // BlockPointerImpl pointer = new
+    // BlockPointerImpl(MinecraftClient.getInstance().getServer().getOverworld(),
+    // pos);
     double x = pointer.getX() + 0.7D * (double) side.getOffsetX();
     double y = pointer.getY() + 0.7D * (double) side.getOffsetY();
     double z = pointer.getZ() + 0.7D * (double) side.getOffsetZ();

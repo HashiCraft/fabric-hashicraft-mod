@@ -51,18 +51,31 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
   }
 
   public String getApplication() {
+    if (this.application == null) {
+      return "";
+    }
     return this.application;
   }
 
   public String getStatus() {
+    if (this.status == null) {
+      return "";
+    }
     return this.status;
   }
 
   public String getDeploymentStatus() {
+    if (this.deploymentStatus == null) {
+      return "";
+    }
     return this.deploymentStatus;
   }
 
   public Integer getTraffic() {
-    return this.traffic;
+    if (this.traffic == null) {
+      return 0;
+    } else {
+      return this.traffic;
+    }
   }
 }

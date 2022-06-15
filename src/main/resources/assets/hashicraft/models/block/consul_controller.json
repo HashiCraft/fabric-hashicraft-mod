@@ -1,0 +1,46 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "hashicraft:block/consul_controller",
+		"particle": "hashicraft:block/consul_controller"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 9, 16],
+			"faces": {
+				"north": {"uv": [0, 1.75, 4, 4], "texture": "#0"},
+				"east": {"uv": [4, 5.75, 8, 8], "texture": "#0"},
+				"south": {"uv": [4, 1.75, 8, 4], "texture": "#0"},
+				"west": {"uv": [0, 5.75, 4, 8], "texture": "#0"},
+				"up": {"uv": [8.25, 0.25, 8, 0], "texture": "#0"},
+				"down": {"uv": [12, 0, 8, 4], "texture": "#0"}
+			}
+		},
+		{
+			"from": [1, 9, 1],
+			"to": [15, 15, 15],
+			"faces": {
+				"north": {"uv": [0.25, 0.25, 3.75, 1.75], "texture": "#0"},
+				"east": {"uv": [4.25, 4.25, 7.75, 5.75], "texture": "#0"},
+				"south": {"uv": [4.25, 0.25, 7.75, 1.75], "texture": "#0"},
+				"west": {"uv": [0.25, 4.25, 3.75, 5.75], "texture": "#0"},
+				"up": {"uv": [3.75, 11.75, 0.25, 8.25], "texture": "#0"},
+				"down": {"uv": [11.5, 0, 8, 3.5], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0, 9, 0],
+			"to": [16, 17, 16],
+			"faces": {
+				"north": {"uv": [4, 8, 8, 10], "texture": "#0"},
+				"east": {"uv": [4, 8, 8, 10], "texture": "#0"},
+				"south": {"uv": [4, 8, 8, 10], "texture": "#0"},
+				"west": {"uv": [4, 8, 8, 10], "texture": "#0"},
+				"up": {"uv": [12, 7.75, 8, 3.75], "texture": "#0"},
+				"down": {"uv": [16, 12, 12, 16], "texture": "#0"}
+			}
+		}
+	]
+}

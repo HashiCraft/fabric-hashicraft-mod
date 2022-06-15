@@ -30,19 +30,15 @@ public class NomadWhiskersEntityRenderer<T extends NomadWhiskersEntity> implemen
   @Override
   public void render(NomadWhiskersEntity entity, float tickDelta, MatrixStack matrices,
       VertexConsumerProvider vertexConsumers, int light, int overlay) {
-    if (!entity.getCachedState().get(NomadWhiskers.ACTIVE)) {
-      return;
-    }
-
     Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
 
     // If we are still in the countdown, draw start sequence.
-    if (entity.isCountdown() || entity.isEnded()) {
+    if (entity.inCountdown || entity.inEnding) {
       String message = entity.getMessage();
       renderText(matrices, direction, message);
     }
     // Else draw an icon.
-    else {
+    else if (entity.inProgress) {
       String food = entity.getCurrentFood();
       renderIcon(matrices, vertexConsumers, light, overlay, direction, food);
     }

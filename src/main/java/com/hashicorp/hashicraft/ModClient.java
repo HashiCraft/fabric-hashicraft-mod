@@ -2,6 +2,7 @@ package com.hashicorp.hashicraft;
 
 import com.hashicorp.hashicraft.block.Blocks;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
+import com.hashicorp.hashicraft.block.entity.ConsulReleaseEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadSpinEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadWhiskersEntityRenderer;
@@ -23,7 +24,6 @@ import net.minecraft.util.ActionResult;
 
 @Environment(EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
-
         @Override
         public void onInitializeClient() {
                 BlockEntityRendererRegistry.register(BlockEntities.NOMAD_SPIN_ENTITY,
@@ -35,7 +35,13 @@ public class ModClient implements ClientModInitializer {
                 BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASER_ENTITY,
                                 ConsulReleaserEntityRenderer::new);
 
+                BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASE_ENTITY,
+                                ConsulReleaseEntityRenderer::new);
+
                 BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CONSUL_PROXY_BLOCK,
+                                RenderLayer.getTranslucent());
+
+                BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CONSUL_CONTROLLER_BLOCK,
                                 RenderLayer.getTranslucent());
 
                 BlockRenderLayerMap.INSTANCE.putBlock(Blocks.NOMAD_WIRES_BLOCK,

@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -21,6 +22,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPointerImpl;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -71,7 +73,7 @@ public class VaultDispenser extends BlockWithEntity {
 
       String name = player.getName().asString();
       String uuid = player.getUuid().toString();
-      String policies = "door";
+      String policies = "default";
 
       boolean success = Watcher.createUserPass(name, uuid, policies);
       if (!success) {
@@ -85,7 +87,9 @@ public class VaultDispenser extends BlockWithEntity {
       identity.putString("policies", policies);
       itemStack.setNbt(identity);
 
-      dispenser.dispense(world, itemStack, 1, direction);
+      BlockPointerImpl pointer = new BlockPointerImpl((ServerWorld) world, pos);
+
+      dispenser.dispense(world, pointer, itemStack, 1, direction);
     }
     return ActionResult.SUCCESS;
   }

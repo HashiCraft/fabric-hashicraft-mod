@@ -28,23 +28,18 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class NomadWhiskers extends StatefulBlock {
-  public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
-  public static final BooleanProperty COUNTDOWN = BooleanProperty.of("countdown");
-
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
   public NomadWhiskers(Settings settings) {
     super(settings);
     this.setDefaultState(
         this.stateManager.getDefaultState()
-            .with(FACING, Direction.NORTH)
-            .with(ACTIVE, false)
-            .with(COUNTDOWN, false));
+            .with(FACING, Direction.NORTH));
   }
 
   @Override
   protected void appendProperties(Builder<Block, BlockState> builder) {
-    builder.add(FACING, ACTIVE, COUNTDOWN);
+    builder.add(FACING);
   }
 
   @Override
@@ -65,9 +60,9 @@ public class NomadWhiskers extends StatefulBlock {
 
     BlockEntity blockEntity = world.getBlockEntity(pos);
     if (blockEntity instanceof NomadWhiskersEntity) {
-      if (state.get(ACTIVE)) {
-        NomadWhiskersEntity whiskersEntity = (NomadWhiskersEntity) blockEntity;
+      NomadWhiskersEntity whiskersEntity = (NomadWhiskersEntity) blockEntity;
 
+      if (whiskersEntity.inProgress) {
         String food = whiskersEntity.getCurrentFood();
         Item item = Items.AIR;
         switch (food) {
@@ -77,7 +72,7 @@ public class NomadWhiskers extends StatefulBlock {
           case "chicken":
             item = Items.CHICKEN;
             break;
-          case "vegetable":
+          case "veg":
             item = Items.CARROT;
             break;
           case "fish":
@@ -86,12 +81,15 @@ public class NomadWhiskers extends StatefulBlock {
         }
 
         if (player.getMainHandStack().isOf(item)) {
+          boolean success = whiskersEntity.tally(food, true);
           world.playSound(null, pos, Sounds.CORRECT_ANSWER, SoundCategory.BLOCKS, 0.3f, 1f);
         } else {
+          boolean success = whiskersEntity.tally(food, false);
           world.playSound(null, pos, Sounds.WRONG_ANSWER, SoundCategory.BLOCKS, 0.3f, 1f);
         }
-      } else {
-        world.setBlockState(pos, state.with(ACTIVE, true));
+      } else if (!whiskersEntity.inCountdown && !whiskersEntity.inProgress && !whiskersEntity.inEnding) {
+        whiskersEntity.startCountdown();
+        world.playSound(null, pos, Sounds.MEOW, SoundCategory.BLOCKS, 0.3f, 1f);
       }
     }
     return ActionResult.SUCCESS;

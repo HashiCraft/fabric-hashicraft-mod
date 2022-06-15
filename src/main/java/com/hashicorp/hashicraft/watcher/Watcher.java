@@ -38,11 +38,15 @@ public class Watcher {
   private static HashMap<String, BlockPos> positions = new HashMap<String, BlockPos>();
   private static ArrayList<String> deleted = new ArrayList<String>();
 
-  public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR", "https://localhost:9443");
-  public static final BlockPos releaserOrigin = new BlockPos(10, 73, 32);
+  public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR", "http://localhost:9443");
+  public static final BlockPos releaserOrigin = new BlockPos(80, 64, 85);
   private static HashMap<String, Release> releases = new HashMap<String, Release>();
 
-  public static final String vaultAddress = System.getenv().getOrDefault("VAULT_ADDR", "http://localhost:8100");
+  public static final String vaultAddress = System.getenv().getOrDefault("VAULT_ADDR", "http://localhost:8200");
+  public static final String vaultToken = System.getenv().getOrDefault("VAULT_TOKEN", "root");
+
+  public static final String whiskersAddress = System.getenv().getOrDefault("WHISKERS_ADDR",
+      "http://whiskers.ingress.shipyard.run");
 
   private static Watcher watcher = new Watcher();
 
@@ -78,13 +82,14 @@ public class Watcher {
 
     updateNodes();
 
-    ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
     executor.scheduleWithFixedDelay(() -> {
       updateConsulReleaser(server);
     }, 0, 5, TimeUnit.SECONDS);
 
     executor.scheduleWithFixedDelay(() -> {
-      updateNomad(server);
+      updateAllocations(server);
+      deleteAllocations(server);
     }, 0, 5, TimeUnit.SECONDS);
   }
 
@@ -116,8 +121,32 @@ public class Watcher {
       HttpResponse<String> releaseResponse = client.send(request, BodyHandlers.ofString());
       ArrayList<Release> list = gson.fromJson(releaseResponse.body(), releaseListType);
 
+      int index = 0;
       for (Release release : list) {
+        switch (index) {
+          case 0:
+            BlockPos br = releaserOrigin.add(0, 0, 0);
+            release.setPos(br.getX(), br.getY(), br.getZ());
+            break;
+          case 1:
+            BlockPos bl = releaserOrigin.add(3, 0, 0);
+            release.setPos(bl.getX(), bl.getY(), bl.getZ());
+            break;
+          case 2:
+            BlockPos tr = releaserOrigin.add(0, 0, -3);
+            release.setPos(tr.getX(), tr.getY(), tr.getZ());
+            break;
+          case 3:
+            BlockPos tl = releaserOrigin.add(3, 0, -3);
+            release.setPos(tl.getX(), tl.getY(), tl.getZ());
+            break;
+          default:
+            BlockPos none = releaserOrigin.add(0, 255, 0);
+            release.setPos(none.getX(), none.getY(), none.getZ());
+        }
+
         releases.put(release.Name, release);
+        index++;
       }
     } catch (Exception e) {
       Mod.LOGGER.warn("Could not update releases");
@@ -148,6 +177,7 @@ public class Watcher {
       HttpRequest request = HttpRequest.newBuilder()
           .uri(URI.create(vaultAddress + "/v1/auth/userpass/login/" + username))
           .header("Accept", "application/json")
+          .header("X-Vault-Token", vaultToken)
           .POST(HttpRequest.BodyPublishers.ofString(payload))
           .build();
 
@@ -155,7 +185,7 @@ public class Watcher {
 
       // Check if everything went well.
       if (response.statusCode() >= 400) {
-        Mod.LOGGER.debug(response.body());
+        Mod.LOGGER.warn(response.body());
         return null;
       }
 
@@ -169,7 +199,7 @@ public class Watcher {
 
       return token;
     } catch (Exception e) {
-      Mod.LOGGER.debug(e.getStackTrace().toString());
+      Mod.LOGGER.warn(e.getStackTrace().toString());
       return null;
     }
   }
@@ -187,14 +217,14 @@ public class Watcher {
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
       // Check if everything went well.
       if (response.statusCode() >= 400) {
-        Mod.LOGGER.debug(response.body());
+        Mod.LOGGER.warn(response.body());
         return false;
       }
 
       Mod.LOGGER.debug(response.body());
       return true;
     } catch (Exception e) {
-      Mod.LOGGER.debug(e.getStackTrace().toString());
+      Mod.LOGGER.warn(e.getStackTrace().toString());
       return false;
     }
   }
@@ -208,24 +238,27 @@ public class Watcher {
           }
           """, password, policies);
 
+      System.out.println(vaultAddress + " - " + vaultToken);
+
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
           .uri(URI.create(vaultAddress + "/v1/auth/userpass/users/" + username))
           .header("Accept", "application/json")
+          .header("X-Vault-Token", vaultToken)
           .POST(HttpRequest.BodyPublishers.ofString(payload))
           .build();
 
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
       // Check if everything went well.
       if (response.statusCode() >= 400) {
-        Mod.LOGGER.debug(response.body());
+        Mod.LOGGER.warn(response.body());
         return false;
       }
 
       Mod.LOGGER.debug(response.body());
       return true;
     } catch (Exception e) {
-      Mod.LOGGER.debug(e.getStackTrace().toString());
+      Mod.LOGGER.warn(e.getStackTrace().toString());
       return false;
     }
   }
@@ -233,11 +266,6 @@ public class Watcher {
   //
   // Nomad
   //
-  private static void updateNomad(MinecraftServer server) {
-    updateAllocations(server);
-    deleteAllocations(server);
-  }
-
   public static HashMap<String, Node> getNodes() {
     return nodes;
   }
@@ -352,6 +380,61 @@ public class Watcher {
     } catch (Exception e) {
       Mod.LOGGER.warn("Could not update nodes");
       Mod.LOGGER.debug(e.getStackTrace().toString());
+    }
+  }
+
+  //
+  // Finicky Whiskers
+  //
+  public static boolean tally(String session, String food, boolean correct) {
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(whiskersAddress + "/tally?ulid=" + session + "&food=" + food + "&correct=" + correct))
+        .headers("Accept", "application/json")
+        .GET()
+        .build();
+
+    try {
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+        return false;
+      }
+
+      return true;
+    } catch (Exception e) {
+      Mod.LOGGER.warn("Could not update nodes");
+      Mod.LOGGER.debug(e.getStackTrace().toString());
+      return false;
+    }
+  }
+
+  public static Session startSession() {
+    try {
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(whiskersAddress + "/session"))
+          .GET()
+          .build();
+
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+      // Check if everything went well.
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+        return null;
+      }
+
+      Mod.LOGGER.debug(response.body());
+
+      GsonBuilder builder = new GsonBuilder();
+      Gson gson = builder.create();
+      Session session = gson.fromJson(response.body(), Session.class);
+
+      return session;
+    } catch (Exception e) {
+      Mod.LOGGER.warn(e.getStackTrace().toString());
+      return null;
     }
   }
 }

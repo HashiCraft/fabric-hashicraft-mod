@@ -118,7 +118,9 @@ public class VaultLock extends StatefulBlock {
           } else {
             world.setBlockState(pos, state.with(ACTIVE, true).with(POWERED, false), Block.NOTIFY_NEIGHBORS);
             world.createAndScheduleBlockTick(new BlockPos(pos), this, 20);
-            player.sendMessage(new LiteralText("ACCESS DENIED - You do not have the required permissions"), true);
+            player.sendMessage(
+                new LiteralText("ACCESS DENIED - '" + policy + "' permissions are required"),
+                true);
             return ActionResult.SUCCESS;
           }
         } else if (stack.isOf(net.minecraft.item.Items.CHICKEN)) {

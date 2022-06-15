@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 
+import net.minecraft.util.math.BlockPos;
+
 public class Release implements Serializable {
   @SerializedName("name")
   public String Name;
@@ -22,6 +24,8 @@ public class Release implements Serializable {
 
   @SerializedName("last_deployment_status")
   public String DeploymentStatus;
+
+  private BlockPos pos;
 
   public Release() {
   }
@@ -49,5 +53,13 @@ public class Release implements Serializable {
       System.out.println("Unable to create Release from JSON:" + json);
       return null;
     }
+  }
+
+  public void setPos(int x, int y, int z) {
+    this.pos = new BlockPos(x, y, z);
+  }
+
+  public BlockPos getPos() {
+    return this.pos;
   }
 }

@@ -19,7 +19,9 @@ public class BlockEntities {
         public static BlockEntityType<VaultManagerEntity> VAULT_MANAGER_ENTITY;
 
         // Consul
+        public static BlockEntityType<ConsulControllerEntity> CONSUL_CONTROLLER_ENTITY;
         public static BlockEntityType<ConsulReleaserEntity> CONSUL_RELEASER_ENTITY;
+        public static BlockEntityType<ConsulReleaseEntity> CONSUL_RELEASE_ENTITY;
 
         public static void register() {
                 // Nomad
@@ -58,6 +60,18 @@ public class BlockEntities {
                                 Mod.identifier("consul_releaser"),
                                 FabricBlockEntityTypeBuilder
                                                 .create(ConsulReleaserEntity::new, Blocks.CONSUL_RELEASER_BLOCK)
+                                                .build(null));
+
+                CONSUL_RELEASE_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                                Mod.identifier("consul_release"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(ConsulReleaseEntity::new, Blocks.CONSUL_RELEASE_BLOCK)
+                                                .build(null));
+
+                CONSUL_CONTROLLER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                                Mod.identifier("consul_controller"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(ConsulControllerEntity::new, Blocks.CONSUL_CONTROLLER_BLOCK)
                                                 .build(null));
         }
 }

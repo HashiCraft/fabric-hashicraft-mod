@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "hashicraft:block/consul_controller", "uvlock": false },
+    "facing=east":  { "model": "hashicraft:block/consul_controller", "y":  90, "uvlock": false },
+    "facing=south": { "model": "hashicraft:block/consul_controller", "y": 180, "uvlock": false },
+    "facing=west":  { "model": "hashicraft:block/consul_controller", "y": 270, "uvlock": false }
+  }
+}

@@ -1,10 +1,13 @@
 package com.hashicorp.hashicraft.block.entity;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
 import com.hashicorp.hashicraft.block.NomadWhiskers;
+import com.hashicorp.hashicraft.watcher.MenuItem;
+import com.hashicorp.hashicraft.watcher.Session;
+import com.hashicorp.hashicraft.watcher.Watcher;
 import com.hashicorp.sound.Sounds;
 
 import net.minecraft.block.Block;
@@ -17,14 +20,28 @@ public class NomadWhiskersEntity extends StatefulBlockEntity {
   @Syncable
   public Integer time = 0;
 
-  public long ticks = 0;
-  public Integer next = 5;
-
-  private Random generator = new Random();
-  private String[] food = { "beef", "chicken", "vegetable", "fish" };
+  @Syncable
+  public Integer timer = 0;
 
   @Syncable
-  private String currentFood = food[0];
+  public String session = "";
+
+  @Syncable
+  public boolean inProgress = false;
+
+  @Syncable
+  public boolean inCountdown = false;
+
+  @Syncable
+  public boolean inEnding = false;
+
+  public long ticks = 0;
+  public int currentFoodIndex = 0;
+  ArrayList<Integer> timing = new ArrayList<Integer>();
+  ArrayList<String> menu = new ArrayList<String>();
+
+  @Syncable
+  private String currentFood = "";
 
   public NomadWhiskersEntity(BlockPos pos, BlockState state) {
     super(BlockEntities.NOMAD_WHISKERS_ENTITY, pos, state, null);
@@ -34,63 +51,154 @@ public class NomadWhiskersEntity extends StatefulBlockEntity {
     super(BlockEntities.NOMAD_WHISKERS_ENTITY, pos, state, parent);
   }
 
-  public boolean isCountdown() {
-    return time <= 4;
-  }
-
-  public boolean isEnded() {
-    return time >= 30;
-  }
-
   public String getMessage() {
-    if (time <= 3) {
-      return "" + time;
-    } else if (time == 4) {
-      return "GO!";
-    } else {
+    if (inCountdown && timer != null) {
+      if (timer <= 3) {
+        return "" + timer;
+      } else if (timer == 4) {
+        return "GO!";
+      }
+    } else if (inEnding && timer != null) {
       return "END";
     }
-  }
 
-  public int getCurrentTime() {
-    return this.time;
-  }
-
-  public int getNextTime() {
-    int high = 5;
-    int low = 3;
-    return generator.nextInt(high - low) + low;
-  }
-
-  public String getNextFood() {
-    return food[generator.nextInt(food.length)];
+    return "";
   }
 
   public String getCurrentFood() {
     return currentFood;
   }
 
+  public int getCurrentTime() {
+    if (this.timing.isEmpty()) {
+      return 0;
+    } else {
+      return this.timing.get(this.currentFoodIndex);
+    }
+  }
+
   public static void tick(World world, BlockPos blockPos, BlockState state, NomadWhiskersEntity entity) {
-    if (state.get(NomadWhiskers.ACTIVE)) {
-      entity.time = Math.round(entity.ticks++ / 20);
-
-      if (entity.time >= 32) {
-        world.setBlockState(blockPos, state.with(NomadWhiskers.ACTIVE, false));
-        world.playSound(null, blockPos, Sounds.GAME_OVER, SoundCategory.BLOCKS, 0.3f, 1f);
-
-        entity.time = 0;
-        entity.ticks = 0;
-        entity.next = 5;
-        entity.currentFood = entity.food[0];
-
-        return;
-      } else if (entity.time >= entity.next) {
-        entity.next = entity.time + entity.getNextTime();
-        entity.currentFood = entity.getNextFood();
+    entity.timer = Math.round(entity.ticks++ / 20);
+    if (entity.inCountdown) {
+      if (entity.timer < 4) {
+        entity.timer++;
+        entity.setPropertiesToState();
+        entity.sync();
+      } else {
+        entity.startSession();
       }
+      return;
+    }
 
+    if (entity.inProgress) {
+      if (entity.timer >= 30) {
+        world.playSound(null, blockPos, Sounds.GAME_OVER, SoundCategory.BLOCKS, 0.3f, 1f);
+        entity.endSession();
+      }
+      if (entity.timer * 1000 >= entity.getCurrentTime()) {
+        if (entity.menu.isEmpty()) {
+          return;
+        }
+        entity.currentFood = entity.menu.get(entity.currentFoodIndex);
+
+        if (entity.currentFoodIndex < entity.menu.size() - 1) {
+          entity.currentFoodIndex++;
+        }
+      }
       entity.setPropertiesToState();
       entity.sync();
+      return;
     }
+
+    if (entity.inEnding) {
+      if (entity.timer < 3) {
+        entity.timer++;
+        entity.setPropertiesToState();
+        entity.sync();
+      } else {
+        entity.shutdown();
+      }
+      return;
+    }
+    StatefulBlockEntity.tick(world, blockPos, state, entity);
+  }
+
+  public boolean tally(String food, boolean correct) {
+    boolean result = Watcher.tally(this.session, food, correct);
+    return result;
+  }
+
+  public void startSession() {
+    Session session = Watcher.startSession();
+    if (session != null) {
+      this.timer = 0;
+      this.ticks = 0;
+      this.currentFoodIndex = 0;
+      this.setSession(session.id);
+      this.setMenu(session.menu);
+      this.setInCountdown(false);
+      this.setInProgress(true);
+      this.setPropertiesToState();
+      this.sync();
+    }
+  }
+
+  public void startCountdown() {
+    this.timer = 0;
+    this.ticks = 0;
+    this.setInCountdown(true);
+    this.setPropertiesToState();
+    this.sync();
+  }
+
+  public void endSession() {
+    this.timer = 0;
+    this.ticks = 0;
+    this.currentFoodIndex = 0;
+    this.timing.clear();
+    this.menu.clear();
+    this.setInProgress(false);
+    this.setInEnding(true);
+    this.setPropertiesToState();
+    this.sync();
+  }
+
+  public void shutdown() {
+    this.setInEnding(false);
+    this.setPropertiesToState();
+    this.sync();
+  }
+
+  public void setInProgress(boolean status) {
+    this.inProgress = status;
+  }
+
+  public void setInEnding(boolean status) {
+    this.inEnding = status;
+  }
+
+  public void setInCountdown(boolean status) {
+    this.inCountdown = status;
+  }
+
+  public void setMenu(ArrayList<MenuItem> menu) {
+    int index = 0;
+    for (MenuItem item : menu) {
+      System.out.println(item.offset + " = " + item.demand);
+      this.timing.add(index, item.offset);
+      this.menu.add(index, item.demand);
+      index++;
+    }
+  }
+
+  public void setSession(String session) {
+    this.session = session;
+  }
+
+  public String getSession() {
+    if (session == null) {
+      return "";
+    }
+    return this.session;
   }
 }

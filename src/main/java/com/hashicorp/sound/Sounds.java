@@ -12,6 +12,7 @@ public class Sounds {
 
   public static SoundEvent COMPUTER_TYPING = registerSoundEvent("computer_typing");
 
+  public static SoundEvent MEOW = registerSoundEvent("meow");
   public static SoundEvent WRONG_ANSWER = registerSoundEvent("wrong_answer");
   public static SoundEvent CORRECT_ANSWER = registerSoundEvent("correct_answer");
   public static SoundEvent GAME_OVER = registerSoundEvent("game_over");

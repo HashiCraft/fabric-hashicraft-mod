@@ -50,28 +50,22 @@ public class ConsulReleaserEntityRenderer<T extends ConsulReleaserEntity> implem
     if (status.contentEquals("state_idle") && deploymentStatus.contentEquals("strategy_status_complete")) {
       renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
       renderText(matrices, direction, "SUCCESS", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd4ff50);
-    }
-
-    if ((status.contentEquals("state_monitor") || status.contentEquals("state_deploy"))
+    } else if ((status.contentEquals("state_monitor") || status.contentEquals("state_deploy"))
         && deploymentStatus.contentEquals("strategy_status_progressing")) {
       renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
       renderText(matrices, direction, traffic, 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd4ff50);
-    }
-
-    if ((status.contentEquals("state_monitor") || status.contentEquals("state_deploy"))
+    } else if ((status.contentEquals("state_monitor") || status.contentEquals("state_deploy"))
         && deploymentStatus.contentEquals("strategy_status_complete")) {
       renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
       renderText(matrices, direction, "DEPLOYING", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd4ff50);
-    }
-
-    if (status.contentEquals("state_rollback") && deploymentStatus.contentEquals("strategy_status_failed")) {
+    } else if (status.contentEquals("state_rollback") && deploymentStatus.contentEquals("strategy_status_failed")) {
       renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
       renderText(matrices, direction, "ROLLBACK", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd6510f);
-    }
-
-    if (status.contentEquals("state_idle") && deploymentStatus.contentEquals("strategy_status_failed")) {
+    } else if (status.contentEquals("state_idle") && deploymentStatus.contentEquals("strategy_status_failed")) {
       renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
       renderText(matrices, direction, "FAILED", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd6510f);
+    } else {
+      renderText(matrices, direction, "IDLE", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFffffff);
     }
   }
 

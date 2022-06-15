@@ -17,6 +17,12 @@
       "hashicraft:computer_typing"
     ]
   },
+  "meow": {
+    "subtitle": "hashicraft.meow",
+    "sounds": [
+      "hashicraft:meow"
+    ]
+  },
   "wrong_answer": {
     "subtitle": "hashicraft.wrong_answer",
     "sounds": [

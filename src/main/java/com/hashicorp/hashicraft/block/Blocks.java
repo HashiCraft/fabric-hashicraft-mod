@@ -26,6 +26,10 @@ public class Blocks {
                         new ConsulProxy(FabricBlockSettings.of(Material.METAL).nonOpaque()),
                         ItemGroups.HASHICRAFT);
 
+        public static final Block CONSUL_CONTROLLER_BLOCK = registerBlock("consul_controller",
+                        new ConsulController(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        ItemGroups.HASHICRAFT);
+
         public static final Block CONSUL_RELEASER_BLOCK = registerBlock("consul_releaser",
                         new ConsulReleaser(FabricBlockSettings.of(Material.METAL).nonOpaque()),
                         ItemGroups.HASHICRAFT);

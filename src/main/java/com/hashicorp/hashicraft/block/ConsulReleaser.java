@@ -15,7 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -26,15 +25,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class ConsulReleaser extends StatefulBlock {
-  public static final BooleanProperty RELEASING = BooleanProperty.of("releasing");
-  public static final BooleanProperty SUCCESS = BooleanProperty.of("success");
-
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
   public ConsulReleaser(Settings settings) {
     super(settings);
     this.setDefaultState(
-        this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(RELEASING, false).with(SUCCESS, false));
+        this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
   }
 
   @Override
@@ -49,7 +45,7 @@ public class ConsulReleaser extends StatefulBlock {
 
   @Override
   protected void appendProperties(Builder<Block, BlockState> builder) {
-    builder.add(FACING, RELEASING, SUCCESS);
+    builder.add(FACING);
   }
 
   @Override
