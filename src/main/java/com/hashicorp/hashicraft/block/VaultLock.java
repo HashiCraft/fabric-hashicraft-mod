@@ -3,6 +3,7 @@ package com.hashicorp.hashicraft.block;
 import java.util.Random;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
+import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.VaultLockEntity;
 import com.hashicorp.hashicraft.events.VaultLockClicked;
 import com.hashicorp.hashicraft.item.Items;
@@ -12,11 +13,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -31,7 +33,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class VaultLock extends StatefulBlock {
-  public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
   public static final BooleanProperty POWERED = BooleanProperty.of("powered");
 
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -41,8 +42,7 @@ public class VaultLock extends StatefulBlock {
     this.setDefaultState(
         this.stateManager.getDefaultState()
             .with(FACING, Direction.NORTH)
-            .with(POWERED, false)
-            .with(ACTIVE, false));
+            .with(POWERED, false));
   }
 
   @Override
@@ -52,7 +52,7 @@ public class VaultLock extends StatefulBlock {
 
   @Override
   protected void appendProperties(Builder<Block, BlockState> builder) {
-    builder.add(FACING, POWERED, ACTIVE);
+    builder.add(FACING, POWERED);
   }
 
   @Override
@@ -69,19 +69,32 @@ public class VaultLock extends StatefulBlock {
     return true;
   }
 
-  public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-    world.setBlockState(pos, state.with(ACTIVE, false).with(POWERED, false), Block.NOTIFY_LISTENERS);
-    this.updateNeighbors(world, pos, state);
-  }
+  // public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos,
+  // Random random) {
+  // world.setBlockState(pos, state.with(ACTIVE, false).with(POWERED, false),
+  // Block.NOTIFY_LISTENERS);
+  // this.updateNeighbors(world, pos, state);
+  // }
 
-  protected void updateNeighbors(World world, BlockPos pos, BlockState state) {
-    world.updateNeighborsAlways(pos, this);
-    world.updateNeighborsAlways(pos.down(), this);
-    world.updateNeighborsAlways(pos.up(), this);
-  }
+  // protected void updateNeighbors(World world, BlockPos pos, BlockState state) {
+  // world.updateNeighborsAlways(pos, this);
+  // world.updateNeighborsAlways(pos.down(), this);
+  // world.updateNeighborsAlways(pos.up(), this);
+  // }
 
   public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-    return state.get(POWERED) ? 15 : 0;
+    BlockEntity blockEntity = world.getBlockEntity(pos);
+
+    if (blockEntity instanceof VaultLockEntity) {
+      VaultLockEntity lock = (VaultLockEntity) blockEntity;
+      if (lock.getStatus().contentEquals("success")) {
+        return 15;
+      } else {
+        return 0;
+      }
+    }
+
+    return 0;
   }
 
   @Override
@@ -103,36 +116,45 @@ public class VaultLock extends StatefulBlock {
           });
           return ActionResult.SUCCESS;
         }
-      }
-      // Else check if we have access.
-      else {
+
         if (stack.isOf(Items.VAULT_CARD_ITEM)) {
           NbtCompound identity = stack.getOrCreateNbt();
           String token = identity.getString("token");
-          String policy = lock.getPolicy();
-          boolean access = Watcher.checkAccess(token, policy);
+          // String policy = identity.getString("policy");
+          String lockPolicy = lock.getPolicy();
+
+          if (token == null) {
+            lock.setStatus("failure");
+            player.sendMessage(new LiteralText("ACCESS DENIED - You need to be authenticated"), true);
+            return ActionResult.SUCCESS;
+          }
+
+          boolean access = Watcher.checkAccess(token, lockPolicy);
+          System.out.println(access);
           if (access) {
-            world.setBlockState(pos, state.with(ACTIVE, true).with(POWERED, true), Block.NOTIFY_NEIGHBORS);
-            world.createAndScheduleBlockTick(new BlockPos(pos), this, 20);
+            lock.setStatus("success");
+            world.setBlockState(pos, state.with(POWERED, true), Block.NOTIFY_NEIGHBORS);
             return ActionResult.SUCCESS;
           } else {
-            world.setBlockState(pos, state.with(ACTIVE, true).with(POWERED, false), Block.NOTIFY_NEIGHBORS);
-            world.createAndScheduleBlockTick(new BlockPos(pos), this, 20);
-            player.sendMessage(
-                new LiteralText("ACCESS DENIED - '" + policy + "' permissions are required"),
-                true);
+            lock.setStatus("failure");
+            player.sendMessage(new LiteralText("ACCESS DENIED - '" + lockPolicy + "' permissions are required"), true);
             return ActionResult.SUCCESS;
           }
         } else if (stack.isOf(net.minecraft.item.Items.CHICKEN)) {
           return ActionResult.SUCCESS;
         } else {
-          world.setBlockState(pos, state.with(ACTIVE, true).with(POWERED, false), Block.NOTIFY_NEIGHBORS);
-          world.createAndScheduleBlockTick(new BlockPos(pos), this, 20);
+          lock.setStatus("failure");
           player.sendMessage(new LiteralText("ACCESS DENIED - That item does not provide access"), true);
           return ActionResult.SUCCESS;
         }
       }
     }
     return ActionResult.SUCCESS;
+  }
+
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,
+      BlockEntityType<T> type) {
+    return checkType(type, BlockEntities.VAULT_LOCK_ENTITY, VaultLockEntity::tick);
   }
 }

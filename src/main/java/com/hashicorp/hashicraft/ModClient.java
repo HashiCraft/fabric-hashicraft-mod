@@ -6,6 +6,8 @@ import com.hashicorp.hashicraft.block.entity.ConsulReleaseEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadSpinEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadWhiskersEntityRenderer;
+import com.hashicorp.hashicraft.block.entity.VaultLockEntityRenderer;
+import com.hashicorp.hashicraft.block.entity.VaultManagerEntityRenderer;
 import com.hashicorp.hashicraft.events.ConsulReleaserClicked;
 import com.hashicorp.hashicraft.events.VaultLockClicked;
 import com.hashicorp.hashicraft.ui.ConsulReleaserGui;
@@ -37,6 +39,12 @@ public class ModClient implements ClientModInitializer {
 
                 BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASE_ENTITY,
                                 ConsulReleaseEntityRenderer::new);
+
+                BlockEntityRendererRegistry.register(BlockEntities.VAULT_MANAGER_ENTITY,
+                                VaultManagerEntityRenderer::new);
+
+                BlockEntityRendererRegistry.register(BlockEntities.VAULT_LOCK_ENTITY,
+                                VaultLockEntityRenderer::new);
 
                 BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CONSUL_PROXY_BLOCK,
                                 RenderLayer.getTranslucent());

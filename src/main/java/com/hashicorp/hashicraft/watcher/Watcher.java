@@ -165,7 +165,7 @@ public class Watcher {
   //
   // Vault
   //
-  public static String login(String username, String password) {
+  public static Login login(String username, String password) {
     try {
       String payload = String.format("""
           {
@@ -188,16 +188,13 @@ public class Watcher {
         Mod.LOGGER.warn(response.body());
         return null;
       }
-
+      System.out.println(response.body());
       Mod.LOGGER.debug(response.body());
 
       GsonBuilder builder = new GsonBuilder();
       Gson gson = builder.create();
-      Map<?, ?> result = gson.fromJson(response.body(), Map.class);
-      Map<?, ?> auth = (Map<?, ?>) result.get("auth");
-      String token = (String) auth.get("client_token");
-
-      return token;
+      Login login = gson.fromJson(response.body(), Login.class);
+      return login;
     } catch (Exception e) {
       Mod.LOGGER.warn(e.getStackTrace().toString());
       return null;
@@ -237,8 +234,6 @@ public class Watcher {
           "policies": "%s"
           }
           """, password, policies);
-
-      System.out.println(vaultAddress + " - " + vaultToken);
 
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
@@ -430,7 +425,6 @@ public class Watcher {
       GsonBuilder builder = new GsonBuilder();
       Gson gson = builder.create();
       Session session = gson.fromJson(response.body(), Session.class);
-
       return session;
     } catch (Exception e) {
       Mod.LOGGER.warn(e.getStackTrace().toString());

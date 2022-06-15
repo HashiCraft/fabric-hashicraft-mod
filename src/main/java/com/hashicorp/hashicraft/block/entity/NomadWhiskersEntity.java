@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
-import com.hashicorp.hashicraft.block.NomadWhiskers;
 import com.hashicorp.hashicraft.watcher.MenuItem;
 import com.hashicorp.hashicraft.watcher.Session;
 import com.hashicorp.hashicraft.watcher.Watcher;
@@ -17,9 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class NomadWhiskersEntity extends StatefulBlockEntity {
-  @Syncable
-  public Integer time = 0;
-
   @Syncable
   public Integer timer = 0;
 

@@ -21,7 +21,6 @@ public class VaultCard extends Item {
 
   @Override
   public ActionResult useOnBlock(ItemUsageContext context) {
-    System.out.println("use");
     return ActionResult.SUCCESS;
   }
 
@@ -47,7 +46,7 @@ public class VaultCard extends Item {
 
     NbtCompound identity = itemStack.getOrCreateNbt();
     String name = identity.getString("name");
-    String policies = identity.getString("policies");
+    String policies = identity.getString("policy");
 
     tooltip.add(new LiteralText("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
     tooltip.add(new LiteralText(name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));

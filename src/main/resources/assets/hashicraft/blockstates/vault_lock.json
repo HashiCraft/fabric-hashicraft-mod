@@ -1,23 +1,13 @@
 {
   "variants": {
-    "facing=north,active=false,powered=false": { "model": "hashicraft:block/vault_lock", "uvlock": false },
-    "facing=east,active=false,powered=false":  { "model": "hashicraft:block/vault_lock", "y":  90, "uvlock": false },
-    "facing=south,active=false,powered=false": { "model": "hashicraft:block/vault_lock", "y": 180, "uvlock": false },
-    "facing=west,active=false,powered=false":  { "model": "hashicraft:block/vault_lock", "y": 270, "uvlock": false },
+    "facing=north,powered=false": { "model": "hashicraft:block/vault_lock", "uvlock": false },
+    "facing=east,powered=false":  { "model": "hashicraft:block/vault_lock", "y":  90, "uvlock": false },
+    "facing=south,powered=false": { "model": "hashicraft:block/vault_lock", "y": 180, "uvlock": false },
+    "facing=west,powered=false":  { "model": "hashicraft:block/vault_lock", "y": 270, "uvlock": false },
 
-    "facing=north,active=false,powered=true": { "model": "hashicraft:block/vault_lock", "uvlock": false },
-    "facing=east,active=false,powered=true":  { "model": "hashicraft:block/vault_lock", "y":  90, "uvlock": false },
-    "facing=south,active=false,powered=true": { "model": "hashicraft:block/vault_lock", "y": 180, "uvlock": false },
-    "facing=west,active=false,powered=true":  { "model": "hashicraft:block/vault_lock", "y": 270, "uvlock": false },
-
-    "facing=north,active=true,powered=false": { "model": "hashicraft:block/vault_lock_denied", "uvlock": false },
-    "facing=east,active=true,powered=false":  { "model": "hashicraft:block/vault_lock_denied", "y":  90, "uvlock": false },
-    "facing=south,active=true,powered=false": { "model": "hashicraft:block/vault_lock_denied", "y": 180, "uvlock": false },
-    "facing=west,active=true,powered=false":  { "model": "hashicraft:block/vault_lock_denied", "y": 270, "uvlock": false },
-
-    "facing=north,active=true,powered=true": { "model": "hashicraft:block/vault_lock_allowed", "uvlock": false },
-    "facing=east,active=true,powered=true":  { "model": "hashicraft:block/vault_lock_allowed", "y":  90, "uvlock": false },
-    "facing=south,active=true,powered=true": { "model": "hashicraft:block/vault_lock_allowed", "y": 180, "uvlock": false },
-    "facing=west,active=true,powered=true":  { "model": "hashicraft:block/vault_lock_allowed", "y": 270, "uvlock": false }
+    "facing=north,powered=true": { "model": "hashicraft:block/vault_lock", "uvlock": false },
+    "facing=east,powered=true":  { "model": "hashicraft:block/vault_lock", "y":  90, "uvlock": false },
+    "facing=south,powered=true": { "model": "hashicraft:block/vault_lock", "y": 180, "uvlock": false },
+    "facing=west,powered=true":  { "model": "hashicraft:block/vault_lock", "y": 270, "uvlock": false }
   }
 }

@@ -17,7 +17,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -81,10 +80,10 @@ public class NomadWhiskers extends StatefulBlock {
         }
 
         if (player.getMainHandStack().isOf(item)) {
-          boolean success = whiskersEntity.tally(food, true);
+          whiskersEntity.tally(food, true);
           world.playSound(null, pos, Sounds.CORRECT_ANSWER, SoundCategory.BLOCKS, 0.3f, 1f);
         } else {
-          boolean success = whiskersEntity.tally(food, false);
+          whiskersEntity.tally(food, false);
           world.playSound(null, pos, Sounds.WRONG_ANSWER, SoundCategory.BLOCKS, 0.3f, 1f);
         }
       } else if (!whiskersEntity.inCountdown && !whiskersEntity.inProgress && !whiskersEntity.inEnding) {

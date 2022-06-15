@@ -28,9 +28,8 @@ import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class ConsulReleaserEntityRenderer<T extends ConsulReleaserEntity> implements BlockEntityRenderer<T> {
-
-  public static final Identifier SUCCESS_TEXTURE = Mod.identifier("textures/block/releaser_success.png");
-  public static final Identifier FAILURE_TEXTURE = Mod.identifier("textures/block/releaser_failure.png");
+  public static final Identifier SUCCESS_TEXTURE = Mod.identifier("textures/block/status_success.png");
+  public static final Identifier FAILURE_TEXTURE = Mod.identifier("textures/block/status_failure.png");
 
   public ConsulReleaserEntityRenderer(BlockEntityRendererFactory.Context ctx) {
   }
