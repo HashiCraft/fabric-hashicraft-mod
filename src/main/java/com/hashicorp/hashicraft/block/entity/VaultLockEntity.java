@@ -76,4 +76,8 @@ public class VaultLockEntity extends StatefulBlockEntity {
     this.status = status;
     this.markForUpdate();
   }
+
+  public boolean checkAccess(String userPolicy, String lockPolicy) {
+    return userPolicy.contains(lockPolicy);
+  }
 }

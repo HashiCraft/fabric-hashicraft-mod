@@ -73,7 +73,7 @@ public class VaultDispenser extends BlockWithEntity {
 
       String name = player.getName().asString();
       String uuid = player.getUuid().toString();
-      String policies = "default";
+      String policies = "default,level-1";
 
       boolean success = Watcher.createUserPass(name, uuid, policies);
       if (!success) {

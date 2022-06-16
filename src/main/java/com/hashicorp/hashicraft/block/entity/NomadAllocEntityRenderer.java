@@ -27,7 +27,7 @@ public class NomadAllocEntityRenderer<T extends NomadAllocEntity> implements Blo
     Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
     String name = entity.getName();
 
-    renderText(matrices, direction, name, 0.0f, 1.4f, -0.5f, 0.02F, 0xFFffffff);
+    renderText(matrices, direction, name, 0.0f, 1.4f, 0.0f, 0.02F, 0xFFffffff);
   }
 
   private void renderText(MatrixStack matrices, Direction direction, String message, float x, float y, float z,
@@ -45,20 +45,20 @@ public class NomadAllocEntityRenderer<T extends NomadAllocEntity> implements Blo
         break;
       case NORTH:
         xTranslate += 0.5F;
-        zTranslate += 0F;
+        zTranslate += 0.5F;
         break;
       case SOUTH:
         xTranslate += 0.5F;
-        zTranslate += 1F;
+        zTranslate += 0.5F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F);
         break;
       case EAST:
-        xTranslate += 1F;
+        xTranslate += 0.5F;
         zTranslate += 0.5F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F);
         break;
       case WEST:
-        xTranslate += 0F;
+        xTranslate += 0.5F;
         zTranslate += 0.5F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F);
         break;

@@ -1,7 +1,5 @@
 package com.hashicorp.hashicraft.block;
 
-import javax.annotation.Nullable;
-
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.NomadServerEntity;
@@ -12,10 +10,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;

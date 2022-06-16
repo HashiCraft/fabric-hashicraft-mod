@@ -1,7 +1,5 @@
 package com.hashicorp.hashicraft.block.entity;
 
-import com.hashicorp.hashicraft.block.NomadWhiskers;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -32,7 +30,7 @@ public class NomadWhiskersEntityRenderer<T extends NomadWhiskersEntity> implemen
       VertexConsumerProvider vertexConsumers, int light, int overlay) {
     Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
 
-    renderText(matrices, direction, "finicky-whiskers", 0.0f, 1.4f, -0.5f, 0.02F, 0xFFffffff);
+    renderText(matrices, direction, "finicky-whiskers", 0.0f, 1.4f, 0.0f, 0.02F, 0xFFffffff);
 
     // If we are still in the countdown, draw start sequence.
     if (entity.inCountdown || entity.inEnding) {
@@ -43,7 +41,7 @@ public class NomadWhiskersEntityRenderer<T extends NomadWhiskersEntity> implemen
     else if (entity.inProgress) {
       String food = entity.getCurrentFood();
       renderIcon(matrices, vertexConsumers, light, overlay, direction, food);
-      renderText(matrices, direction, "" + entity.getScore(), 0.0f, 1.9f, -0.5f, 0.05F, 0xFFd4ff50);
+      renderText(matrices, direction, "" + entity.getScore(), 0.0f, 1.9f, 0.0f, 0.05F, 0xFFd4ff50);
     }
   }
 
@@ -176,20 +174,20 @@ public class NomadWhiskersEntityRenderer<T extends NomadWhiskersEntity> implemen
         break;
       case NORTH:
         xTranslate += 0.5F;
-        zTranslate += 0F;
+        zTranslate += 0.5F;
         break;
       case SOUTH:
         xTranslate += 0.5F;
-        zTranslate += 1F;
+        zTranslate += 0.5F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F);
         break;
       case EAST:
-        xTranslate += 1F;
+        xTranslate += 0.5F;
         zTranslate += 0.5F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F);
         break;
       case WEST:
-        xTranslate += 0F;
+        xTranslate += 0.5F;
         zTranslate += 0.5F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F);
         break;

@@ -35,8 +35,10 @@ public class VaultLockEntityRenderer<T extends VaultLockEntity> implements Block
     Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
     if (entity.getStatus().contentEquals("success")) {
       renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
+      renderStatus(matrices, direction.getOpposite(), light, overlay, SUCCESS_TEXTURE);
     } else if (entity.getStatus().contentEquals("failure")) {
       renderStatus(matrices, direction, light, overlay, FAILURE_TEXTURE);
+      renderStatus(matrices, direction.getOpposite(), light, overlay, FAILURE_TEXTURE);
     }
   }
 
@@ -110,6 +112,7 @@ public class VaultLockEntityRenderer<T extends VaultLockEntity> implements Block
 
     tessellator.draw();
     matrices.pop();
+
     RenderSystem.disableDepthTest();
     RenderSystem.depthMask(true);
     RenderSystem.disableBlend();

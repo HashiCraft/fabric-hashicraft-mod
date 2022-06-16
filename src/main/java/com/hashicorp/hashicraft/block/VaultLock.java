@@ -1,13 +1,10 @@
 package com.hashicorp.hashicraft.block;
 
-import java.util.Random;
-
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.VaultLockEntity;
 import com.hashicorp.hashicraft.events.VaultLockClicked;
 import com.hashicorp.hashicraft.item.Items;
-import com.hashicorp.hashicraft.watcher.Watcher;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -69,19 +66,6 @@ public class VaultLock extends StatefulBlock {
     return true;
   }
 
-  // public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos,
-  // Random random) {
-  // world.setBlockState(pos, state.with(ACTIVE, false).with(POWERED, false),
-  // Block.NOTIFY_LISTENERS);
-  // this.updateNeighbors(world, pos, state);
-  // }
-
-  // protected void updateNeighbors(World world, BlockPos pos, BlockState state) {
-  // world.updateNeighborsAlways(pos, this);
-  // world.updateNeighborsAlways(pos.down(), this);
-  // world.updateNeighborsAlways(pos.up(), this);
-  // }
-
   public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
     BlockEntity blockEntity = world.getBlockEntity(pos);
 
@@ -120,7 +104,7 @@ public class VaultLock extends StatefulBlock {
         if (stack.isOf(Items.VAULT_CARD_ITEM)) {
           NbtCompound identity = stack.getOrCreateNbt();
           String token = identity.getString("token");
-          // String policy = identity.getString("policy");
+          String policy = identity.getString("policy");
           String lockPolicy = lock.getPolicy();
 
           if (token == null) {
@@ -129,7 +113,8 @@ public class VaultLock extends StatefulBlock {
             return ActionResult.SUCCESS;
           }
 
-          boolean access = Watcher.checkAccess(token, lockPolicy);
+          boolean access = lock.checkAccess(policy, lockPolicy);
+          // boolean access = Watcher.checkAccess(token, lockPolicy);
           System.out.println(access);
           if (access) {
             lock.setStatus("success");

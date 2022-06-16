@@ -31,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class Watcher {
-  public static final String nomadAddress = System.getenv().getOrDefault("NOMAD_ADDR", "http://127.0.0.1:30888");
+  public static final String nomadAddress = System.getenv().getOrDefault("NOMAD_ADDR", "http://localhost:4646");
   public static final BlockPos nomadOrigin = new BlockPos(10, 73, 32);
   public static final ArrayList<String> nomadJobs = new ArrayList<String>(
       Arrays.asList("payments", "finicky-whiskers", "api"));
@@ -41,7 +41,7 @@ public class Watcher {
   private static ArrayList<String> deleted = new ArrayList<String>();
 
   public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR",
-      "http://1.client.local.nomad-cluster.shipyard.run:18083");
+      "http://localhost:9443");
   public static final BlockPos releaserOrigin = new BlockPos(80, 64, 85);
   private static HashMap<String, Release> releases = new HashMap<String, Release>();
 
@@ -49,7 +49,7 @@ public class Watcher {
   public static final String vaultToken = System.getenv().getOrDefault("VAULT_TOKEN", "root");
 
   public static final String whiskersAddress = System.getenv().getOrDefault("WHISKERS_ADDR",
-      "http://whiskers.ingress.shipyard.run");
+      "http://localhost:8080");
   public static final String scoreboardAddress = System.getenv().getOrDefault("SCOREBOARD_ADDR",
       "http://localhost:4000");
 
