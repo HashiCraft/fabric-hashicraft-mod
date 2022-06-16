@@ -1,7 +1,12 @@
 package com.hashicorp.hashicraft.block;
 
+import com.github.hashicraft.stateful.blocks.StatefulBlock;
+import com.hashicorp.hashicraft.block.entity.NomadAllocEntity;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager.Builder;
@@ -15,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class NomadAlloc extends Block {
+public class NomadAlloc extends StatefulBlock {
   public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
 
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -27,8 +32,18 @@ public class NomadAlloc extends Block {
   }
 
   @Override
+  public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    return new NomadAllocEntity(pos, state);
+  }
+
+  @Override
   protected void appendProperties(Builder<Block, BlockState> builder) {
     builder.add(FACING, ACTIVE);
+  }
+
+  @Override
+  public BlockRenderType getRenderType(BlockState state) {
+    return BlockRenderType.MODEL;
   }
 
   @Override

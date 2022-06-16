@@ -4,6 +4,7 @@ import com.hashicorp.hashicraft.block.Blocks;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaseEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntityRenderer;
+import com.hashicorp.hashicraft.block.entity.NomadAllocEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadSpinEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadWhiskersEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.VaultLockEntityRenderer;
@@ -33,6 +34,9 @@ public class ModClient implements ClientModInitializer {
 
                 BlockEntityRendererRegistry.register(BlockEntities.NOMAD_WHISKERS_ENTITY,
                                 NomadWhiskersEntityRenderer::new);
+
+                BlockEntityRendererRegistry.register(BlockEntities.NOMAD_ALLOC_ENTITY,
+                                NomadAllocEntityRenderer::new);
 
                 BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASER_ENTITY,
                                 ConsulReleaserEntityRenderer::new);

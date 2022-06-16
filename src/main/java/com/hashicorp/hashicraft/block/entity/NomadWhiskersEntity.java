@@ -20,7 +20,13 @@ public class NomadWhiskersEntity extends StatefulBlockEntity {
   public Integer timer = 0;
 
   @Syncable
+  public Integer score = 0;
+
+  @Syncable
   public String session = "";
+
+  @Syncable
+  public String player = "";
 
   @Syncable
   public boolean inProgress = false;
@@ -112,6 +118,8 @@ public class NomadWhiskersEntity extends StatefulBlockEntity {
         entity.setPropertiesToState();
         entity.sync();
       } else {
+        entity.submitScore();
+        entity.setScore(0);
         entity.shutdown();
       }
       return;
@@ -119,9 +127,31 @@ public class NomadWhiskersEntity extends StatefulBlockEntity {
     StatefulBlockEntity.tick(world, blockPos, state, entity);
   }
 
-  public boolean tally(String food, boolean correct) {
-    boolean result = Watcher.tally(this.session, food, correct);
-    return result;
+  public void tally(String food, boolean correct) {
+    Integer score = Watcher.tally(this.session, food, correct);
+    this.setScore(score);
+  }
+
+  public void submitScore() {
+    String id = this.getSession();
+    String player = this.getPlayer();
+    int score = this.getScore();
+
+    Watcher.submitScore(id, player, score);
+  }
+
+  public void setScore(Integer score) {
+    if (score == null) {
+      this.score = 0;
+    }
+    this.score = score;
+  }
+
+  public int getScore() {
+    if (this.score == null) {
+      return 0;
+    }
+    return this.score;
   }
 
   public void startSession() {
@@ -192,9 +222,20 @@ public class NomadWhiskersEntity extends StatefulBlockEntity {
   }
 
   public String getSession() {
-    if (session == null) {
+    if (this.session == null) {
       return "";
     }
     return this.session;
+  }
+
+  public void setPlayer(String player) {
+    this.player = player;
+  }
+
+  public String getPlayer() {
+    if (this.player == null) {
+      return "";
+    }
+    return this.player;
   }
 }

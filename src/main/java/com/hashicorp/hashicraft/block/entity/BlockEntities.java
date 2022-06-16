@@ -12,6 +12,7 @@ public class BlockEntities {
         public static BlockEntityType<NomadServerEntity> NOMAD_SERVER_ENTITY;
         public static BlockEntityType<NomadSpinEntity> NOMAD_SPIN_ENTITY;
         public static BlockEntityType<NomadWhiskersEntity> NOMAD_WHISKERS_ENTITY;
+        public static BlockEntityType<NomadAllocEntity> NOMAD_ALLOC_ENTITY;
 
         // Vault
         public static BlockEntityType<VaultLockEntity> VAULT_LOCK_ENTITY;
@@ -36,6 +37,11 @@ public class BlockEntities {
                 NOMAD_WHISKERS_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("nomad_whiskers"),
                                 FabricBlockEntityTypeBuilder
                                                 .create(NomadWhiskersEntity::new, Blocks.NOMAD_WHISKERS_BLOCK)
+                                                .build(null));
+
+                NOMAD_ALLOC_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("nomad_alloc"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(NomadAllocEntity::new, Blocks.NOMAD_ALLOC_BLOCK)
                                                 .build(null));
 
                 // Vault

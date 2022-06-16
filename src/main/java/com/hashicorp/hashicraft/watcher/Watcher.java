@@ -8,9 +8,9 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -31,14 +31,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class Watcher {
-  public static final String nomadAddress = System.getenv().getOrDefault("NOMAD_ADDR", "http://localhost:4646");
+  public static final String nomadAddress = System.getenv().getOrDefault("NOMAD_ADDR", "http://127.0.0.1:30888");
   public static final BlockPos nomadOrigin = new BlockPos(10, 73, 32);
+  public static final ArrayList<String> nomadJobs = new ArrayList<String>(
+      Arrays.asList("payments", "finicky-whiskers", "api"));
   private static HashMap<String, Node> nodes = new HashMap<String, Node>();
   private static HashMap<String, Allocation> allocations = new HashMap<String, Allocation>();
   private static HashMap<String, BlockPos> positions = new HashMap<String, BlockPos>();
   private static ArrayList<String> deleted = new ArrayList<String>();
 
-  public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR", "http://localhost:9443");
+  public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR",
+      "http://1.client.local.nomad-cluster.shipyard.run:18083");
   public static final BlockPos releaserOrigin = new BlockPos(80, 64, 85);
   private static HashMap<String, Release> releases = new HashMap<String, Release>();
 
@@ -47,6 +50,8 @@ public class Watcher {
 
   public static final String whiskersAddress = System.getenv().getOrDefault("WHISKERS_ADDR",
       "http://whiskers.ingress.shipyard.run");
+  public static final String scoreboardAddress = System.getenv().getOrDefault("SCOREBOARD_ADDR",
+      "http://localhost:4000");
 
   private static Watcher watcher = new Watcher();
 
@@ -150,7 +155,6 @@ public class Watcher {
       }
     } catch (Exception e) {
       Mod.LOGGER.warn("Could not update releases");
-      Mod.LOGGER.debug(e.getStackTrace().toString());
     }
   }
 
@@ -321,12 +325,16 @@ public class Watcher {
       // add all new allocations
       for (Allocation alloc : list) {
         synchronized (Watcher.class) {
-          allocations.put(alloc.ID, alloc);
 
-          Node node = nodes.get(alloc.NodeID);
-          String slot = node.placeAllocation(alloc.ID);
-          BlockPos position = node.getSlotPos(slot);
-          positions.put(alloc.ID, position);
+          boolean interested = nomadJobs.stream().anyMatch(job -> alloc.JobID.startsWith(job));
+          if (interested) {
+            allocations.put(alloc.ID, alloc);
+
+            Node node = nodes.get(alloc.NodeID);
+            String slot = node.placeAllocation(alloc.ID);
+            BlockPos position = node.getSlotPos(slot);
+            positions.put(alloc.ID, position);
+          }
         }
       }
 
@@ -374,33 +382,53 @@ public class Watcher {
       }
     } catch (Exception e) {
       Mod.LOGGER.warn("Could not update nodes");
-      Mod.LOGGER.debug(e.getStackTrace().toString());
     }
   }
 
   //
   // Finicky Whiskers
   //
-  public static boolean tally(String session, String food, boolean correct) {
+  public static Integer tally(String session, String food, boolean correct) {
     HttpClient client = HttpClient.newHttpClient();
-    HttpRequest request = HttpRequest.newBuilder()
+    HttpRequest tallyRequest = HttpRequest.newBuilder()
         .uri(URI.create(whiskersAddress + "/tally?ulid=" + session + "&food=" + food + "&correct=" + correct))
         .headers("Accept", "application/json")
         .GET()
         .build();
 
     try {
-      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      HttpResponse<String> response = client.send(tallyRequest, BodyHandlers.ofString());
       if (response.statusCode() >= 400) {
         Mod.LOGGER.warn(response.body());
-        return false;
+        return null;
       }
 
-      return true;
     } catch (Exception e) {
-      Mod.LOGGER.warn("Could not update nodes");
-      Mod.LOGGER.debug(e.getStackTrace().toString());
-      return false;
+      Mod.LOGGER.warn("Could not update tally");
+      return null;
+    }
+
+    HttpRequest scoreRequest = HttpRequest.newBuilder()
+        .uri(URI.create(whiskersAddress + "/score?ulid=" + session))
+        .headers("Accept", "application/json")
+        .GET()
+        .build();
+
+    try {
+      HttpResponse<String> response = client.send(scoreRequest, BodyHandlers.ofString());
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+        return null;
+      }
+
+      GsonBuilder builder = new GsonBuilder();
+      Gson gson = builder.create();
+      Score score = gson.fromJson(response.body(), Score.class);
+
+      return score.total;
+    } catch (Exception e) {
+      Mod.LOGGER.warn("Could not get score");
+      return null;
     }
   }
 
@@ -427,8 +455,40 @@ public class Watcher {
       Session session = gson.fromJson(response.body(), Session.class);
       return session;
     } catch (Exception e) {
-      Mod.LOGGER.warn(e.getStackTrace().toString());
+      Mod.LOGGER.warn("Could not start session");
       return null;
+    }
+  }
+
+  public static void submitScore(String id, String player, int score) {
+    try {
+      String payload = String.format("""
+          {
+          "id": "%s",
+          "player": "%s",
+          "score": %d
+          }
+          """, id, player, score);
+
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(scoreboardAddress + "/v1/scores"))
+          .header("Accept", "application/json")
+          .POST(HttpRequest.BodyPublishers.ofString(payload))
+          .build();
+
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      // Check if everything went well.
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+      }
+
+      System.out.println(response.body());
+
+      Mod.LOGGER.debug(response.body());
+    } catch (Exception e) {
+      Mod.LOGGER.warn("Could not submit score");
+      e.printStackTrace();
     }
   }
 }

@@ -56,21 +56,7 @@ public class NomadServer extends StatefulBlock {
   @Override
   public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
       BlockHitResult hit) {
-    world.setBlockState(pos, state.with(ACTIVE, !state.get(ACTIVE)), 3);
     return ActionResult.SUCCESS;
-  }
-
-  @Override
-  public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
-      ItemStack itemStack) {
-    if (world.isClient)
-      return;
-
-    BlockEntity blockEntity = world.getBlockEntity(pos);
-    if (blockEntity instanceof NomadServerEntity) {
-      NomadServerEntity serverEntity = (NomadServerEntity) blockEntity;
-      serverEntity.setup();
-    }
   }
 
   @Override
