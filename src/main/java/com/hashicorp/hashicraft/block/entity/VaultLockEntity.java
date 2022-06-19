@@ -15,10 +15,8 @@ public class VaultLockEntity extends StatefulBlockEntity {
   @Syncable
   public String status = "";
 
-  @Syncable
   public Integer timer = 0;
 
-  @Syncable
   public boolean inTimer = false;
 
   public long ticks = 0;
