@@ -20,7 +20,7 @@ import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -109,7 +109,7 @@ public class VaultLock extends StatefulBlock {
 
           if (token == null) {
             lock.setStatus("failure");
-            player.sendMessage(new LiteralText("ACCESS DENIED - You need to be authenticated"), true);
+            player.sendMessage(Text.literal("ACCESS DENIED - You need to be authenticated"), true);
             return ActionResult.SUCCESS;
           }
 
@@ -122,14 +122,14 @@ public class VaultLock extends StatefulBlock {
             return ActionResult.SUCCESS;
           } else {
             lock.setStatus("failure");
-            player.sendMessage(new LiteralText("ACCESS DENIED - '" + lockPolicy + "' permissions are required"), true);
+            player.sendMessage(Text.literal("ACCESS DENIED - '" + lockPolicy + "' permissions are required"), true);
             return ActionResult.SUCCESS;
           }
         } else if (stack.isOf(net.minecraft.item.Items.CHICKEN)) {
           return ActionResult.SUCCESS;
         } else {
           lock.setStatus("failure");
-          player.sendMessage(new LiteralText("ACCESS DENIED - That item does not provide access"), true);
+          player.sendMessage(Text.literal("ACCESS DENIED - That item does not provide access"), true);
           return ActionResult.SUCCESS;
         }
       }

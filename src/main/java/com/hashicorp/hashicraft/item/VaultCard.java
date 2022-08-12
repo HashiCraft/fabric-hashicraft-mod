@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -40,7 +39,7 @@ public class VaultCard extends Item {
   @Override
   public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
     if (!itemStack.hasNbt()) {
-      tooltip.add(new LiteralText("Not valid").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+      tooltip.add(Text.literal("Not valid").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
       return;
     }
 
@@ -48,19 +47,19 @@ public class VaultCard extends Item {
     String name = identity.getString("name");
     String policies = identity.getString("policy");
 
-    tooltip.add(new LiteralText("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-    tooltip.add(new LiteralText(name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-    tooltip.add(new LiteralText(""));
-    tooltip.add(new LiteralText("Policies").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-    tooltip.add(new LiteralText(policies).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+    tooltip.add(Text.literal("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
+    tooltip.add(Text.literal(name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+    tooltip.add(Text.literal(""));
+    tooltip.add(Text.literal("Policies").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
+    tooltip.add(Text.literal(policies).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
 
-    // tooltip.add(new LiteralText("Name: " +
+    // tooltip.add(Text.literal("Name: " +
     // name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-    // tooltip.add(new LiteralText("Access: " +
+    // tooltip.add(Text.literal("Access: " +
     // policies).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
 
     // tooltip.add(
-    // new LiteralText("UUID: " + policies.substring(0, 16) +
+    // Text.literal("UUID: " + policies.substring(0, 16) +
     // "...").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
   }
 }

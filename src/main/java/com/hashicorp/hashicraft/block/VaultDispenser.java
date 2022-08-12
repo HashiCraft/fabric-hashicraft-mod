@@ -18,7 +18,7 @@ import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -71,13 +71,13 @@ public class VaultDispenser extends BlockWithEntity {
       ItemStack itemStack = new ItemStack(Items.VAULT_CARD_ITEM);
       Direction direction = dispenser.getCachedState().get(FACING);
 
-      String name = player.getName().asString();
+      String name = player.getName().getString();
       String uuid = player.getUuid().toString();
       String policies = "default,level-1";
 
       boolean success = Watcher.createUserPass(name, uuid, policies);
       if (!success) {
-        player.sendMessage(new LiteralText("ERROR - Could not dispense ID card"), true);
+        player.sendMessage(Text.literal("ERROR - Could not dispense ID card"), true);
         return ActionResult.SUCCESS;
       }
 

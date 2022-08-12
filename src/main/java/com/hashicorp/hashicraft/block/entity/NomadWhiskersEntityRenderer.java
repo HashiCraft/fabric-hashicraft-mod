@@ -12,7 +12,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Direction;
@@ -79,7 +78,7 @@ public class NomadWhiskersEntityRenderer<T extends NomadWhiskersEntity> implemen
         break;
     }
 
-    Text text = new LiteralText(message);
+    Text text = Text.literal(message);
     matrices.push();
     matrices.translate(xTranslate, yTranslate, zTranslate);
     matrices.scale(-scale, -scale, scale);
@@ -193,7 +192,7 @@ public class NomadWhiskersEntityRenderer<T extends NomadWhiskersEntity> implemen
         break;
     }
 
-    Text text = new LiteralText(message);
+    Text text = Text.literal(message);
     matrices.push();
     matrices.translate(xTranslate, yTranslate, zTranslate);
     matrices.scale(-scale, -scale, scale);

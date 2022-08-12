@@ -19,7 +19,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -70,7 +70,7 @@ public class VaultManager extends StatefulBlock {
       ItemStack itemStack = player.getStackInHand(hand);
       if (!itemStack.isOf(Items.VAULT_CARD_ITEM)) {
         manager.setStatus("failure");
-        player.sendMessage(new LiteralText("ERROR - This item does not provide an identity"), true);
+        player.sendMessage(Text.literal("ERROR - This item does not provide an identity"), true);
         return ActionResult.SUCCESS;
       }
       NbtCompound identity = itemStack.getOrCreateNbt();
@@ -80,23 +80,23 @@ public class VaultManager extends StatefulBlock {
 
       if (cardName == null || cardUUID == null) {
         manager.setStatus("failure");
-        player.sendMessage(new LiteralText("ERROR - This is not a valid ID card"), true);
+        player.sendMessage(Text.literal("ERROR - This is not a valid ID card"), true);
         return ActionResult.SUCCESS;
       }
 
-      String playerName = player.getName().asString();
+      String playerName = player.getName().getString();
       String playerUUID = player.getUuid().toString();
 
       if (!cardName.contentEquals(playerName) || !cardUUID.contentEquals(playerUUID)) {
         manager.setStatus("failure");
-        player.sendMessage(new LiteralText("ERROR - This does not seem to be your ID card"), true);
+        player.sendMessage(Text.literal("ERROR - This does not seem to be your ID card"), true);
         return ActionResult.SUCCESS;
       }
 
       Login login = manager.login(cardName, cardUUID);
       if (login == null) {
         manager.setStatus("failure");
-        player.sendMessage(new LiteralText("ERROR - Could not authorize ID card"), true);
+        player.sendMessage(Text.literal("ERROR - Could not authorize ID card"), true);
         return ActionResult.SUCCESS;
       }
 

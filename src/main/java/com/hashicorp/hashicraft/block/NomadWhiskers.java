@@ -87,7 +87,7 @@ public class NomadWhiskers extends StatefulBlock {
           world.playSound(null, pos, Sounds.WRONG_ANSWER, SoundCategory.BLOCKS, 0.3f, 1f);
         }
       } else if (!whiskersEntity.inCountdown && !whiskersEntity.inProgress && !whiskersEntity.inEnding) {
-        whiskersEntity.setPlayer(player.getName().asString());
+        whiskersEntity.setPlayer(player.getName().getString());
         whiskersEntity.startCountdown();
         world.playSound(null, pos, Sounds.MEOW, SoundCategory.BLOCKS, 0.3f, 1f);
       }

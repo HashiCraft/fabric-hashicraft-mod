@@ -11,7 +11,7 @@ import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 public class ConsulReleaserGui extends LightweightGuiDescription {
   public ConsulReleaserGui(ConsulReleaserEntity releaser, ConsulReleaserGuiCallback callback) {
@@ -21,16 +21,16 @@ public class ConsulReleaserGui extends LightweightGuiDescription {
     setRootPanel(root);
     root.setInsets(Insets.ROOT_PANEL);
 
-    WLabel label = new WLabel(new LiteralText("Application"));
+    WLabel label = new WLabel(Text.literal("Application"));
     root.add(label, 0, 0, 4, 1);
 
     WTextField applicationField;
-    applicationField = new WTextField(new LiteralText("Application to manage"));
+    applicationField = new WTextField(Text.literal("Application to manage"));
     root.add(applicationField, 0, 1, 16, 2);
     applicationField.setMaxLength(255);
     applicationField.setText(application);
 
-    WButton button = new WButton(new LiteralText("Save"));
+    WButton button = new WButton(Text.literal("Save"));
     button.setOnClick(() -> {
       String text = applicationField.getText();
       if (!text.isEmpty()) {
