@@ -3,7 +3,7 @@ package com.hashicorp.hashicraft.block.entity;
 import java.util.Map.Entry;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
-import com.hashicorp.hashicraft.block.Blocks;
+import com.hashicorp.hashicraft.block.ModBlocks;
 import com.hashicorp.hashicraft.block.NomadAlloc;
 import com.hashicorp.hashicraft.block.NomadServer;
 import com.hashicorp.hashicraft.block.NomadWhiskers;
@@ -72,7 +72,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
     Direction facing = state.get(NomadServer.FACING);
 
     BlockPos pos = origin.add(2, 0, 2);
-    BlockState w = Blocks.NOMAD_WHISKERS_BLOCK.getDefaultState().with(NomadWhiskers.FACING, facing);
+    BlockState w = ModBlocks.NOMAD_WHISKERS_BLOCK.getDefaultState().with(NomadWhiskers.FACING, facing);
     world.setBlockState(pos, w, Block.NOTIFY_ALL);
   }
 
@@ -113,7 +113,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
     // Alloc
     BlockPos pos = origin.add(2, 0, 2);
-    BlockState a = Blocks.NOMAD_ALLOC_BLOCK.getDefaultState().with(NomadAlloc.FACING, facing);
+    BlockState a = ModBlocks.NOMAD_ALLOC_BLOCK.getDefaultState().with(NomadAlloc.FACING, facing);
     world.setBlockState(pos, a, Block.NOTIFY_ALL);
 
     BlockEntity blockEntity = world.getBlockEntity(pos);

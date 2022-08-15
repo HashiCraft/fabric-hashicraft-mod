@@ -4,7 +4,7 @@ import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.VaultLockEntity;
 import com.hashicorp.hashicraft.events.VaultLockClicked;
-import com.hashicorp.hashicraft.item.Items;
+import com.hashicorp.hashicraft.item.ModItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -101,7 +101,7 @@ public class VaultLock extends StatefulBlock {
           return ActionResult.SUCCESS;
         }
 
-        if (stack.isOf(Items.VAULT_CARD_ITEM)) {
+        if (stack.isOf(ModItems.VAULT_CARD_ITEM)) {
           NbtCompound identity = stack.getOrCreateNbt();
           String token = identity.getString("token");
           String policy = identity.getString("policy");

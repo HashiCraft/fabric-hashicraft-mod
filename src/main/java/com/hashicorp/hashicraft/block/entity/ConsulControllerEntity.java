@@ -1,7 +1,7 @@
 package com.hashicorp.hashicraft.block.entity;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
-import com.hashicorp.hashicraft.block.Blocks;
+import com.hashicorp.hashicraft.block.ModBlocks;
 import com.hashicorp.hashicraft.block.ConsulController;
 import com.hashicorp.hashicraft.block.ConsulRelease;
 import com.hashicorp.hashicraft.watcher.Release;
@@ -51,7 +51,7 @@ public class ConsulControllerEntity extends StatefulBlockEntity {
   }
 
   private void placeRelease(Direction facing, BlockPos pos, String name, String status, String deploymentStatus) {
-    BlockState state = Blocks.CONSUL_RELEASE_BLOCK.getDefaultState().with(ConsulController.FACING, facing);
+    BlockState state = ModBlocks.CONSUL_RELEASE_BLOCK.getDefaultState().with(ConsulController.FACING, facing);
     if (deploymentStatus.contentEquals("strategy_status_failed")) {
       state = state.with(ConsulRelease.HEALTHY, false);
     } else {

@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.registry.Registry;
 
-public class Blocks {
+public class ModBlocks {
         // Generic
         public static final Block COMPUTER_BLOCK = registerBlock("computer",
                         new Computer(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);

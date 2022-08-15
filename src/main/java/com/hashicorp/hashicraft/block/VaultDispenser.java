@@ -1,7 +1,7 @@
 package com.hashicorp.hashicraft.block;
 
 import com.hashicorp.hashicraft.block.entity.VaultDispenserEntity;
-import com.hashicorp.hashicraft.item.Items;
+import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.watcher.Watcher;
 
 import net.minecraft.block.Block;
@@ -68,7 +68,7 @@ public class VaultDispenser extends BlockWithEntity {
     if (blockEntity instanceof VaultDispenserEntity) {
       VaultDispenserEntity dispenser = (VaultDispenserEntity) blockEntity;
 
-      ItemStack itemStack = new ItemStack(Items.VAULT_CARD_ITEM);
+      ItemStack itemStack = new ItemStack(ModItems.VAULT_CARD_ITEM);
       Direction direction = dispenser.getCachedState().get(FACING);
 
       String name = player.getName().getString();

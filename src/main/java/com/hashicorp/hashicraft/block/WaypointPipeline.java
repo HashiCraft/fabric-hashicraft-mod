@@ -41,10 +41,10 @@ public class WaypointPipeline extends Block {
 
   public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
       WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-    if (neighborState.getBlock() == Blocks.WAYPOINT_SERVER_BLOCK ||
-        neighborState.getBlock() == Blocks.CONSUL_RELEASER_BLOCK ||
-        neighborState.getBlock() == Blocks.WAYPOINT_STEP_BLOCK ||
-        neighborState.getBlock() == Blocks.WAYPOINT_PIPELINE_BLOCK) {
+    if (neighborState.getBlock() == ModBlocks.WAYPOINT_SERVER_BLOCK ||
+        neighborState.getBlock() == ModBlocks.CONSUL_RELEASER_BLOCK ||
+        neighborState.getBlock() == ModBlocks.WAYPOINT_STEP_BLOCK ||
+        neighborState.getBlock() == ModBlocks.WAYPOINT_PIPELINE_BLOCK) {
       switch (direction) {
         case NORTH:
           state = state.with(WaypointPipeline.NORTH_CONNECTED, true);
@@ -102,10 +102,10 @@ public class WaypointPipeline extends Block {
   }
 
   private boolean isConnected(Block block) {
-    return (block == Blocks.WAYPOINT_SERVER_BLOCK ||
-        block == Blocks.CONSUL_RELEASER_BLOCK ||
-        block == Blocks.WAYPOINT_STEP_BLOCK ||
-        block == Blocks.WAYPOINT_PIPELINE_BLOCK);
+    return (block == ModBlocks.WAYPOINT_SERVER_BLOCK ||
+        block == ModBlocks.CONSUL_RELEASER_BLOCK ||
+        block == ModBlocks.WAYPOINT_STEP_BLOCK ||
+        block == ModBlocks.WAYPOINT_PIPELINE_BLOCK);
   }
 
   @Override

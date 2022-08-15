@@ -3,7 +3,7 @@ package com.hashicorp.hashicraft.block;
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.VaultManagerEntity;
-import com.hashicorp.hashicraft.item.Items;
+import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.watcher.Login;
 
 import net.minecraft.block.Block;
@@ -68,7 +68,7 @@ public class VaultManager extends StatefulBlock {
       }
 
       ItemStack itemStack = player.getStackInHand(hand);
-      if (!itemStack.isOf(Items.VAULT_CARD_ITEM)) {
+      if (!itemStack.isOf(ModItems.VAULT_CARD_ITEM)) {
         manager.setStatus("failure");
         player.sendMessage(Text.literal("ERROR - This item does not provide an identity"), true);
         return ActionResult.SUCCESS;

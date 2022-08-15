@@ -38,13 +38,13 @@ public class NomadWires extends Block {
 
   public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
       WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-    if (neighborState.getBlock() == Blocks.NOMAD_SERVER_BLOCK ||
-        neighborState.getBlock() == Blocks.NOMAD_CLIENT_BLOCK ||
-        neighborState.getBlock() == Blocks.NOMAD_ALLOC_BLOCK ||
-        neighborState.getBlock() == Blocks.NOMAD_WIRES_BLOCK ||
-        neighborState.getBlock() == Blocks.NOMAD_SPIN_BLOCK ||
-        neighborState.getBlock() == Blocks.NOMAD_WHISKERS_BLOCK ||
-        neighborState.getBlock() == Blocks.CONSUL_PROXY_BLOCK) {
+    if (neighborState.getBlock() == ModBlocks.NOMAD_SERVER_BLOCK ||
+        neighborState.getBlock() == ModBlocks.NOMAD_CLIENT_BLOCK ||
+        neighborState.getBlock() == ModBlocks.NOMAD_ALLOC_BLOCK ||
+        neighborState.getBlock() == ModBlocks.NOMAD_WIRES_BLOCK ||
+        neighborState.getBlock() == ModBlocks.NOMAD_SPIN_BLOCK ||
+        neighborState.getBlock() == ModBlocks.NOMAD_WHISKERS_BLOCK ||
+        neighborState.getBlock() == ModBlocks.CONSUL_PROXY_BLOCK) {
       switch (direction) {
         case NORTH:
           state = state.with(NomadWires.NORTH_CONNECTED, true);
@@ -121,13 +121,13 @@ public class NomadWires extends Block {
   }
 
   private boolean isConnected(Block block) {
-    return (block == Blocks.NOMAD_SERVER_BLOCK ||
-        block == Blocks.NOMAD_CLIENT_BLOCK ||
-        block == Blocks.NOMAD_ALLOC_BLOCK ||
-        block == Blocks.NOMAD_WIRES_BLOCK ||
-        block == Blocks.NOMAD_SPIN_BLOCK ||
-        block == Blocks.NOMAD_WHISKERS_BLOCK ||
-        block == Blocks.CONSUL_PROXY_BLOCK);
+    return (block == ModBlocks.NOMAD_SERVER_BLOCK ||
+        block == ModBlocks.NOMAD_CLIENT_BLOCK ||
+        block == ModBlocks.NOMAD_ALLOC_BLOCK ||
+        block == ModBlocks.NOMAD_WIRES_BLOCK ||
+        block == ModBlocks.NOMAD_SPIN_BLOCK ||
+        block == ModBlocks.NOMAD_WHISKERS_BLOCK ||
+        block == ModBlocks.CONSUL_PROXY_BLOCK);
   }
 
   @Override
