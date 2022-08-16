@@ -30,13 +30,11 @@ public class AppMinecartEntityModel extends SinglePartEntityModel<AppMinecartEnt
 
   @Override
   public void setAngles(AppMinecartEntity entity, float limbAngle, float limbDistance, float animationProgress,
-      float headYaw,
-      float headPitch) {
+      float headYaw, float headPitch) {
   }
 
   @Override
   public ModelPart getPart() {
     return this.root;
   }
-
 }
