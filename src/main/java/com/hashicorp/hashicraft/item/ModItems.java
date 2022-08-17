@@ -18,6 +18,9 @@ public class ModItems {
   public static final Item APP_MINECART_ITEM = registerItem("app_minecart",
       new AppMinecart(new FabricItemSettings().group(ItemGroups.HASHICRAFT)));
 
+  public static final Item APPLICATION_ITEM = registerItem("application",
+          new Application(new FabricItemSettings().group(ItemGroups.HASHICRAFT)));
+
   private static Item registerItem(String name, Item item) {
     return Registry.register(Registry.ITEM, Mod.identifier(name), item);
   }

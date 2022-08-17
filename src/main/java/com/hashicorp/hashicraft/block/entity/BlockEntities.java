@@ -13,6 +13,10 @@ public class BlockEntities {
         public static BlockEntityType<NomadSpinEntity> NOMAD_SPIN_ENTITY;
         public static BlockEntityType<NomadWhiskersEntity> NOMAD_WHISKERS_ENTITY;
         public static BlockEntityType<NomadAllocEntity> NOMAD_ALLOC_ENTITY;
+        public static BlockEntityType<NomadDispenserEntity> NOMAD_DISPENSER_ENTITY;
+
+        public static BlockEntityType<NomadDispenserEntity> APPLICATION_V2_DISPENSER_ENTITY;
+        public static BlockEntityType<NomadDispenserEntity> APPLICATION_V3_DISPENSER_ENTITY;
 
         // Vault
         public static BlockEntityType<VaultLockEntity> VAULT_LOCK_ENTITY;
@@ -44,6 +48,24 @@ public class BlockEntities {
                                 FabricBlockEntityTypeBuilder
                                                 .create(NomadAllocEntity::new, ModBlocks.NOMAD_ALLOC_BLOCK)
                                                 .build(null));
+
+                NOMAD_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                        Mod.identifier("nomad_dispenser"),
+                        FabricBlockEntityTypeBuilder
+                                .create(NomadDispenserEntity::new, ModBlocks.NOMAD_DISPENSER_BLOCK)
+                                .build(null));
+
+                APPLICATION_V2_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                        Mod.identifier("application_v2_dispenser"),
+                        FabricBlockEntityTypeBuilder
+                                .create(NomadDispenserEntity::new, ModBlocks.APPLICATION_V2_DISPENSER_BLOCK)
+                                .build(null));
+
+                APPLICATION_V3_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                        Mod.identifier("application_v3_dispenser"),
+                        FabricBlockEntityTypeBuilder
+                                .create(NomadDispenserEntity::new, ModBlocks.APPLICATION_V3_DISPENSER_BLOCK)
+                                .build(null));
 
                 // Vault
                 VAULT_LOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("vault_lock"),
