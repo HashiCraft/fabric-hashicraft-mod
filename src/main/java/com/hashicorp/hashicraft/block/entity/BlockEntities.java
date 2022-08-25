@@ -55,18 +55,6 @@ public class BlockEntities {
                                 .create(NomadDispenserEntity::new, ModBlocks.NOMAD_DISPENSER_BLOCK)
                                 .build(null));
 
-                APPLICATION_V2_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-                        Mod.identifier("application_v2_dispenser"),
-                        FabricBlockEntityTypeBuilder
-                                .create(NomadDispenserEntity::new, ModBlocks.APPLICATION_V2_DISPENSER_BLOCK)
-                                .build(null));
-
-                APPLICATION_V3_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-                        Mod.identifier("application_v3_dispenser"),
-                        FabricBlockEntityTypeBuilder
-                                .create(NomadDispenserEntity::new, ModBlocks.APPLICATION_V3_DISPENSER_BLOCK)
-                                .build(null));
-
                 // Vault
                 VAULT_LOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("vault_lock"),
                                 FabricBlockEntityTypeBuilder.create(VaultLockEntity::new, ModBlocks.VAULT_LOCK_BLOCK)

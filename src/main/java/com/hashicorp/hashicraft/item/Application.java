@@ -38,6 +38,7 @@ public class Application extends Item {
         NbtCompound identity = itemStack.getOrCreateNbt();
         String name = identity.getString("name");
         String version = identity.getString("version");
+        String owner = identity.getString("owner");
 
         tooltip.add(Text.literal("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
         tooltip.add(Text.literal(name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
@@ -45,6 +46,10 @@ public class Application extends Item {
 
         tooltip.add(Text.literal("Version").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
         tooltip.add(Text.literal(version).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        tooltip.add(Text.literal(""));
+
+        tooltip.add(Text.literal("Owner").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
+        tooltip.add(Text.literal(owner).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
         tooltip.add(Text.literal(""));
     }
 }

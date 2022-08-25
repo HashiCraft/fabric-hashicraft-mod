@@ -1,19 +1,17 @@
 package com.hashicorp.hashicraft.block;
 
+import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.NomadDispenserEntity;
+import com.hashicorp.hashicraft.events.NomadDispenserClicked;
 import com.hashicorp.hashicraft.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -24,25 +22,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class NomadDispenser extends BlockWithEntity {
-  public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
-
+public class NomadDispenser extends StatefulBlock {
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
-  private final String version;
-
-  public NomadDispenser(Settings settings, String applicationVersion) {
+  protected NomadDispenser(Settings settings) {
     super(settings);
-    this.setDefaultState(
-        this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
-    version = applicationVersion;
+    this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
   }
 
   @Override
-  public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-    NomadDispenserEntity dispenser = new NomadDispenserEntity(pos, state);
-    dispenser.setVersion(version);
-    return dispenser;
+  protected void appendProperties(Builder<Block, BlockState> builder) {
+    builder.add(FACING);
   }
 
   @Override
@@ -51,39 +41,40 @@ public class NomadDispenser extends BlockWithEntity {
   }
 
   @Override
-  protected void appendProperties(Builder<Block, BlockState> builder) {
-    builder.add(FACING, ACTIVE);
-  }
-
-  @Override
   public BlockState getPlacementState(ItemPlacementContext ctx) {
     return getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
   }
 
   @Override
+  public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    return new NomadDispenserEntity(pos, state);
+  }
+
+  @Override
   public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-      BlockHitResult hit) {
-    if (world.isClient)
-      return ActionResult.SUCCESS;
+                            BlockHitResult hit) {
+    ItemStack stack = player.getStackInHand(hand);
+    BlockEntity entity = world.getBlockEntity(pos);
 
-    BlockEntity blockEntity = world.getBlockEntity(pos);
-    if (blockEntity instanceof NomadDispenserEntity dispenser) {
-
-      ItemStack itemStack = new ItemStack(ModItems.APPLICATION_ITEM);
+    if (entity instanceof NomadDispenserEntity dispenser) {
       Direction direction = dispenser.getCachedState().get(FACING);
 
-      String name = player.getName().getString();
-      String version = dispenser.getVersion();
+      if (world.isClient) {
+        if (stack.isOf(ModItems.WRENCH_ITEM)) {
+          NomadDispenserClicked.EVENT.invoker().interact(dispenser, dispenser::markForUpdate);
+        }
+        return ActionResult.SUCCESS;
+      }
 
-      NbtCompound identity = itemStack.getOrCreateNbt();
-      identity.putString("name", name);
-      identity.putString("version", version);
-      itemStack.setNbt(identity);
+      if (!stack.isOf(ModItems.WRENCH_ITEM)) {
+        BlockPointerImpl pointer = new BlockPointerImpl((ServerWorld) world, pos);
 
-      BlockPointerImpl pointer = new BlockPointerImpl((ServerWorld) world, pos);
-
-      dispenser.dispense(world, pointer, itemStack, 1, direction);
+        dispenser.dispense(world, pointer, dispenser.getMinecart(), 1, direction);
+        dispenser.dispense(world, pointer, dispenser.getDye(), 1, direction);
+        dispenser.dispense(world, pointer, dispenser.getApplication(player.getUuidAsString()), 1, direction);
+      }
     }
+
     return ActionResult.SUCCESS;
   }
 }

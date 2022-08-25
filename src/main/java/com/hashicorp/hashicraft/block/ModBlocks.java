@@ -59,15 +59,7 @@ public class ModBlocks {
 
         // Dispensers for two versions of application
         public static final Block NOMAD_DISPENSER_BLOCK = registerBlock("nomad_dispenser",
-                new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque(), ""),
-                ItemGroups.HASHICRAFT);
-
-        public static final Block APPLICATION_V2_DISPENSER_BLOCK = registerBlock("application_v2_dispenser",
-                new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque(), "v2"),
-                ItemGroups.HASHICRAFT);
-
-        public static final Block APPLICATION_V3_DISPENSER_BLOCK = registerBlock("application_v3_dispenser",
-                new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque(), "v3"),
+                new NomadDispenser(FabricBlockSettings.of(Material.GLASS).nonOpaque()),
                 ItemGroups.HASHICRAFT);
 
         // Vault

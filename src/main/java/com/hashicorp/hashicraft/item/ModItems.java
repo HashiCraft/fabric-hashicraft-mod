@@ -20,6 +20,8 @@ public class ModItems {
 
   public static final Item APPLICATION_ITEM = registerItem("application",
           new Application(new FabricItemSettings().group(ItemGroups.HASHICRAFT)));
+  public static final Item WRENCH_ITEM = registerItem("wrench",
+          new WrenchItem(new FabricItemSettings().group(ItemGroups.HASHICRAFT).maxCount(1)));
 
   private static Item registerItem(String name, Item item) {
     return Registry.register(Registry.ITEM, Mod.identifier(name), item);
