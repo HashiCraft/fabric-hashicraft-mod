@@ -13,7 +13,6 @@ import com.hashicorp.sound.Sounds;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 
 public class Mod implements ModInitializer {
@@ -30,9 +29,7 @@ public class Mod implements ModInitializer {
 		BlockEntities.register();
 		ModEntities.register();
 
-		ServerLifecycleEvents.SERVER_STARTED.register((MinecraftServer server) -> {
-			Watcher.Start(server);
-		});
+		ServerLifecycleEvents.SERVER_STARTED.register(Watcher::Start);
 	}
 
 	public static Identifier identifier(String path) {

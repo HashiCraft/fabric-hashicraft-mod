@@ -6,8 +6,6 @@ import com.hashicorp.hashicraft.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -16,12 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.*;
+import static com.hashicorp.hashicraft.item.Dyes.COLORS;
+import static com.hashicorp.hashicraft.item.Dyes.DEFAULT_COLOR;
 
 public class NomadDispenserEntity extends StatefulBlockEntity {
-  public static final String vaultAddress = System.getenv().getOrDefault("VAULT_ADDR", "http://localhost:8200");
-  public static final String vaultToken = System.getenv().getOrDefault("VAULT_TOKEN", "root");
-
   @Syncable
   private String name = "fake-service";
 
@@ -99,24 +95,12 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
   }
 
   public ItemStack getDye() {
-    return new ItemStack(switch (this.getColor()) {
-      case "white" -> Items.WHITE_DYE;
-      case "orange" -> Items.ORANGE_DYE;
-      case "magenta" -> Items.MAGENTA_DYE;
-      case "light blue" -> Items.LIGHT_BLUE_DYE;
-      case "yellow" -> Items.YELLOW_DYE;
-      case "lime" -> Items.LIME_DYE;
-      case "pink" -> Items.PINK_DYE;
-      case "gray" -> Items.GRAY_DYE;
-      case "light gray" -> Items.LIGHT_GRAY_DYE;
-      case "cyan" -> Items.CYAN_DYE;
-      case "purple" -> Items.PURPLE_DYE;
-      case "blue" -> Items.BLUE_DYE;
-      case "brown" -> Items.BROWN_DYE;
-      case "green" -> Items.GREEN_DYE;
-      case "red" -> Items.RED_DYE;
-      default -> Items.BLACK_DYE;
-    });
+    String dyeColor = this.getColor().replace(' ', '_') + "_dye";
+    boolean isColorPresent = COLORS.containsKey(dyeColor);
+    if (isColorPresent) {
+      return new ItemStack(COLORS.get(dyeColor));
+    }
+    return new ItemStack(DEFAULT_COLOR);
   }
 
   public ItemStack getMinecart() {
