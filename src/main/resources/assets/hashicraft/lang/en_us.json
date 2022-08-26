@@ -5,6 +5,7 @@
   "block.hashicraft.nomad_server": "Nomad Server",
   "block.hashicraft.nomad_client": "Nomad Client",
   "block.hashicraft.nomad_alloc": "Nomad Allocation",
+  "block.hashicraft.nomad_dispenser": "Nomad Dispenser",
   "block.hashicraft.whiskers": "Finicky Whiskers",
   "block.hashicraft.vault_dispenser": "Vault Dispenser",
   "block.hashicraft.vault_manager": "Vault Manager",

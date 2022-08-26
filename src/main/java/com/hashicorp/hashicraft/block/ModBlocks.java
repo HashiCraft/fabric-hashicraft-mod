@@ -57,9 +57,8 @@ public class ModBlocks {
         public static final Block NOMAD_WHISKERS_BLOCK = registerBlock("nomad_whiskers",
                         new NomadWhiskers(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
 
-        // Dispensers for two versions of application
         public static final Block NOMAD_DISPENSER_BLOCK = registerBlock("nomad_dispenser",
-                new NomadDispenser(FabricBlockSettings.of(Material.GLASS).nonOpaque()),
+                new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque()),
                 ItemGroups.HASHICRAFT);
 
         // Vault
