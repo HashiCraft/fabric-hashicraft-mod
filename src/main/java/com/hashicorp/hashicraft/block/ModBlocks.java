@@ -13,52 +13,18 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.registry.Registry;
 
 public class ModBlocks {
-        // Generic
-        public static final Block COMPUTER_BLOCK = registerBlock("computer",
-                        new Computer(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block PHONE_BLOCK = registerBlock("phone",
-                        new Phone(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                        ItemGroups.HASHICRAFT);
-
         // Consul
-        public static final Block CONSUL_PROXY_BLOCK = registerBlock("consul_proxy",
-                        new ConsulProxy(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                        ItemGroups.HASHICRAFT);
-
-        public static final Block CONSUL_CONTROLLER_BLOCK = registerBlock("consul_controller",
-                        new ConsulController(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                        ItemGroups.HASHICRAFT);
-
         public static final Block CONSUL_RELEASER_BLOCK = registerBlock("consul_releaser",
-                        new ConsulReleaser(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                        ItemGroups.HASHICRAFT);
-
-        public static final Block CONSUL_RELEASE_BLOCK = registerBlock("consul_release",
-                        new ConsulRelease(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        new ConsulReleaserBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
                         ItemGroups.HASHICRAFT);
 
         // Nomad
         public static final Block NOMAD_SERVER_BLOCK = registerBlock("nomad_server",
-                        new NomadServer(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block NOMAD_CLIENT_BLOCK = registerBlock("nomad_client",
-                        new NomadClient(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block NOMAD_ALLOC_BLOCK = registerBlock("nomad_alloc",
-                        new NomadAlloc(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block NOMAD_WIRES_BLOCK = registerBlock("nomad_wires",
-                        new NomadWires(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block NOMAD_SPIN_BLOCK = registerBlock("nomad_spin",
-                        new NomadSpin(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block NOMAD_WHISKERS_BLOCK = registerBlock("nomad_whiskers",
-                        new NomadWhiskers(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
+                        new NomadServerBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        ItemGroups.HASHICRAFT);
 
         public static final Block NOMAD_DISPENSER_BLOCK = registerBlock("nomad_dispenser",
-                        new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        new NomadDispenserBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
                         ItemGroups.HASHICRAFT);
 
         // Vault
@@ -68,18 +34,6 @@ public class ModBlocks {
 
         public static final Block VAULT_LOCK_BLOCK = registerBlock("vault_lock",
                         new VaultLockBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        // Waypoint
-        public static final Block WAYPOINT_SERVER_BLOCK = registerBlock("waypoint_server",
-                        new WaypointServer(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block WAYPOINT_STEP_BLOCK = registerBlock("waypoint_step",
-                        new WaypointStep(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                        ItemGroups.HASHICRAFT);
-
-        public static final Block WAYPOINT_PIPELINE_BLOCK = registerBlock("waypoint_pipeline",
-                        new WaypointPipeline(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                        ItemGroups.HASHICRAFT);
 
         private static Block registerBlock(String name, Block block, ItemGroup group) {
                 registerBlockItem(name, block, group);

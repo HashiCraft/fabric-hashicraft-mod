@@ -1,7 +1,7 @@
 package com.hashicorp.hashicraft.ui;
 
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;
-import com.hashicorp.hashicraft.events.ConsulReleaserGuiCallback;
+import com.hashicorp.hashicraft.ui.event.SaveCallback;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 public class ConsulReleaserGui extends LightweightGuiDescription {
-  public ConsulReleaserGui(ConsulReleaserEntity releaser, ConsulReleaserGuiCallback callback) {
+  public ConsulReleaserGui(ConsulReleaserEntity releaser, SaveCallback callback) {
     String application = releaser.getApplication();
 
     WGridPanel root = new WGridPanel();

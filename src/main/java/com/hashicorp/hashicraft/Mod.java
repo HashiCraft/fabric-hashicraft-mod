@@ -9,7 +9,7 @@ import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.entity.ModEntities;
 import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.watcher.Watcher;
-import com.hashicorp.sound.Sounds;
+import com.hashicorp.sound.ModSounds;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -23,7 +23,7 @@ public class Mod implements ModInitializer {
 	public void onInitialize() {
 		EntityServerState.RegisterStateUpdates();
 
-		Sounds.register();
+		ModSounds.register();
 		ModBlocks.register();
 		ModItems.register();
 		BlockEntities.register();

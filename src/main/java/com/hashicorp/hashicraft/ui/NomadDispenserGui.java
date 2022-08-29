@@ -1,7 +1,8 @@
 package com.hashicorp.hashicraft.ui;
 
 import com.hashicorp.hashicraft.block.entity.NomadDispenserEntity;
-import com.hashicorp.hashicraft.events.NomadDispenserCallback;
+import com.hashicorp.hashicraft.ui.event.SaveCallback;
+
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
@@ -13,7 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 public class NomadDispenserGui extends LightweightGuiDescription {
-    public NomadDispenserGui(NomadDispenserEntity dispenser, NomadDispenserCallback callback) {
+    public NomadDispenserGui(NomadDispenserEntity dispenser, SaveCallback callback) {
         String name = dispenser.getName();
         String version = dispenser.getVersion();
         String color = dispenser.getColor();

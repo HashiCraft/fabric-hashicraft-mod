@@ -2,18 +2,12 @@ package com.hashicorp.hashicraft;
 
 import com.hashicorp.hashicraft.block.ModBlocks;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
-import com.hashicorp.hashicraft.block.entity.ConsulReleaseEntityRenderer;
-import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntityRenderer;
-import com.hashicorp.hashicraft.block.entity.NomadAllocEntityRenderer;
+import com.hashicorp.hashicraft.block.entity.ConsulReleaserRenderer;
 import com.hashicorp.hashicraft.block.entity.NomadDispenserRenderer;
-import com.hashicorp.hashicraft.block.entity.NomadSpinEntityRenderer;
-import com.hashicorp.hashicraft.block.entity.NomadWhiskersEntityRenderer;
 import com.hashicorp.hashicraft.block.entity.VaultDispenserRenderer;
 import com.hashicorp.hashicraft.entity.AppMinecartEntityModel;
 import com.hashicorp.hashicraft.entity.AppMinecartEntityRenderer;
 import com.hashicorp.hashicraft.entity.ModEntities;
-import com.hashicorp.hashicraft.events.ConsulReleaserClicked;
-import com.hashicorp.hashicraft.events.NomadDispenserClicked;
 import com.hashicorp.hashicraft.ui.ConsulReleaserGui;
 import com.hashicorp.hashicraft.ui.ConsulReleaserScreen;
 import com.hashicorp.hashicraft.ui.NomadDispenserGui;
@@ -22,6 +16,8 @@ import com.hashicorp.hashicraft.ui.VaultDispenserGui;
 import com.hashicorp.hashicraft.ui.VaultDispenserScreen;
 import com.hashicorp.hashicraft.ui.VaultLockGui;
 import com.hashicorp.hashicraft.ui.VaultLockScreen;
+import com.hashicorp.hashicraft.ui.event.ConsulReleaserClicked;
+import com.hashicorp.hashicraft.ui.event.NomadDispenserClicked;
 import com.hashicorp.hashicraft.ui.event.VaultDispenserClicked;
 import com.hashicorp.hashicraft.ui.event.VaultLockClicked;
 
@@ -44,15 +40,6 @@ public class ModClient implements ClientModInitializer {
 
         @Override
         public void onInitializeClient() {
-                BlockEntityRendererRegistry.register(BlockEntities.NOMAD_SPIN_ENTITY,
-                                NomadSpinEntityRenderer::new);
-
-                BlockEntityRendererRegistry.register(BlockEntities.NOMAD_WHISKERS_ENTITY,
-                                NomadWhiskersEntityRenderer::new);
-
-                BlockEntityRendererRegistry.register(BlockEntities.NOMAD_ALLOC_ENTITY,
-                                NomadAllocEntityRenderer::new);
-
                 BlockEntityRendererRegistry.register(BlockEntities.NOMAD_DISPENSER_ENTITY,
                                 NomadDispenserRenderer::new);
 
@@ -60,7 +47,7 @@ public class ModClient implements ClientModInitializer {
                                 RenderLayer.getTranslucent());
 
                 BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASER_ENTITY,
-                                ConsulReleaserEntityRenderer::new);
+                                ConsulReleaserRenderer::new);
 
                 ConsulReleaserClicked.EVENT.register((block, callback) -> {
                         ConsulReleaserGui gui = new ConsulReleaserGui(block, callback);
@@ -69,24 +56,6 @@ public class ModClient implements ClientModInitializer {
 
                         return ActionResult.PASS;
                 });
-
-                BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASE_ENTITY,
-                                ConsulReleaseEntityRenderer::new);
-
-                BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CONSUL_PROXY_BLOCK,
-                                RenderLayer.getTranslucent());
-
-                BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CONSUL_CONTROLLER_BLOCK,
-                                RenderLayer.getTranslucent());
-
-                BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.NOMAD_WIRES_BLOCK,
-                                RenderLayer.getTranslucent());
-
-                BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.NOMAD_SPIN_BLOCK,
-                                RenderLayer.getTranslucent());
-
-                BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WAYPOINT_PIPELINE_BLOCK,
-                                RenderLayer.getTranslucent());
 
                 BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.VAULT_DISPENSER_BLOCK,
                                 RenderLayer.getCutoutMipped());

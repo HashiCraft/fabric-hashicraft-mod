@@ -1,27 +1,11 @@
 {
-  "block.hashicraft.consul_proxy": "Consul Sidecar Proxy",
   "block.hashicraft.consul_releaser": "Consul Releaser",
-  "block.hashicraft.consul_release": "Release",
   "block.hashicraft.nomad_server": "Nomad Server",
-  "block.hashicraft.nomad_client": "Nomad Client",
-  "block.hashicraft.nomad_alloc": "Nomad Allocation",
   "block.hashicraft.nomad_dispenser": "Nomad Dispenser",
-  "block.hashicraft.whiskers": "Finicky Whiskers",
   "block.hashicraft.vault_dispenser": "Vault Dispenser",
-  "block.hashicraft.vault_manager": "Vault Manager",
   "block.hashicraft.vault_lock": "Vault Lock",
-  "block.hashicraft.waypoint_server": "Waypoint Server",
-  "block.hashicraft.waypoint_step": "Waypoint Step",
-  "block.hashicraft.waypoint_pipeline": "Waypoint Pipeline",
-  "block.hashicraft.computer": "Computer",
-  "block.hashicraft.phone": "Phone",
   "itemGroup.hashicraft.hashicraft": "HashiCraft",
   "item.hashicraft.vault_card": "Keycard",
   "item.hashicraft.hashiconf_music": "HashiConf Anthem",
-  "item.hashicraft.hashiconf_music.desc": "HashiConf Europe 2022",
-  "hashicraft.phone_ringing": "Ring ring..",
-  "hashicraft.computer_typing": "clickety clickety click..",
-  "hashicraft.wrong_answer": "Wrong!",
-  "hashicraft.correct_answer": "Correct!",
-  "hashicraft.game_over": "GAME OVER!"
+  "item.hashicraft.hashiconf_music.desc": "HashiConf Europe 2022"
 }

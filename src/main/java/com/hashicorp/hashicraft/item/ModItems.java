@@ -1,7 +1,7 @@
 package com.hashicorp.hashicraft.item;
 
 import com.hashicorp.hashicraft.Mod;
-import com.hashicorp.sound.Sounds;
+import com.hashicorp.sound.ModSounds;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
@@ -9,10 +9,10 @@ import net.minecraft.util.registry.Registry;
 
 public class ModItems {
         public static final Item VAULT_CARD_ITEM = registerItem("vault_card",
-                        new VaultCard(new FabricItemSettings().group(ItemGroups.HASHICRAFT)));
+                        new VaultCardItem(new FabricItemSettings().group(ItemGroups.HASHICRAFT)));
 
         public static final Item HASHICONF_MUSIC_DISC = registerItem("hashiconf_music",
-                        new HashiConfMusicDisc(7, Sounds.HASHICONF_MUSIC,
+                        new HashiConfMusicDisc(7, ModSounds.HASHICONF_MUSIC,
                                         new FabricItemSettings().group(ItemGroups.HASHICRAFT).maxCount(1)));
 
         public static final String APP_MINECART_ID = "app_minecart";
