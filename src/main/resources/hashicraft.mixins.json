@@ -6,7 +6,7 @@
   "mixins": [
   ],
   "client": [
-    "MainMixin"
+    "RecipeManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

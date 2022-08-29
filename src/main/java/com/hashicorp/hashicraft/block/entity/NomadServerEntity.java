@@ -3,19 +3,14 @@ package com.hashicorp.hashicraft.block.entity;
 import java.util.Map.Entry;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
-import com.hashicorp.hashicraft.block.Blocks;
-import com.hashicorp.hashicraft.block.NomadAlloc;
-import com.hashicorp.hashicraft.block.NomadServer;
-import com.hashicorp.hashicraft.block.NomadWhiskers;
+// import com.hashicorp.hashicraft.block.NomadWhiskers;
 import com.hashicorp.hashicraft.watcher.Allocation;
 import com.hashicorp.hashicraft.watcher.Node;
 import com.hashicorp.hashicraft.watcher.Watcher;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class NomadServerEntity extends StatefulBlockEntity {
@@ -69,15 +64,17 @@ public class NomadServerEntity extends StatefulBlockEntity {
   }
 
   private void placeWhiskers(BlockState state, BlockPos origin) {
-    Direction facing = state.get(NomadServer.FACING);
+    // Direction facing = state.get(NomadServer.FACING);
 
-    BlockPos pos = origin.add(2, 0, 2);
-    BlockState w = Blocks.NOMAD_WHISKERS_BLOCK.getDefaultState().with(NomadWhiskers.FACING, facing);
-    world.setBlockState(pos, w, Block.NOTIFY_ALL);
+    // BlockPos pos = origin.add(2, 0, 2);
+    // BlockState w =
+    // ModBlocks.NOMAD_WHISKERS_BLOCK.getDefaultState().with(NomadWhiskers.FACING,
+    // facing);
+    // world.setBlockState(pos, w, Block.NOTIFY_ALL);
   }
 
   private void placeAllocation(BlockState state, BlockPos origin, String name) {
-    Direction facing = state.get(NomadServer.FACING);
+    // Direction facing = state.get(NomadServer.FACING);
 
     // Wires
     // BlockState w1 = Blocks.NOMAD_WIRES_BLOCK.getDefaultState();
@@ -112,14 +109,16 @@ public class NomadServerEntity extends StatefulBlockEntity {
     // world.setBlockState(origin.add(0, 0, 1), s, Block.NOTIFY_ALL);
 
     // Alloc
-    BlockPos pos = origin.add(2, 0, 2);
-    BlockState a = Blocks.NOMAD_ALLOC_BLOCK.getDefaultState().with(NomadAlloc.FACING, facing);
-    world.setBlockState(pos, a, Block.NOTIFY_ALL);
+    // BlockPos pos = origin.add(2, 0, 2);
+    // BlockState a =
+    // ModBlocks.NOMAD_ALLOC_BLOCK.getDefaultState().with(NomadAlloc.FACING,
+    // facing);
+    // world.setBlockState(pos, a, Block.NOTIFY_ALL);
 
-    BlockEntity blockEntity = world.getBlockEntity(pos);
-    if (blockEntity instanceof NomadAllocEntity) {
-      NomadAllocEntity entity = (NomadAllocEntity) blockEntity;
-      entity.setName(name);
-    }
+    // BlockEntity blockEntity = world.getBlockEntity(pos);
+    // if (blockEntity instanceof NomadAllocEntity) {
+    // NomadAllocEntity entity = (NomadAllocEntity) blockEntity;
+    // entity.setName(name);
+    // }
   }
 }

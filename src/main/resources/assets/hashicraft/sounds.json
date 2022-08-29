@@ -1,46 +1,4 @@
 {
-  "phone_ringing": {
-    "subtitle": "hashicraft.phone_ringing",
-    "sounds": [
-      "hashicraft:phone_ringing"
-    ]
-  },
-  "phone_touch": {
-    "subtitle": "hashicraft.phone_touch",
-    "sounds": [
-      "hashicraft:phone_touch"
-    ]
-  },
-  "computer_typing": {
-    "subtitle": "hashicraft.computer_typing",
-    "sounds": [
-      "hashicraft:computer_typing"
-    ]
-  },
-  "meow": {
-    "subtitle": "hashicraft.meow",
-    "sounds": [
-      "hashicraft:meow"
-    ]
-  },
-  "wrong_answer": {
-    "subtitle": "hashicraft.wrong_answer",
-    "sounds": [
-      "hashicraft:wrong_answer"
-    ]
-  },
-  "correct_answer": {
-    "subtitle": "hashicraft.correct_answer",
-    "sounds": [
-      "hashicraft:correct_answer"
-    ]
-  },
-  "game_over": {
-    "subtitle": "hashicraft.game_over",
-    "sounds": [
-      "hashicraft:game_over"
-    ]
-  },
   "hashiconf_music": {
     "sounds": [{
       "name":"hashicraft:hashiconf_music",
