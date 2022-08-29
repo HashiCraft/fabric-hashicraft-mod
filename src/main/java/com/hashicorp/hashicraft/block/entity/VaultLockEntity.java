@@ -1,25 +1,29 @@
 package com.hashicorp.hashicraft.block.entity;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Base64;
+
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.hashicorp.hashicraft.Mod;
+import com.hashicorp.hashicraft.vault.Decrypted;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class VaultLockEntity extends StatefulBlockEntity {
-  @Syncable
-  public String policy = "default";
+  public static final String vaultAddress = System.getenv().getOrDefault("VAULT_ADDR", "http://localhost:8200");
+  public static final String vaultToken = System.getenv().getOrDefault("VAULT_TOKEN", "root");
 
   @Syncable
-  public String status = "";
-
-  public Integer timer = 0;
-
-  public boolean inTimer = false;
-
-  public long ticks = 0;
+  private String policy = "default";
 
   public VaultLockEntity(BlockPos pos, BlockState state) {
     super(BlockEntities.VAULT_LOCK_ENTITY, pos, state, null);
@@ -29,22 +33,97 @@ public class VaultLockEntity extends StatefulBlockEntity {
     super(BlockEntities.VAULT_LOCK_ENTITY, pos, state, parent);
   }
 
-  public static void tick(World world, BlockPos blockPos, BlockState state, VaultLockEntity entity) {
-    if (world.isClient) {
-      entity.timer = Math.round(entity.ticks++ / 20);
-      if (entity.inTimer) {
-        if (entity.timer < 2) {
-          entity.timer++;
-          entity.markForUpdate();
-        } else {
-          entity.inTimer = false;
-          entity.status = "";
-          entity.markForUpdate();
-        }
-      }
-    }
+  public boolean checkAccess(String token, String policy) {
+    try {
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(vaultAddress + "/v1/secret/data/minecraft/" + policy))
+          .header("Accept", "application/json")
+          .header("X-Vault-Token", token)
+          .GET()
+          .build();
 
-    StatefulBlockEntity.tick(world, blockPos, state, entity);
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+        return false;
+      }
+
+      Mod.LOGGER.info(response.body());
+
+      return true;
+    } catch (Exception e) {
+      Mod.LOGGER.warn(e.getStackTrace().toString());
+      return false;
+    }
+  }
+
+  public boolean verify(String input, String signature) {
+    try {
+      String payload = String.format("""
+          {
+            "hash_algorithm":"sha2-256",
+            "signature_algorithm":"pkcs1v15",
+            "input":"%s",
+            "signature": "%s"
+          }
+          """, Base64.getEncoder().encodeToString(input.getBytes()), signature);
+
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(vaultAddress + "/v1/transit/verify/minecraft"))
+          .header("Accept", "application/json")
+          .header("X-Vault-Token", vaultToken)
+          .POST(HttpRequest.BodyPublishers.ofString(payload))
+          .build();
+
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+        return false;
+      }
+
+      Mod.LOGGER.info(response.body());
+
+      return true;
+    } catch (Exception e) {
+      Mod.LOGGER.warn(e.getStackTrace().toString());
+      return false;
+    }
+  }
+
+  public String decrypt(String input) {
+    try {
+      String payload = String.format("""
+          {
+            "ciphertext": "%s"
+          }
+          """, input);
+
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(vaultAddress + "/v1/transit/decrypt/minecraft"))
+          .header("Accept", "application/json")
+          .header("X-Vault-Token", vaultToken)
+          .POST(HttpRequest.BodyPublishers.ofString(payload))
+          .build();
+
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.warn(response.body());
+        return null;
+      }
+
+      Mod.LOGGER.info(response.body());
+
+      GsonBuilder builder = new GsonBuilder();
+      Gson gson = builder.create();
+      Decrypted decrypted = gson.fromJson(response.body(), Decrypted.class);
+      return decrypted.data.plaintext;
+    } catch (Exception e) {
+      Mod.LOGGER.warn(e.getStackTrace().toString());
+      return null;
+    }
   }
 
   public void setPolicy(String policy) {
@@ -53,29 +132,6 @@ public class VaultLockEntity extends StatefulBlockEntity {
   }
 
   public String getPolicy() {
-    if (this.policy == null) {
-      return "default";
-    }
     return this.policy;
-  }
-
-  public String getStatus() {
-    if (this.status == null) {
-      return "";
-    }
-
-    return this.status;
-  }
-
-  public void setStatus(String status) {
-    this.ticks = 0;
-    this.timer = 0;
-    this.inTimer = true;
-    this.status = status;
-    this.markForUpdate();
-  }
-
-  public boolean checkAccess(String userPolicy, String lockPolicy) {
-    return userPolicy.contains(lockPolicy);
   }
 }

@@ -21,7 +21,6 @@ public class BlockEntities {
         // Vault
         public static BlockEntityType<VaultLockEntity> VAULT_LOCK_ENTITY;
         public static BlockEntityType<VaultDispenserEntity> VAULT_DISPENSER_ENTITY;
-        public static BlockEntityType<VaultManagerEntity> VAULT_MANAGER_ENTITY;
 
         // Consul
         public static BlockEntityType<ConsulControllerEntity> CONSUL_CONTROLLER_ENTITY;
@@ -50,10 +49,10 @@ public class BlockEntities {
                                                 .build(null));
 
                 NOMAD_DISPENSER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-                        Mod.identifier("nomad_dispenser"),
-                        FabricBlockEntityTypeBuilder
-                                .create(NomadDispenserEntity::new, ModBlocks.NOMAD_DISPENSER_BLOCK)
-                                .build(null));
+                                Mod.identifier("nomad_dispenser"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(NomadDispenserEntity::new, ModBlocks.NOMAD_DISPENSER_BLOCK)
+                                                .build(null));
 
                 // Vault
                 VAULT_LOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("vault_lock"),
@@ -64,12 +63,6 @@ public class BlockEntities {
                                 Mod.identifier("vault_dispenser"),
                                 FabricBlockEntityTypeBuilder
                                                 .create(VaultDispenserEntity::new, ModBlocks.VAULT_DISPENSER_BLOCK)
-                                                .build(null));
-
-                VAULT_MANAGER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-                                Mod.identifier("vault_manager"),
-                                FabricBlockEntityTypeBuilder
-                                                .create(VaultManagerEntity::new, ModBlocks.VAULT_MANAGER_BLOCK)
                                                 .build(null));
 
                 // Consul

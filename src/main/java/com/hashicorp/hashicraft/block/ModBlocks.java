@@ -58,18 +58,16 @@ public class ModBlocks {
                         new NomadWhiskers(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
 
         public static final Block NOMAD_DISPENSER_BLOCK = registerBlock("nomad_dispenser",
-                new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-                ItemGroups.HASHICRAFT);
+                        new NomadDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        ItemGroups.HASHICRAFT);
 
         // Vault
         public static final Block VAULT_DISPENSER_BLOCK = registerBlock("vault_dispenser",
-                        new VaultDispenser(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
-
-        public static final Block VAULT_MANAGER_BLOCK = registerBlock("vault_manager",
-                        new VaultManager(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
+                        new VaultDispenserBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        ItemGroups.HASHICRAFT);
 
         public static final Block VAULT_LOCK_BLOCK = registerBlock("vault_lock",
-                        new VaultLock(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
+                        new VaultLockBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
 
         // Waypoint
         public static final Block WAYPOINT_SERVER_BLOCK = registerBlock("waypoint_server",

@@ -1,4 +1,4 @@
-package com.hashicorp.hashicraft.events;
+package com.hashicorp.hashicraft.ui.event;
 
 import com.hashicorp.hashicraft.block.entity.VaultLockEntity;
 
@@ -20,5 +20,5 @@ public interface VaultLockClicked {
         return ActionResult.PASS;
       });
 
-  ActionResult interact(VaultLockEntity block, VaultLockGuiCallback callback);
+  ActionResult interact(VaultLockEntity block, SaveCallback callback);
 }

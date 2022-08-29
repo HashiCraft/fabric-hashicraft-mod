@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "hashicraft:block/vault_manager", "uvlock": false },
-    "facing=east":  { "model": "hashicraft:block/vault_manager", "y":  90, "uvlock": false },
-    "facing=south": { "model": "hashicraft:block/vault_manager", "y": 180, "uvlock": false },
-    "facing=west":  { "model": "hashicraft:block/vault_manager", "y": 270, "uvlock": false }
-  }
-}
