@@ -72,50 +72,51 @@ public class VaultDispenserBlock extends StatefulBlock {
           });
         }
         return ActionResult.SUCCESS;
-      }
+      } else {
 
-      if (!stack.isOf(ModItems.WRENCH_ITEM)) {
-        // Create a new card.
-        ItemStack card = new ItemStack(ModItems.VAULT_CARD_ITEM);
+        if (!stack.isOf(ModItems.WRENCH_ITEM)) {
+          // Create a new card.
+          ItemStack card = new ItemStack(ModItems.VAULT_CARD_ITEM);
 
-        // Use the player name as the username.
-        String username = player.getName().getString();
+          // Use the player name as the username.
+          String username = player.getName().getString();
 
-        // Use the player uuid as the password.
-        String uuid = player.getUuidAsString();
+          // Use the player uuid as the password.
+          String uuid = player.getUuidAsString();
 
-        // Create the vault user pass for the player.
-        boolean created = dispenser.createUserPass(username, uuid, dispenser.getPolicy());
-        if (!created) {
-          player.sendMessage(Text.literal("ERROR - Could not create user pass"), true);
-          return ActionResult.SUCCESS;
+          // Create the vault user pass for the player.
+          boolean created = dispenser.createUserPass(username, uuid, dispenser.getPolicy());
+          if (!created) {
+            player.sendMessage(Text.literal("ERROR - Could not create user pass"), true);
+            return ActionResult.FAIL;
+          }
+
+          // Login using the user pass.
+          Login login = dispenser.login(player);
+          if (login == null) {
+            player.sendMessage(Text.literal("ERROR - Could not login with user pass"), true);
+            return ActionResult.FAIL;
+          }
+
+          // Encrypt the uuid of the player.
+          String encrypted = dispenser.encrypt(uuid);
+
+          // Sign the encrypted uuid.
+          String signature = dispenser.sign(encrypted);
+
+          // Create an Nbt containing the login details and write it to the card.
+          NbtCompound identity = card.getOrCreateNbt();
+          identity.putString("name", login.auth.metadata.username);
+          identity.putString("token", login.auth.token);
+          identity.putString("policies", String.join(", ", login.auth.policies));
+          identity.putString("encrypted", encrypted);
+          identity.putString("signature", signature);
+          card.setNbt(identity);
+
+          // Dispense a card with the login details.
+          BlockPointerImpl pointer = new BlockPointerImpl((ServerWorld) world, pos);
+          dispenser.dispense(world, pointer, card, 1, direction);
         }
-
-        // Login using the user pass.
-        Login login = dispenser.login(player);
-        if (login == null) {
-          player.sendMessage(Text.literal("ERROR - Could not login with user pass"), true);
-          return ActionResult.SUCCESS;
-        }
-
-        // Encrypt the uuid of the player.
-        String encrypted = dispenser.encrypt(uuid);
-
-        // Sign the encrypted uuid.
-        String signature = dispenser.sign(encrypted);
-
-        // Create an Nbt containing the login details and write it to the card.
-        NbtCompound identity = card.getOrCreateNbt();
-        identity.putString("name", login.auth.metadata.username);
-        identity.putString("token", login.auth.token);
-        identity.putString("policies", String.join(", ", login.auth.policies));
-        identity.putString("encrypted", encrypted);
-        identity.putString("signature", signature);
-        card.setNbt(identity);
-
-        // Dispense a card with the login details.
-        BlockPointerImpl pointer = new BlockPointerImpl((ServerWorld) world, pos);
-        dispenser.dispense(world, pointer, card, 1, direction);
       }
     }
 
