@@ -63,7 +63,8 @@ public class NomadDispenserGui extends LightweightGuiDescription {
 
             callback.onSave();
 
-            MinecraftClient.getInstance().player.closeScreen();
+            MinecraftClient client = MinecraftClient.getInstance();
+            client.player.closeScreen();
             MinecraftClient.getInstance().setScreen((Screen) null);
         });
 

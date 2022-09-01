@@ -12,6 +12,8 @@ import com.hashicorp.hashicraft.ui.ConsulReleaserGui;
 import com.hashicorp.hashicraft.ui.ConsulReleaserScreen;
 import com.hashicorp.hashicraft.ui.NomadDispenserGui;
 import com.hashicorp.hashicraft.ui.NomadDispenserScreen;
+import com.hashicorp.hashicraft.ui.NomadServerGui;
+import com.hashicorp.hashicraft.ui.NomadServerScreen;
 import com.hashicorp.hashicraft.ui.VaultDispenserGui;
 import com.hashicorp.hashicraft.ui.VaultDispenserScreen;
 import com.hashicorp.hashicraft.ui.VaultLockGui;
@@ -38,12 +40,31 @@ public class ModClient implements ClientModInitializer {
 
         @Override
         public void onInitializeClient() {
+                // Nomad Dispenser
                 BlockEntityRendererRegistry.register(BlockEntities.NOMAD_DISPENSER_ENTITY,
                                 NomadDispenserRenderer::new);
 
                 BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.NOMAD_DISPENSER_BLOCK,
                                 RenderLayer.getTranslucent());
 
+                NomadDispenserClicked.EVENT.register((block, callback) -> {
+                        NomadDispenserGui gui = new NomadDispenserGui(block, callback);
+                        NomadDispenserScreen screen = new NomadDispenserScreen(gui);
+                        MinecraftClient.getInstance().setScreen(screen);
+
+                        return ActionResult.PASS;
+                });
+
+                // Nomad Server
+                NomadServerClicked.EVENT.register((block, callback) -> {
+                        NomadServerGui gui = new NomadServerGui(block, callback);
+                        NomadServerScreen screen = new NomadServerScreen(gui);
+                        MinecraftClient.getInstance().setScreen(screen);
+
+                        return ActionResult.PASS;
+                });
+
+                // Consul Releaser
                 BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASER_ENTITY,
                                 ConsulReleaserRenderer::new);
 
@@ -55,6 +76,7 @@ public class ModClient implements ClientModInitializer {
                         return ActionResult.PASS;
                 });
 
+                // Vault Dispenser
                 BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.VAULT_DISPENSER_BLOCK,
                                 RenderLayer.getCutoutMipped());
 
@@ -69,6 +91,7 @@ public class ModClient implements ClientModInitializer {
                         return ActionResult.PASS;
                 });
 
+                // Vault Lock
                 VaultLockClicked.EVENT.register((block, callback) -> {
                         VaultLockGui gui = new VaultLockGui(block, callback);
                         VaultLockScreen screen = new VaultLockScreen(gui);
@@ -77,14 +100,7 @@ public class ModClient implements ClientModInitializer {
                         return ActionResult.PASS;
                 });
 
-                NomadDispenserClicked.EVENT.register((block, callback) -> {
-                        NomadDispenserGui gui = new NomadDispenserGui(block, callback);
-                        NomadDispenserScreen screen = new NomadDispenserScreen(gui);
-                        MinecraftClient.getInstance().setScreen(screen);
-
-                        return ActionResult.PASS;
-                });
-
+                // App Minecart
                 EntityRendererRegistry.register(ModEntities.APP_MINECART, (context) -> {
                         return new AppMinecartEntityRenderer(context, APP_MINECART_LAYER);
                 });

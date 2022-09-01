@@ -35,26 +35,18 @@ public class Listener extends NanoWSD {
 
     @Override
     protected void onOpen() {
-      // TODO Auto-generated method stub
-
     }
 
     @Override
     protected void onClose(CloseCode code, String reason, boolean initiatedByRemote) {
-      // TODO Auto-generated method stub
-
     }
 
     @Override
     protected void onPong(WebSocketFrame pong) {
-      // TODO Auto-generated method stub
-
     }
 
     @Override
     protected void onException(IOException exception) {
-      // TODO Auto-generated method stub
-
     }
   }
 }

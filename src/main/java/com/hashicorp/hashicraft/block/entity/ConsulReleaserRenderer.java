@@ -182,7 +182,8 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
     matrices.scale(-scale, -scale, scale);
     matrices.multiply(yRotation);
 
-    TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    MinecraftClient client = MinecraftClient.getInstance();
+    TextRenderer textRenderer = client.textRenderer;
     float width = (float) (-textRenderer.getWidth((StringVisitable) text) / 2);
     textRenderer.drawWithShadow(matrices, text, width, 0F, color);
     matrices.pop();
