@@ -6,7 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "RecipeManagerMixin"
+    "RecipeManagerMixin",
+    "AppMinecartCraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -16,10 +16,7 @@ import com.hashicorp.hashicraft.ui.VaultDispenserGui;
 import com.hashicorp.hashicraft.ui.VaultDispenserScreen;
 import com.hashicorp.hashicraft.ui.VaultLockGui;
 import com.hashicorp.hashicraft.ui.VaultLockScreen;
-import com.hashicorp.hashicraft.ui.event.ConsulReleaserClicked;
-import com.hashicorp.hashicraft.ui.event.NomadDispenserClicked;
-import com.hashicorp.hashicraft.ui.event.VaultDispenserClicked;
-import com.hashicorp.hashicraft.ui.event.VaultLockClicked;
+import com.hashicorp.hashicraft.ui.event.*;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -31,6 +28,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.util.ActionResult;
 
 @Environment(EnvType.CLIENT)
