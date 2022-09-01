@@ -73,6 +73,8 @@ public class NomadDispenserBlock extends StatefulBlock {
         dispenser.dispense(world, pointer, dispenser.getMinecart(), 1, direction);
         dispenser.dispense(world, pointer, dispenser.getDye(), 1, direction);
         dispenser.dispense(world, pointer, dispenser.getApplication(player.getUuidAsString()), 1, direction);
+
+        dispenser.changeColors();
       }
     }
 

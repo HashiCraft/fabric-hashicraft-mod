@@ -2,6 +2,7 @@ package com.hashicorp.hashicraft.block.entity;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
+import com.google.common.collect.Lists;
 import com.hashicorp.hashicraft.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -14,6 +15,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static com.hashicorp.hashicraft.item.Dyes.COLORS;
 import static com.hashicorp.hashicraft.item.Dyes.DEFAULT_COLOR;
 
@@ -22,10 +27,13 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
   private String name = "fake-service";
 
   @Syncable
-  private String version = "v0.24.2";
+  private String color = "blue";
 
   @Syncable
-  private String color = "black";
+  private String version = color;
+
+  @Syncable
+  private List<String> colors = Lists.newArrayList(color);
 
   public NomadDispenserEntity(BlockPos pos, BlockState state) {
     super(BlockEntities.NOMAD_DISPENSER_ENTITY, pos, state, null);
@@ -68,18 +76,21 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
     return version;
   }
 
-  public void setVersion(String version) {
+  public String getColors() {
+    return String.join(",", this.colors);
+  }
+
+  public void setColorAndVersion(String color, String version) {
+    this.color = color;
     this.version = version;
     this.markForUpdate();
   }
 
-  public String getColor() {
-    return color;
-  }
-
-  public void setColor(String color) {
-    this.color = color;
-    this.markForUpdate();
+  public void setColors(String colorText) {
+    this.colors = Stream
+            .of(colorText.split(",", -1))
+            .collect(Collectors.toList());
+    setColorAndVersion(this.colors.get(0), this.colors.get(0));
   }
 
   public ItemStack getApplication(String owner) {
@@ -95,7 +106,7 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
   }
 
   public ItemStack getDye() {
-    String dyeColor = this.getColor().replace(' ', '_') + "_dye";
+    String dyeColor = this.color.replace(' ', '_') + "_dye";
     boolean isColorPresent = COLORS.containsKey(dyeColor);
     if (isColorPresent) {
       return new ItemStack(COLORS.get(dyeColor));
@@ -105,5 +116,14 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
 
   public ItemStack getMinecart() {
     return new ItemStack(Items.MINECART);
+  }
+
+  public void changeColors() {
+    String color = this.colors.get(0);
+    int i = this.colors.indexOf(this.color);
+    if (i+1 != this.colors.size()) {
+      color = this.colors.get(i + 1);
+    }
+    setColorAndVersion(color, color);
   }
 }
