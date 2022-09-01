@@ -77,6 +77,7 @@ public class NomadServerBlock extends StatefulBlock {
         if (!stack.isOf(ModItems.WRENCH_ITEM)) {
           if (server.getAddress() == "") {
             player.sendMessage(Text.literal("ERROR - Nomad address is not set"), true);
+            return ActionResult.SUCCESS;
           }
 
           boolean created = server.createJob();
