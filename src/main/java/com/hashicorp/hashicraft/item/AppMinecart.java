@@ -23,14 +23,12 @@ import net.minecraft.world.WorldEvents;
 import net.minecraft.world.event.GameEvent;
 
 public class AppMinecart extends Item {
-
     private static final DispenserBehavior DISPENSER_BEHAVIOR = new ItemDispenserBehavior() {
         private final ItemDispenserBehavior defaultBehavior = new ItemDispenserBehavior();
 
         @Override
         public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
             double g;
-            RailShape railShape;
             Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
             ServerWorld world = pointer.getWorld();
             double d = pointer.getX() + (double) direction.getOffsetX() * 1.125;
@@ -38,15 +36,14 @@ public class AppMinecart extends Item {
             double f = pointer.getZ() + (double) direction.getOffsetZ() * 1.125;
             BlockPos blockPos = pointer.getPos().offset(direction);
             BlockState blockState = world.getBlockState(blockPos);
-            RailShape railShape2 = railShape = blockState.getBlock() instanceof AbstractRailBlock
+            RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock
                     ? blockState.get(((AbstractRailBlock) blockState.getBlock()).getShapeProperty())
                     : RailShape.NORTH_SOUTH;
             if (blockState.isIn(BlockTags.RAILS)) {
                 g = railShape.isAscending() ? 0.6 : 0.1;
             } else if (blockState.isAir() && world.getBlockState(blockPos.down()).isIn(BlockTags.RAILS)) {
-                RailShape railShape22;
                 BlockState blockState2 = world.getBlockState(blockPos.down());
-                RailShape railShape3 = railShape22 = blockState2.getBlock() instanceof AbstractRailBlock
+                RailShape railShape22 = blockState2.getBlock() instanceof AbstractRailBlock
                         ? blockState2.get(((AbstractRailBlock) blockState2.getBlock()).getShapeProperty())
                         : RailShape.NORTH_SOUTH;
                 g = direction == Direction.DOWN || !railShape22.isAscending() ? -0.9 : -0.4;

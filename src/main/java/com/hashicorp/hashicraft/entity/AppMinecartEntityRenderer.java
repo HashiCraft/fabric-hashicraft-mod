@@ -54,7 +54,6 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
         ((Entity) entity).getZ());
 
     Vec3d vec3d = ((AbstractMinecartEntity) entity).snapPositionToRail(d, e, m);
-    float o = MathHelper.lerp(g, ((AbstractMinecartEntity) entity).prevPitch, ((Entity) entity).getPitch());
     if (vec3d != null) {
       Vec3d vec3d2 = ((AbstractMinecartEntity) entity).snapPositionToRailWithOffset(d, e, m, 0.3f);
       Vec3d vec3d3 = ((AbstractMinecartEntity) entity).snapPositionToRailWithOffset(d, e, m, -0.3f);
@@ -69,7 +68,6 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
       if (vec3d4.length() != 0.0) {
         vec3d4 = vec3d4.normalize();
         f = (float) (Math.atan2(vec3d4.z, vec3d4.x) * 180.0 / Math.PI);
-        o = (float) (Math.atan(vec3d4.y) * 73.0);
       }
     }
     matrixStack.translate(0.0, 0.0, 0.0);
@@ -113,7 +111,8 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     matrices.scale(-scale, -scale, scale);
     matrices.multiply(yRotation);
 
-    TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    MinecraftClient client = MinecraftClient.getInstance();
+    TextRenderer textRenderer = client.textRenderer;
     float width = (float) (-textRenderer.getWidth((StringVisitable) text) / 2);
     textRenderer.drawWithShadow(matrices, text, width, 0F, color);
     matrices.pop();

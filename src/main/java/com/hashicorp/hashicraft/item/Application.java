@@ -1,26 +1,17 @@
 package com.hashicorp.hashicraft.item;
 
-import com.google.common.collect.Lists;
-import com.hashicorp.hashicraft.recipe.Ingredient;
+import java.util.List;
+
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.hashicorp.hashicraft.item.Dyes.COLORS;
 
 public class Application extends Item {
     public Application(Settings settings) {

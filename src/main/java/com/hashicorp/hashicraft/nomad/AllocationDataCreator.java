@@ -1,4 +1,4 @@
-package com.hashicorp.hashicraft.watcher;
+package com.hashicorp.hashicraft.nomad;
 
 import java.lang.reflect.Type;
 

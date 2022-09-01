@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class AppMinecartEntity extends MinecartEntity {
-
   public AppMinecartEntity(EntityType<?> type, World world) {
     super(type, world);
   }
@@ -55,5 +54,12 @@ public class AppMinecartEntity extends MinecartEntity {
   @Override
   public void tick() {
     super.tick();
+  }
+
+  @Override
+  public boolean damage(DamageSource source, float amount) {
+    // this.discard();
+    // return true;
+    return false;
   }
 }

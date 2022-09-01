@@ -40,7 +40,8 @@ public class ConsulReleaserGui extends LightweightGuiDescription {
       // notify the opener that the dialog has completed
       callback.onSave();
 
-      MinecraftClient.getInstance().player.closeScreen();
+      MinecraftClient client = MinecraftClient.getInstance();
+      client.player.closeScreen();
       MinecraftClient.getInstance().setScreen((Screen) null);
     });
 
