@@ -1,15 +1,19 @@
-package com.hashicorp.hashicraft.watcher;
+package com.hashicorp.hashicraft.consul;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.util.math.BlockPos;
 
-public class Release implements Serializable {
+public class ReleaseStatus implements Serializable {
   @SerializedName("name")
   public String Name;
 
@@ -27,7 +31,7 @@ public class Release implements Serializable {
 
   private BlockPos pos;
 
-  public Release() {
+  public ReleaseStatus() {
   }
 
   public byte[] toBytes() {
@@ -36,15 +40,15 @@ public class Release implements Serializable {
     return json.getBytes();
   }
 
-  public static Release fromBytes(byte[] data) {
+  public static ReleaseStatus fromBytes(byte[] data) {
     try {
       GsonBuilder builder = new GsonBuilder();
-      builder.registerTypeAdapter(Release.class, new ReleaseDataCreator());
+      builder.registerTypeAdapter(ReleaseStatus.class, new ReleaseDataCreator());
 
       String json = new String(data);
 
       Gson gson = builder.create();
-      Release state = gson.fromJson(json, Release.class);
+      ReleaseStatus state = gson.fromJson(json, ReleaseStatus.class);
 
       return state;
     } catch (JsonSyntaxException e) {
@@ -53,6 +57,11 @@ public class Release implements Serializable {
       System.out.println("Unable to create Release from JSON:" + json);
       return null;
     }
+  }
+
+  public static List<ReleaseStatus> toList(String json) {
+      Gson gson = new Gson();
+      return gson.fromJson(json, new TypeToken<ArrayList<ReleaseStatus>>(){}.getType());
   }
 
   public void setPos(int x, int y, int z) {

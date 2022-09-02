@@ -3,6 +3,7 @@ package com.hashicorp.hashicraft.block;
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;
+import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.ui.event.ConsulReleaserClicked;
 
 import net.minecraft.block.Block;
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -57,24 +59,19 @@ public class ConsulReleaserBlock extends StatefulBlock {
   public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
       BlockHitResult hit) {
     BlockEntity blockEntity = world.getBlockEntity(pos);
-    if (blockEntity instanceof ConsulReleaserEntity) {
-      ConsulReleaserEntity releaser = (ConsulReleaserEntity) blockEntity;
+    if (blockEntity instanceof ConsulReleaserEntity releaser) {
       ItemStack stack = player.getStackInHand(hand);
 
-      // If we are on the client, check if we need to pop up the UI.
       if (world.isClient) {
-        if (stack.isOf(net.minecraft.item.Items.CHICKEN) && player.hasPermissionLevel(4)) {
-          ConsulReleaserClicked.EVENT.invoker().interact(releaser, () -> {
-            releaser.markForUpdate();
-          });
-          return ActionResult.SUCCESS;
+        if (stack.isOf(ModItems.WRENCH_ITEM)) {
+          ConsulReleaserClicked.EVENT.invoker().interact(releaser, releaser::markForUpdate);
+          if (releaser.createRelease()) {
+            player.sendMessage(Text.literal("INFO - Release created"), true);
+          } else {
+            player.sendMessage(Text.literal("ERROR - Release not created"), true);
+          }
         }
-      }
-      // Else do releaser things.
-      else {
-        if (stack.isOf(net.minecraft.item.Items.CHICKEN)) {
-          return ActionResult.SUCCESS;
-        }
+        return ActionResult.SUCCESS;
       }
     }
     return ActionResult.SUCCESS;

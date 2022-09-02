@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.hashicorp.hashicraft.consul.ReleaseStatus;
 import com.hashicorp.hashicraft.nomad.Allocation;
 
 // import fi.iki.elonen.NanoHTTPD;
@@ -25,7 +26,7 @@ public class Watcher {
   public static final String releaserAddress = System.getenv().getOrDefault("RELEASER_ADDR",
       "http://localhost:9443");
   public static final BlockPos releaserOrigin = new BlockPos(80, 64, 85);
-  private static HashMap<String, Release> releases = new HashMap<String, Release>();
+  private static HashMap<String, ReleaseStatus> releases = new HashMap<String, ReleaseStatus>();
 
   private static Watcher watcher = new Watcher();
 
@@ -134,11 +135,11 @@ public class Watcher {
   // }
   // }
 
-  public static HashMap<String, Release> getReleases() {
+  public static HashMap<String, ReleaseStatus> getReleases() {
     return releases;
   }
 
-  public static Release getRelease(String name) {
+  public static ReleaseStatus getRelease(String name) {
     return releases.get(name);
   }
 
