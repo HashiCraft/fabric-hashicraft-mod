@@ -20,6 +20,10 @@ public class Releaser {
         this.client = HttpClient.newHttpClient();
     }
 
+    public void setAddress(String address) {
+        this.uri = address + "/v1/releases";
+    }
+
     public ReleaseStatus create(Release release) throws IOException, InterruptedException {
         String requestBody = release.toJson();
         HttpRequest request = HttpRequest.newBuilder()

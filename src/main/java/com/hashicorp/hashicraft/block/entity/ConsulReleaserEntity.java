@@ -6,16 +6,11 @@ import com.hashicorp.hashicraft.Mod;
 import com.hashicorp.hashicraft.consul.Release;
 import com.hashicorp.hashicraft.consul.ReleaseStatus;
 import com.hashicorp.hashicraft.consul.Releaser;
-import com.hashicorp.hashicraft.watcher.Watcher;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,7 +42,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public Integer traffic = 0;
 
     private ExecutorService executor;
-    Releaser releaser;
+    Releaser releaser = new Releaser(address);;
 
     public ConsulReleaserEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.CONSUL_RELEASER_ENTITY, pos, state, null);
@@ -59,6 +54,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
 
     public void setAddress(String address) {
         this.address = address;
+        releaser.setAddress(address);
     }
 
     public String getApplication() {
@@ -117,23 +113,15 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
                 try {
                     while (!executor.isShutdown() && !executor.isTerminated()) {
 
-                        releaser = new Releaser(address);
-
-                        if (!Objects.equals(address, "")) {
-                            releaser.list().forEach((releaseStatus) -> {
-                                if (executor.isShutdown()) {
-                                    return;
-                                }
-                                syncStatus(releaseStatus);
-                            });
+                        if (!(address == null || address.isEmpty() || address.isBlank())) {
+                            releaser.setAddress(address);
+                            getReleases();
                         }
 
                         TimeUnit.SECONDS.sleep(5);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
             });
         }
@@ -155,8 +143,8 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     }
 
     public boolean createRelease() {
-        releaser = new Releaser(this.address);
         try {
+            releaser.setAddress(address);
             Mod.LOGGER.info("Deleting previous release for Consul releaser");
             releaser.delete(application);
             Mod.LOGGER.info("Update release for Consul releaser");
@@ -173,6 +161,18 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void getReleases() {
+        try {
+            releaser.list().forEach((status) -> {
+                if (Objects.equals(status.Name, this.application)) {
+                    syncStatus(status);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
