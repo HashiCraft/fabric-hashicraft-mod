@@ -7,12 +7,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -25,15 +21,60 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 
-import static com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity.STATUS_FAILED;
-import static com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity.STATUS_SUCCESS;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity.*;
 
 @Environment(EnvType.CLIENT)
 public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements BlockEntityRenderer<T> {
     public static final Identifier SUCCESS_TEXTURE = Mod.identifier("textures/block/status_success.png");
     public static final Identifier FAILURE_TEXTURE = Mod.identifier("textures/block/status_failure.png");
+    public static final Identifier PROGRESS_TEXTURE = Mod.identifier("textures/block/status_progress.png");
 
-    public ConsulReleaserRenderer(BlockEntityRendererFactory.Context ctx) {
+    private static final float width = 0.75f;
+    private static final float height = 0.75f;
+
+    private int spinnerStart = 0;
+    private int frameCount = 0;
+    private static final int FRAME_INTERVAL = 32;
+    private static final int NUM_VERTICES = 4;
+
+    private static final List<Coordinates> VERTICES = Arrays.asList(
+            new Coordinates(width + 0.125F, 0.125F),
+            new Coordinates(width + 0.125F, height + 0.125F),
+            new Coordinates(0.125F, height + 0.125F),
+            new Coordinates(0.125F, 0.125F)
+    );
+
+    private static final List<TextureUV> UV_COORDINATES = Arrays.asList(
+            new TextureUV(1.0F, 1.0F),
+            new TextureUV(1.0F, 0.0F),
+            new TextureUV(0.0F, 0.0F),
+            new TextureUV(0.0F, 1.0F)
+    );
+
+    public ConsulReleaserRenderer(BlockEntityRendererFactory.Context ctx) {}
+
+    private static class Coordinates {
+        float width;
+        float height;
+
+        public Coordinates(float width, float height) {
+            this.width = width;
+            this.height = height;
+        }
+    }
+
+    public static class TextureUV {
+        float u;
+        float v;
+
+        public TextureUV(float u, float v) {
+            this.u = u;
+            this.v = v;
+        }
     }
 
     @Override
@@ -54,9 +95,29 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
         } else if (message.contentEquals(STATUS_FAILED)) {
             color = 0xFFd6510f;
             renderStatus(matrices, direction, light, overlay, FAILURE_TEXTURE);
+        } else if (!message.contentEquals(STATUS_IDLE)) {
+            renderStatus(matrices, direction, light, overlay, PROGRESS_TEXTURE);
         }
 
         renderText(matrices, direction, message, 0.0f, 1.3f, 0.0f, 0.03F, color);
+    }
+
+    private void countFrames() {
+        if (frameCount == FRAME_INTERVAL) {
+            spinnerStart = spinnerStart < NUM_VERTICES ? spinnerStart + 1 : 0;
+            frameCount = 0;
+        } else {
+            frameCount = frameCount + 1;
+        }
+    }
+
+    private List<TextureUV> rotateTexture() {
+        final int TOTAL_COORDINATES = UV_COORDINATES.size();
+        List<TextureUV> spinner = new ArrayList<>(TOTAL_COORDINATES);
+        for (int i = spinnerStart; i < NUM_VERTICES + spinnerStart; i++) {
+            spinner.add(UV_COORDINATES.get(i % TOTAL_COORDINATES));
+        }
+        return spinner;
     }
 
     private void renderStatus(MatrixStack matrices, Direction direction, int light, int overlay, Identifier texture) {
@@ -78,9 +139,6 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
 
         float zTranslate = 0.0F;
         float xTranslate = 0.0F;
-
-        float width = 0.75f;
-        float height = 0.75f;
 
         Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(0.0F);
 
@@ -111,20 +169,33 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
         matrices.translate(xTranslate + xOffset, 0.00F, zTranslate + zOffset);
         matrices.multiply(yRotation);
 
+        List<TextureUV> textureCoordinates = UV_COORDINATES;
+        if (texture.equals(PROGRESS_TEXTURE)) {
+            textureCoordinates = rotateTexture();
+            countFrames();
+        }
+
         // Draw face
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        bufferBuilder.vertex(matrix4f, width + 0.125F, 0.125F, 1.0F).texture(1.0F, 1.0F).color(255, 255, 255, 255)
+        bufferBuilder.vertex(matrix4f, VERTICES.get(0).width, VERTICES.get(0).height, 1.0F)
+                .texture(textureCoordinates.get(0).u, textureCoordinates.get(0).v)
+                .color(255, 255, 255, 255)
                 .light(light).overlay(overlay).next(); // A
 
-        bufferBuilder.vertex(matrix4f, width + 0.125F, height + 0.125F, 1.0F).texture(1.0F, 0.0F)
+        bufferBuilder.vertex(matrix4f, VERTICES.get(1).width, VERTICES.get(1).height, 1.0F)
+                .texture(textureCoordinates.get(1).u, textureCoordinates.get(1).v)
                 .color(255, 255, 255, 255).light(light).overlay(overlay).next(); // B
 
-        bufferBuilder.vertex(matrix4f, 0.125F, height + 0.125F, 1.0F).texture(0.0F, 0.0F).color(255, 255, 255, 255)
+        bufferBuilder.vertex(matrix4f, VERTICES.get(2).width, VERTICES.get(2).height, 1.0F)
+                .texture(textureCoordinates.get(2).u, textureCoordinates.get(2).v)
+                .color(255, 255, 255, 255)
                 .light(light).overlay(overlay).next(); // C
 
-        bufferBuilder.vertex(matrix4f, 0.125F, 0.125F, 1.0F).texture(0.0F, 1.0F).color(255, 255, 255, 255).light(light)
+        bufferBuilder.vertex(matrix4f, VERTICES.get(3).width, VERTICES.get(3).height, 1.0F)
+                .texture(textureCoordinates.get(3).u, textureCoordinates.get(3).v)
+                .color(255, 255, 255, 255).light(light)
                 .overlay(overlay).next(); // D
 
         tessellator.draw();

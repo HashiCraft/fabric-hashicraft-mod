@@ -49,6 +49,8 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public final static String STATUS_FAILED = "FAILED";
     public final static String STATUS_SUCCESS = "SUCCESS";
 
+    public final static String STATUS_IDLE = "IDLE";
+
     public ConsulReleaserEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.CONSUL_RELEASER_ENTITY, pos, state, null);
     }
@@ -189,7 +191,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     }
 
     public String getStatus() {
-        String message = "IDLE";
+        String message = STATUS_IDLE;
 
         if (status != null) {
             if (status.contentEquals("state_monitor") || status.contentEquals("state_deploy")) {
