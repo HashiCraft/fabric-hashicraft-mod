@@ -6,7 +6,7 @@ import com.hashicorp.hashicraft.Mod;
 import com.hashicorp.hashicraft.consul.Release;
 import com.hashicorp.hashicraft.consul.ReleaseStatus;
 import com.hashicorp.hashicraft.consul.Releaser;
-
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static com.hashicorp.hashicraft.block.ConsulReleaserBlock.HEALTHY;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
@@ -42,7 +44,10 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public Integer traffic = 0;
 
     private ExecutorService executor;
-    Releaser releaser = new Releaser(address);;
+    private Releaser releaser = new Releaser(address);
+
+    public final static String STATUS_FAILED = "FAILED";
+    public final static String STATUS_SUCCESS = "SUCCESS";
 
     public ConsulReleaserEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.CONSUL_RELEASER_ENTITY, pos, state, null);
@@ -169,6 +174,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
             releaser.list().forEach((status) -> {
                 if (Objects.equals(status.Name, this.application)) {
                     syncStatus(status);
+                    setHealth();
                 }
             });
         } catch (Exception e) {
@@ -176,15 +182,35 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
         }
     }
 
+    private void setHealth() {
+        BlockState state = this.world.getBlockState(this.getPos());
+        state = getStatus().equals(STATUS_FAILED) ? state.with(HEALTHY, false) : state.with(HEALTHY, true);
+        world.setBlockState(this.pos, state, Block.NOTIFY_ALL);
+    }
+
     public String getStatus() {
-        return Objects.requireNonNullElse(this.status, "");
-    }
+        String message = "IDLE";
 
-    public String getDeploymentStatus() {
-        return Objects.requireNonNullElse(this.deploymentStatus, "");
-    }
+        if (status != null) {
+            if (status.contentEquals("state_monitor") || status.contentEquals("state_deploy")) {
+                if (deploymentStatus.contentEquals("strategy_status_progressing")) {
+                    message = traffic + "% / " + (100 - traffic) + "%";
+                } else if (deploymentStatus.contentEquals("strategy_status_failing")) {
+                    message = "FAILING";
+                } else {
+                    message = "DEPLOYING";
+                }
+            } else if (deploymentStatus.contentEquals("strategy_status_complete")) {
+                message = STATUS_SUCCESS;
+            } else if (deploymentStatus.contentEquals("strategy_status_failed")) {
+                if (status.contentEquals("state_rollback")) {
+                    message = "ROLLBACK";
+                } else {
+                    message = STATUS_FAILED;
+                }
+            }
+        }
 
-    public Integer getTraffic() {
-        return Objects.requireNonNullElse(this.traffic, 0);
+        return message;
     }
 }

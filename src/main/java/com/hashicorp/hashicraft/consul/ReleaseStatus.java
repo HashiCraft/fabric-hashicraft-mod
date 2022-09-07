@@ -1,7 +1,6 @@
 package com.hashicorp.hashicraft.consul;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.util.math.BlockPos;
 
 public class ReleaseStatus implements Serializable {
   @SerializedName("name")
@@ -29,10 +27,7 @@ public class ReleaseStatus implements Serializable {
   @SerializedName("last_deployment_status")
   public String DeploymentStatus;
 
-  private BlockPos pos;
-
-  public ReleaseStatus() {
-  }
+  public ReleaseStatus() {}
 
   public byte[] toBytes() {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -48,9 +43,8 @@ public class ReleaseStatus implements Serializable {
       String json = new String(data);
 
       Gson gson = builder.create();
-      ReleaseStatus state = gson.fromJson(json, ReleaseStatus.class);
+      return gson.fromJson(json, ReleaseStatus.class);
 
-      return state;
     } catch (JsonSyntaxException e) {
       e.printStackTrace();
       String json = new String(data);
@@ -62,13 +56,5 @@ public class ReleaseStatus implements Serializable {
   public static List<ReleaseStatus> toList(String json) {
       Gson gson = new Gson();
       return gson.fromJson(json, new TypeToken<ArrayList<ReleaseStatus>>(){}.getType());
-  }
-
-  public void setPos(int x, int y, int z) {
-    this.pos = new BlockPos(x, y, z);
-  }
-
-  public BlockPos getPos() {
-    return this.pos;
   }
 }

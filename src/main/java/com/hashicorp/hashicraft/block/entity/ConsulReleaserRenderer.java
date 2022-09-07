@@ -25,6 +25,9 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 
+import static com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity.STATUS_FAILED;
+import static com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity.STATUS_SUCCESS;
+
 @Environment(EnvType.CLIENT)
 public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements BlockEntityRenderer<T> {
     public static final Identifier SUCCESS_TEXTURE = Mod.identifier("textures/block/status_success.png");
@@ -39,30 +42,21 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
         Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
 
         String application = entity.getApplication();
-        String traffic = String.valueOf(entity.getTraffic()) + "% / " + (100 - entity.getTraffic()) + "%";
-        String status = entity.getStatus();
-        String deploymentStatus = entity.getDeploymentStatus();
-
         renderText(matrices, direction, application, 0.0f, 1.5f, 0.0f, 0.015F, 0xFFffffff);
 
-        if (status.contentEquals("state_monitor") || status.contentEquals("state_deploy")) {
-            String message = switch (deploymentStatus) {
-                case "strategy_status_progressing" -> traffic;
-                case "strategy_status_failing" -> "FAILING";
-                default -> "DEPLOYING";
-            };
-            renderText(matrices, direction, message, 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd4ff50);
+        String message = entity.getStatus();
+
+        int color = 0xFFffffff;
+
+        if (message.contentEquals(STATUS_SUCCESS)) {
+            color = 0xFFd4ff50;
             renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
-        } else if (deploymentStatus.contentEquals("strategy_status_complete")) {
-            renderStatus(matrices, direction, light, overlay, SUCCESS_TEXTURE);
-            renderText(matrices, direction, "SUCCESS", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd4ff50);
-        } else if (deploymentStatus.contentEquals("strategy_status_failed")) {
-            String message = status.contentEquals("state_rollback") ? "ROLLBACK" : "FAILED";
+        } else if (message.contentEquals(STATUS_FAILED)) {
+            color = 0xFFd6510f;
             renderStatus(matrices, direction, light, overlay, FAILURE_TEXTURE);
-            renderText(matrices, direction, message, 0.0f, 1.3f, 0.0f, 0.03F, 0xFFd6510f);
-        } else {
-            renderText(matrices, direction, "IDLE", 0.0f, 1.3f, 0.0f, 0.03F, 0xFFffffff);
         }
+
+        renderText(matrices, direction, message, 0.0f, 1.3f, 0.0f, 0.03F, color);
     }
 
     private void renderStatus(MatrixStack matrices, Direction direction, int light, int overlay, Identifier texture) {
@@ -135,6 +129,7 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
 
         tessellator.draw();
         matrices.pop();
+
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
