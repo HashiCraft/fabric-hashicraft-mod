@@ -121,7 +121,6 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
                     while (!executor.isShutdown() && !executor.isTerminated()) {
 
                         if (!(address == null || address.isEmpty() || address.isBlank())) {
-                            releaser.setAddress(address);
                             getReleases();
                         }
 
@@ -173,6 +172,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
 
     public void getReleases() {
         try {
+            releaser.setAddress(address);
             releaser.list().forEach((status) -> {
                 if (Objects.equals(status.Name, this.application)) {
                     syncStatus(status);
