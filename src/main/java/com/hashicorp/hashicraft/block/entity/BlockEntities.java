@@ -16,6 +16,9 @@ public class BlockEntities {
         public static BlockEntityType<VaultLockEntity> VAULT_LOCK_ENTITY;
         public static BlockEntityType<VaultDispenserEntity> VAULT_DISPENSER_ENTITY;
 
+        // Boundary
+        public static BlockEntityType<BoundaryLockEntity> BOUNDARY_LOCK_ENTITY;
+
         // Consul
         public static BlockEntityType<ConsulReleaserEntity> CONSUL_RELEASER_ENTITY;
 
@@ -41,6 +44,12 @@ public class BlockEntities {
                                 Mod.identifier("vault_dispenser"),
                                 FabricBlockEntityTypeBuilder
                                                 .create(VaultDispenserEntity::new, ModBlocks.VAULT_DISPENSER_BLOCK)
+                                                .build(null));
+
+                // Boundary
+                BOUNDARY_LOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Mod.identifier("boundary_lock"),
+                                FabricBlockEntityTypeBuilder
+                                                .create(BoundaryLockEntity::new, ModBlocks.BOUNDARY_LOCK_BLOCK)
                                                 .build(null));
 
                 // Consul

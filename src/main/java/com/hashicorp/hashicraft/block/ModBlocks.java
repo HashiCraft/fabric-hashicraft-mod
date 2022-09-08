@@ -35,6 +35,11 @@ public class ModBlocks {
         public static final Block VAULT_LOCK_BLOCK = registerBlock("vault_lock",
                         new VaultLockBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
 
+        // Boundary
+        public static final Block BOUNDARY_LOCK_BLOCK = registerBlock("boundary_lock",
+                        new BoundaryLockBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
+                        ItemGroups.HASHICRAFT);
+
         private static Block registerBlock(String name, Block block, ItemGroup group) {
                 registerBlockItem(name, block, group);
 

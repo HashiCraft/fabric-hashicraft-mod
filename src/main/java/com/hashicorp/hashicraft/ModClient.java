@@ -8,6 +8,8 @@ import com.hashicorp.hashicraft.block.entity.VaultDispenserRenderer;
 import com.hashicorp.hashicraft.entity.AppMinecartEntityModel;
 import com.hashicorp.hashicraft.entity.AppMinecartEntityRenderer;
 import com.hashicorp.hashicraft.entity.ModEntities;
+import com.hashicorp.hashicraft.ui.BoundaryLockGui;
+import com.hashicorp.hashicraft.ui.BoundaryLockScreen;
 import com.hashicorp.hashicraft.ui.ConsulReleaserGui;
 import com.hashicorp.hashicraft.ui.ConsulReleaserScreen;
 import com.hashicorp.hashicraft.ui.NomadDispenserGui;
@@ -18,7 +20,12 @@ import com.hashicorp.hashicraft.ui.VaultDispenserGui;
 import com.hashicorp.hashicraft.ui.VaultDispenserScreen;
 import com.hashicorp.hashicraft.ui.VaultLockGui;
 import com.hashicorp.hashicraft.ui.VaultLockScreen;
-import com.hashicorp.hashicraft.ui.event.*;
+import com.hashicorp.hashicraft.ui.event.BoundaryLockClicked;
+import com.hashicorp.hashicraft.ui.event.ConsulReleaserClicked;
+import com.hashicorp.hashicraft.ui.event.NomadDispenserClicked;
+import com.hashicorp.hashicraft.ui.event.NomadServerClicked;
+import com.hashicorp.hashicraft.ui.event.VaultDispenserClicked;
+import com.hashicorp.hashicraft.ui.event.VaultLockClicked;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -30,7 +37,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.util.ActionResult;
 
 @Environment(EnvType.CLIENT)
@@ -95,6 +101,15 @@ public class ModClient implements ClientModInitializer {
                 VaultLockClicked.EVENT.register((block, callback) -> {
                         VaultLockGui gui = new VaultLockGui(block, callback);
                         VaultLockScreen screen = new VaultLockScreen(gui);
+                        MinecraftClient.getInstance().setScreen(screen);
+
+                        return ActionResult.PASS;
+                });
+
+                // Boundary lock
+                BoundaryLockClicked.EVENT.register((block, callback) -> {
+                        BoundaryLockGui gui = new BoundaryLockGui(block, callback);
+                        BoundaryLockScreen screen = new BoundaryLockScreen(gui);
                         MinecraftClient.getInstance().setScreen(screen);
 
                         return ActionResult.PASS;
