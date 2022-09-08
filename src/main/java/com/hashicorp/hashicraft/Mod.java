@@ -8,11 +8,9 @@ import com.hashicorp.hashicraft.block.ModBlocks;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.entity.ModEntities;
 import com.hashicorp.hashicraft.item.ModItems;
-import com.hashicorp.hashicraft.watcher.Watcher;
 import com.hashicorp.sound.ModSounds;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.util.Identifier;
 
 public class Mod implements ModInitializer {
@@ -28,8 +26,6 @@ public class Mod implements ModInitializer {
 		ModItems.register();
 		BlockEntities.register();
 		ModEntities.register();
-
-		ServerLifecycleEvents.SERVER_STARTED.register(Watcher::Start);
 	}
 
 	public static Identifier identifier(String path) {

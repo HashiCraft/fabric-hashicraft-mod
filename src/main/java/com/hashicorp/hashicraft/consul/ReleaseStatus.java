@@ -1,15 +1,17 @@
-package com.hashicorp.hashicraft.watcher;
+package com.hashicorp.hashicraft.consul;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.math.BlockPos;
+import com.google.gson.reflect.TypeToken;
 
-public class Release implements Serializable {
+public class ReleaseStatus implements Serializable {
   @SerializedName("name")
   public String Name;
 
@@ -25,10 +27,7 @@ public class Release implements Serializable {
   @SerializedName("last_deployment_status")
   public String DeploymentStatus;
 
-  private BlockPos pos;
-
-  public Release() {
-  }
+  public ReleaseStatus() {}
 
   public byte[] toBytes() {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -36,17 +35,16 @@ public class Release implements Serializable {
     return json.getBytes();
   }
 
-  public static Release fromBytes(byte[] data) {
+  public static ReleaseStatus fromBytes(byte[] data) {
     try {
       GsonBuilder builder = new GsonBuilder();
-      builder.registerTypeAdapter(Release.class, new ReleaseDataCreator());
+      builder.registerTypeAdapter(ReleaseStatus.class, new ReleaseDataCreator());
 
       String json = new String(data);
 
       Gson gson = builder.create();
-      Release state = gson.fromJson(json, Release.class);
+      return gson.fromJson(json, ReleaseStatus.class);
 
-      return state;
     } catch (JsonSyntaxException e) {
       e.printStackTrace();
       String json = new String(data);
@@ -55,11 +53,8 @@ public class Release implements Serializable {
     }
   }
 
-  public void setPos(int x, int y, int z) {
-    this.pos = new BlockPos(x, y, z);
-  }
-
-  public BlockPos getPos() {
-    return this.pos;
+  public static List<ReleaseStatus> toList(String json) {
+      Gson gson = new Gson();
+      return gson.fromJson(json, new TypeToken<ArrayList<ReleaseStatus>>(){}.getType());
   }
 }
