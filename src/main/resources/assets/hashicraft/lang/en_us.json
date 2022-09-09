@@ -4,6 +4,7 @@
   "block.hashicraft.nomad_dispenser": "Nomad Dispenser",
   "block.hashicraft.vault_dispenser": "Vault Dispenser",
   "block.hashicraft.vault_lock": "Vault Lock",
+  "block.hashicraft.boundary_lock": "Boundary Lock",
   "itemGroup.hashicraft.hashicraft": "HashiCraft",
   "item.hashicraft.vault_card": "Keycard",
   "item.hashicraft.hashiconf_music": "HashiConf Anthem",
