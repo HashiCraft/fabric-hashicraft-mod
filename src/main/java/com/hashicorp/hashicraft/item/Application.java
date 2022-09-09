@@ -6,7 +6,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -35,21 +34,18 @@ public class Application extends Item {
             return;
         }
 
-        NbtCompound identity = itemStack.getOrCreateNbt();
-        String name = identity.getString("name");
-        String version = identity.getString("version");
-        String owner = identity.getString("owner");
+        NbtData data = NbtData.getCustomNbt(itemStack);
 
         tooltip.add(Text.literal("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        tooltip.add(Text.literal(data.getName()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
         tooltip.add(Text.literal(""));
 
         tooltip.add(Text.literal("Version").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(version).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        tooltip.add(Text.literal(data.getVersion()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
         tooltip.add(Text.literal(""));
 
-        tooltip.add(Text.literal("Owner").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(owner).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        tooltip.add(Text.literal("Nomad Deployment").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
+        tooltip.add(Text.literal(data.getNomadDeployment()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
         tooltip.add(Text.literal(""));
     }
 }

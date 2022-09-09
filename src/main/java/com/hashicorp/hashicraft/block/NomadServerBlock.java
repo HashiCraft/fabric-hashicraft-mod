@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.NomadServerEntity;
 import com.hashicorp.hashicraft.item.ModItems;
+import com.hashicorp.hashicraft.item.NbtData;
 import com.hashicorp.hashicraft.ui.event.NomadServerClicked;
 
 import net.minecraft.block.Block;
@@ -32,8 +33,6 @@ import net.minecraft.world.World;
 public class NomadServerBlock extends StatefulBlock {
   public static final BooleanProperty POWERED = BooleanProperty.of("powered");
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-
-  ExecutorService executor;
 
   public NomadServerBlock(Settings settings) {
     super(settings);
@@ -74,13 +73,16 @@ public class NomadServerBlock extends StatefulBlock {
         }
         return ActionResult.SUCCESS;
       } else {
-        if (!stack.isOf(ModItems.WRENCH_ITEM)) {
+        if (stack.isOf(ModItems.APP_MINECART_ITEM)) {
           if (server.getAddress() == "") {
             player.sendMessage(Text.literal("ERROR - Nomad address is not set"), true);
             return ActionResult.SUCCESS;
           }
 
-          boolean created = server.createJob();
+          NbtData data = NbtData.getCustomNbt(stack);
+
+          boolean created = server.createJob(
+                  data.getName(), data.getVersion(), data.getNomadDeployment());
           if (created) {
             player.sendMessage(Text.literal("INFO - Nomad job created"), true);
           } else {

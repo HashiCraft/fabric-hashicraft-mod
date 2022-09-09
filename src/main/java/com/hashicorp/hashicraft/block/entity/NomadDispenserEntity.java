@@ -4,12 +4,12 @@ import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
 import com.google.common.collect.Lists;
 import com.hashicorp.hashicraft.item.ModItems;
+import com.hashicorp.hashicraft.item.NbtData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPointerImpl;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -21,16 +21,22 @@ import java.util.stream.Stream;
 
 import static com.hashicorp.hashicraft.item.Dyes.COLORS;
 import static com.hashicorp.hashicraft.item.Dyes.DEFAULT_COLOR;
+import static com.hashicorp.hashicraft.item.NbtData.DEFAULT_APPLICATION;
+import static com.hashicorp.hashicraft.item.NbtData.DEFAULT_NOMAD_DEPLOYMENT;
 
 public class NomadDispenserEntity extends StatefulBlockEntity {
+
   @Syncable
-  private String name = "fake-service";
+  private String name = DEFAULT_APPLICATION;
 
   @Syncable
   private String color = "blue";
 
   @Syncable
   private String version = color;
+
+  @Syncable
+  private String nomadDeployment = DEFAULT_NOMAD_DEPLOYMENT;
 
   @Syncable
   private List<String> colors = Lists.newArrayList(color);
@@ -72,6 +78,15 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
     this.markForUpdate();
   }
 
+  public String getNomadDeployment() {
+    return nomadDeployment;
+  }
+
+  public void setNomadDeployment(String nomadDeployment) {
+    this.nomadDeployment = nomadDeployment;
+    this.markForUpdate();
+  }
+
   public String getVersion() {
     return version;
   }
@@ -93,14 +108,11 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
     setColorAndVersion(this.colors.get(0), this.colors.get(0));
   }
 
-  public ItemStack getApplication(String owner) {
+  public ItemStack getApplication() {
     ItemStack application = new ItemStack(ModItems.APPLICATION_ITEM);
 
-    NbtCompound identity = application.getOrCreateNbt();
-    identity.putString("name", this.getName());
-    identity.putString("version", this.getVersion());
-    identity.putString("owner", owner);
-    application.setNbt(identity);
+    NbtData data = new NbtData(this.getName(), this.getVersion(), this.getNomadDeployment());
+    data.setCustomNbt(application);
 
     return application;
   }

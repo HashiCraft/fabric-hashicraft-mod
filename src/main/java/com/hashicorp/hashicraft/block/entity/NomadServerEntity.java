@@ -27,6 +27,7 @@ import com.hashicorp.hashicraft.entity.ModEntities;
 import com.hashicorp.hashicraft.nomad.Allocation;
 import com.hashicorp.hashicraft.nomad.Chunk;
 
+import com.hashicorp.hashicraft.nomad.Job;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -42,7 +43,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
   @Syncable
   private String address = "";
 
-  private Set<String> allocations = new HashSet<String>();
+  private final Set<String> allocations = new HashSet<>();
 
   private ExecutorService executor;
 
@@ -80,13 +81,13 @@ public class NomadServerEntity extends StatefulBlockEntity {
         try {
           while (!executor.isShutdown() && !executor.isTerminated()) {
 
-            if (address != "") {
+            if (!address.isEmpty()) {
               int index = getAllocations();
               getEvents(index);
+            } else {
+              Mod.LOGGER.info("Nomad address not set, retrying in 5 seconds" + executor.toString());
             }
 
-            // If there was no address yet, retry in 5 seconds.
-            Mod.LOGGER.info("Nomad address not set, retrying in 5 seconds" + executor.toString());
             TimeUnit.SECONDS.sleep(5);
           }
         } catch (InterruptedException e) {
@@ -145,7 +146,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
     try {
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
-          .uri(URI.create(address + "/v1/event/stream?topic=Allocation&index=" + index))
+          .uri(URI.create(String.format("%s/v1/event/stream?topic=Allocation&index=%d", address, index)))
           .header("Accept", "application/json")
           .GET()
           .build();
@@ -270,7 +271,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
     BlockPos output = pos.east();
     BlockState blockState = world.getBlockState(output);
     if (!blockState.isIn(BlockTags.RAILS)) {
-      Mod.LOGGER.info("NOT RAILS!!!");
+      Mod.LOGGER.debug("NOT RAILS!!!");
       return false;
     }
     RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock
@@ -308,9 +309,6 @@ public class NomadServerEntity extends StatefulBlockEntity {
     });
 
     minecarts.forEach((cart) -> {
-      // Mod.LOGGER.info("Existing carts:");
-      // Mod.LOGGER.info(cart.getUuidAsString() + " name: " +
-      // cart.getCustomName().getString());
       Mod.LOGGER.info(cart.getCustomName().getString() + " vs " + id);
       if (cart.getCustomName().getString().equalsIgnoreCase(id)) {
         Mod.LOGGER.info("destroying cart: " + id);
@@ -321,47 +319,12 @@ public class NomadServerEntity extends StatefulBlockEntity {
     return true;
   }
 
-  public boolean createJob() {
+  public boolean createJob(String application, String version, String nomadDeployment) {
     try {
-      String payload = String.format("""
-          {
-            "Job": {
-              "Datacenters": ["dc1"],
-              "ID": "%s",
-              "Restart": {
-                "Mode": "delay",
-                "Attempts": 10,
-                "Interval": "24h",
-                "Delay": "5s"
-              },
-              "TaskGroups": [
-                {
-                  "Name": "cache",
-                  "Networks": [
-                    {
-                      "DynamicPorts": [
-                        {
-                          "Label": "db",
-                          "To": 6379
-                        }
-                      ]
-                    }
-                  ],
-                  "Tasks": [
-                    {
-                      "Config": {
-                        "image": "redis:7",
-                        "ports": ["db"]
-                      },
-                      "Driver": "docker",
-                      "Name": "redis"
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-            """, "app");
+      Job job = new Job(application, version, nomadDeployment);
+      String payload = job.toJson();
+
+      Mod.LOGGER.info("Submitting job to Nomad: " + nomadDeployment + ", " + version);
 
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
@@ -372,11 +335,10 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
       if (response.statusCode() >= 400) {
-        Mod.LOGGER.warn(response.body());
+        Mod.LOGGER.error(response.body());
         return false;
       }
 
-      Mod.LOGGER.info(response.body());
       return true;
     } catch (Exception e) {
       e.printStackTrace();
