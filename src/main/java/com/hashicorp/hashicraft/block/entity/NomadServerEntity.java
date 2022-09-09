@@ -126,8 +126,8 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
       ArrayList<Allocation> list = gson.fromJson(response.body(), allocationListType);
       for (Allocation allocation : list) {
-        allocations.add(allocation.ID);
-        createCart(allocation.ID);
+        if (createCart(allocation.ID, allocation.JobID, "green"))
+          allocations.add(allocation.ID);
       }
 
       String index = response.headers().firstValue("X-Nomad-Index").orElse("-1");
@@ -180,15 +180,14 @@ public class NomadServerEntity extends StatefulBlockEntity {
                   && allocation.DesiredStatus.equalsIgnoreCase("run")) {
                 if (!allocations.contains(allocation.ID)) {
                   Mod.LOGGER.info("[pending -> run] Creating allocation: " + allocation.ID);
-                  allocations.add(allocation.ID);
-                  createCart(allocation.ID);
+                  if (createCart(allocation.ID, allocation.JobID, "green"))
+                    allocations.add(allocation.ID);
                 } else {
                   Mod.LOGGER.info("[pending -> run] Restarting allocation: " + allocation.ID);
                   if (destroyCart(allocation.ID))
                     allocations.remove(allocation.ID);
-                  if (createCart(allocation.ID))
+                  if (createCart(allocation.ID, allocation.JobID, "green"))
                     allocations.add(allocation.ID);
-                  Mod.LOGGER.info("allocations: " + allocations);
                 }
               }
               // Check if we need to destroy an existing cart.
@@ -196,14 +195,12 @@ public class NomadServerEntity extends StatefulBlockEntity {
                   && allocation.DesiredStatus.equalsIgnoreCase("stop")) {
                 if (allocations.contains(allocation.ID)) {
                   Mod.LOGGER.info("[running -> stop] Destroying allocation: " + allocation.ID);
-                  destroyCart(allocation.ID);
-                  allocations.remove(allocation.ID);
-                  Mod.LOGGER.info("allocations: " + allocations);
+                  if (destroyCart(allocation.ID))
+                    allocations.remove(allocation.ID);
                 } else {
                   Mod.LOGGER.info("[running -> stop] Destroying unknown allocation: " + allocation.ID);
-                  destroyCart(allocation.ID);
-                  allocations.remove(allocation.ID);
-                  Mod.LOGGER.info("allocations: " + allocations);
+                  if (destroyCart(allocation.ID))
+                    allocations.remove(allocation.ID);
                 }
               } else if (allocation.ClientStatus.equalsIgnoreCase("failed")
                   && allocation.DesiredStatus.equalsIgnoreCase("stop")) {
@@ -211,12 +208,10 @@ public class NomadServerEntity extends StatefulBlockEntity {
                   Mod.LOGGER.info("[failed -> stop] Destroying allocation: " + allocation.ID);
                   destroyCart(allocation.ID);
                   allocations.remove(allocation.ID);
-                  Mod.LOGGER.info("allocations: " + allocations);
                 } else {
                   Mod.LOGGER.info("[failed -> stop] Destroying unknown allocation: " + allocation.ID);
                   destroyCart(allocation.ID);
                   allocations.remove(allocation.ID);
-                  Mod.LOGGER.info("allocations: " + allocations);
                 }
               } else {
                 Mod.LOGGER.info("event id: " + event.Index +
@@ -269,7 +264,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
     }
   }
 
-  public boolean createCart(String id) {
+  public boolean createCart(String id, String application, String version) {
     Mod.LOGGER.info("Creating cart: " + id);
     BlockPos pos = this.getPos();
     BlockPos output = pos.east();
@@ -287,6 +282,9 @@ public class NomadServerEntity extends StatefulBlockEntity {
     }
 
     AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
+    // entity.setAllocation(Text.literal(id));
+    // entity.setApplication(Text.literal(application));
+    // entity.setVersion(Text.literal(version));
     entity.setPos(
         (double) output.getX() + 0.5,
         (double) output.getY() + 0.0625 + d,

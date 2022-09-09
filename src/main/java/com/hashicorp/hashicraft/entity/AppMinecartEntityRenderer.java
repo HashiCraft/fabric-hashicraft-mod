@@ -71,7 +71,7 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
       }
     }
     matrixStack.translate(0.0, 0.0, 0.0);
-    // matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0f - f));
+    matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0f - f));
     // matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-o));
 
     // int r = ((AbstractMinecartEntity) abstractMinecartEntity).getBlockOffset();
@@ -89,23 +89,35 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     // }
     // matrixStack.scale(-1.0f, -1.0f, 1.0f);
 
+    // AppMinecartEntity minecart = (AppMinecartEntity) entity;
+
     this.model.setAngles(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
     VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.getLayer(this.getTexture(entity)));
     this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, 1.0f);
     matrixStack.pop();
 
-    renderText(matrixStack, f, "v2", 0.0f, 1.5f, 0.0f, 0.03F, 0xFFffffff);
+    Text allocation = Text.literal("allocation ID");
+    // Text allocation = minecart.getAllocation();
+    // if (allocation != null)
+    renderAllocation(matrixStack, f, allocation, 0.0f, 1.85f, 0.0f, 0.02F);
+    Text application = Text.literal("Application name");
+    // Text application = minecart.getApplication();
+    // if (application != null)
+    renderName(matrixStack, f, application, 0.0f, 1.6f, 0.0f, 0.03F);
+    Text version = Text.literal("Version");
+    // Text version = minecart.getVersion();
+    // if (version != null)
+    renderVersion(matrixStack, f, version, 0.0f, 1.3f, 0.0f, 0.02F);
   }
 
-  private void renderText(MatrixStack matrices, float rotation, String message, float x, float y, float z,
-      float scale, int color) {
+  private void renderAllocation(MatrixStack matrices, float rotation, Text text, float x, float y, float z,
+      float scale) {
     float xTranslate = x;
     float zTranslate = z;
     float yTranslate = y;
 
-    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation);
+    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0f + rotation);
 
-    Text text = Text.literal(message);
     matrices.push();
     matrices.translate(xTranslate, yTranslate, zTranslate);
     matrices.scale(-scale, -scale, scale);
@@ -114,16 +126,74 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     MinecraftClient client = MinecraftClient.getInstance();
     TextRenderer textRenderer = client.textRenderer;
     float width = (float) (-textRenderer.getWidth((StringVisitable) text) / 2);
-    textRenderer.drawWithShadow(matrices, text, width, 0F, color);
+    textRenderer.drawWithShadow(matrices, text, width, 0F, 0xFFaaaaaa);
     matrices.pop();
 
-    yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0f + rotation);
+    yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0f + rotation);
     matrices.push();
     matrices.translate(xTranslate, yTranslate, zTranslate);
     matrices.scale(-scale, -scale, scale);
     matrices.multiply(yRotation);
 
-    textRenderer.drawWithShadow(matrices, text, width, 0F, color);
+    textRenderer.drawWithShadow(matrices, text, width, 0F, 0xFFaaaaaa);
+    matrices.pop();
+  }
+
+  private void renderName(MatrixStack matrices, float rotation, Text text, float x, float y, float z,
+      float scale) {
+    float xTranslate = x;
+    float zTranslate = z;
+    float yTranslate = y;
+
+    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0f + rotation);
+
+    matrices.push();
+    matrices.translate(xTranslate, yTranslate, zTranslate);
+    matrices.scale(-scale, -scale, scale);
+    matrices.multiply(yRotation);
+
+    MinecraftClient client = MinecraftClient.getInstance();
+    TextRenderer textRenderer = client.textRenderer;
+    float width = (float) (-textRenderer.getWidth((StringVisitable) text) / 2);
+    textRenderer.drawWithShadow(matrices, text, width, 0F, 0xFFffffff);
+    matrices.pop();
+
+    yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0f + rotation);
+    matrices.push();
+    matrices.translate(xTranslate, yTranslate, zTranslate);
+    matrices.scale(-scale, -scale, scale);
+    matrices.multiply(yRotation);
+
+    textRenderer.drawWithShadow(matrices, text, width, 0F, 0xFFffffff);
+    matrices.pop();
+  }
+
+  private void renderVersion(MatrixStack matrices, float rotation, Text text, float x, float y, float z,
+      float scale) {
+    float xTranslate = x;
+    float zTranslate = z;
+    float yTranslate = y;
+
+    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0f + rotation);
+
+    matrices.push();
+    matrices.translate(xTranslate, yTranslate, zTranslate);
+    matrices.scale(-scale, -scale, scale);
+    matrices.multiply(yRotation);
+
+    MinecraftClient client = MinecraftClient.getInstance();
+    TextRenderer textRenderer = client.textRenderer;
+    float width = (float) (-textRenderer.getWidth((StringVisitable) text) / 2);
+    textRenderer.drawWithShadow(matrices, text, width, 0F, 0xFFffcc00);
+    matrices.pop();
+
+    yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0f + rotation);
+    matrices.push();
+    matrices.translate(xTranslate, yTranslate, zTranslate);
+    matrices.scale(-scale, -scale, scale);
+    matrices.multiply(yRotation);
+
+    textRenderer.drawWithShadow(matrices, text, width, 0F, 0xFFffcc00);
     matrices.pop();
   }
 

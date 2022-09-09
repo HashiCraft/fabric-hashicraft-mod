@@ -12,6 +12,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class AppMinecartEntity extends MinecartEntity {
+  // private Text allocation;
+  // private Text application;
+  // private Text version;
+
+  // private static final TrackedData<Optional<Text>> ALLOCATION =
+  // DataTracker.registerData(AppMinecartEntity.class,
+  // TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+  // private static final TrackedData<Optional<Text>> APPLICATION =
+  // DataTracker.registerData(AppMinecartEntity.class,
+  // TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+  // private static final TrackedData<Optional<Text>> VERSION =
+  // DataTracker.registerData(AppMinecartEntity.class,
+  // TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+
   public AppMinecartEntity(EntityType<?> type, World world) {
     super(type, world);
   }
@@ -20,6 +34,30 @@ public class AppMinecartEntity extends MinecartEntity {
   public Type getMinecartType() {
     return null;
   }
+
+  // public void setAllocation(Text allocation) {
+  // this.dataTracker.set(ALLOCATION, Optional.ofNullable(allocation));
+  // }
+
+  // public Text getAllocation() {
+  // return this.dataTracker.get(ALLOCATION).orElse(null);
+  // }
+
+  // public void setApplication(Text application) {
+  // this.dataTracker.set(APPLICATION, Optional.ofNullable(application));
+  // }
+
+  // public Text getApplication() {
+  // return this.dataTracker.get(APPLICATION).orElse(null);
+  // }
+
+  // public void setVersion(Text version) {
+  // this.dataTracker.set(VERSION, Optional.ofNullable(version));
+  // }
+
+  // public Text getVersion() {
+  // return this.dataTracker.get(VERSION).orElse(null);
+  // }
 
   @Override
   protected void readCustomDataFromNbt(NbtCompound nbt) {
