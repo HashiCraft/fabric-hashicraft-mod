@@ -3,7 +3,6 @@ package com.hashicorp.hashicraft;
 import com.hashicorp.hashicraft.block.ModBlocks;
 import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserRenderer;
-import com.hashicorp.hashicraft.block.entity.NomadDispenserRenderer;
 import com.hashicorp.hashicraft.block.entity.VaultDispenserRenderer;
 import com.hashicorp.hashicraft.entity.AppMinecartEntityModel;
 import com.hashicorp.hashicraft.entity.AppMinecartEntityRenderer;
@@ -47,9 +46,6 @@ public class ModClient implements ClientModInitializer {
         @Override
         public void onInitializeClient() {
                 // Nomad Dispenser
-                BlockEntityRendererRegistry.register(BlockEntities.NOMAD_DISPENSER_ENTITY,
-                                NomadDispenserRenderer::new);
-
                 BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.NOMAD_DISPENSER_BLOCK,
                                 RenderLayer.getTranslucent());
 
