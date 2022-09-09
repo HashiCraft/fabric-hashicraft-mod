@@ -15,7 +15,7 @@ public class Job {
         Job = new Spec(name, version, nomadDeployment);
     }
 
-    static class Spec {
+    public static class Spec {
 
         private static final String NOMAD_DATACENTER = "dc1";
         private static final String NOMAD_NAMESPACE = "default";
@@ -30,6 +30,7 @@ public class Job {
         public String Namespace = NOMAD_NAMESPACE;
         public List<String> Datacenters = Lists.newArrayList(NOMAD_DATACENTER);
         public List<TaskGroup> TaskGroups;
+        public Map<String, String> Meta;
 
 
         public Spec(String name, String version, String nomadDeployment) {
@@ -38,6 +39,7 @@ public class Job {
             TaskGroups = version.contentEquals(ERROR_VERSION) ?
                     Lists.newArrayList(new TaskGroup(name, version, true)) :
                     Lists.newArrayList(new TaskGroup(name, version, false));
+            Meta = Map.of("version", version);
         }
 
         static class TaskGroup {

@@ -6,10 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -127,8 +124,12 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
       ArrayList<Allocation> list = gson.fromJson(response.body(), allocationListType);
       for (Allocation allocation : list) {
-        if (createCart(allocation.ID, allocation.JobID, "green"))
+        Job.Spec job = getJob(allocation.JobID);
+        String version = job.Meta != null ? job.Meta.getOrDefault("version", "") : "";
+        if (createCart(allocation.ID, allocation.JobID, version))
+        {
           allocations.add(allocation.ID);
+        }
       }
 
       String index = response.headers().firstValue("X-Nomad-Index").orElse("-1");
@@ -266,12 +267,12 @@ public class NomadServerEntity extends StatefulBlockEntity {
   }
 
   public boolean createCart(String id, String application, String version) {
-    Mod.LOGGER.info("Creating cart: " + id);
+    Mod.LOGGER.info(String.format("Created cart: %s, %s, %s", id, application, version));
     BlockPos pos = this.getPos();
-    BlockPos output = pos.east();
+    BlockPos output = pos.west();
     BlockState blockState = world.getBlockState(output);
     if (!blockState.isIn(BlockTags.RAILS)) {
-      Mod.LOGGER.debug("NOT RAILS!!!");
+      Mod.LOGGER.warn("NOT RAILS!!!");
       return false;
     }
     RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock
@@ -343,6 +344,30 @@ public class NomadServerEntity extends StatefulBlockEntity {
     } catch (Exception e) {
       e.printStackTrace();
       return false;
+    }
+  }
+
+  public Job.Spec getJob(String jobID) {
+    try {
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+              .uri(URI.create(String.format("%s/v1/job/%s", address, jobID)))
+              .header("Accept", "application/json")
+              .GET()
+              .build();
+
+      HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+      if (response.statusCode() >= 400) {
+        Mod.LOGGER.error(response.body());
+        return null;
+      }
+
+      Gson gson = new Gson();
+      return gson.fromJson(response.body(), Job.Spec.class);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
     }
   }
 
