@@ -31,3 +31,13 @@ bin/
 # fabric
 
 run/
+
+# Terraform
+shipyard/boundary/files/terraform/.terraform
+*.tfstate*
+
+# Shipyard setup
+shipyard/minecraft/config
+shipyard/minecraft/mods
+shipyard/minecraft/world
+
