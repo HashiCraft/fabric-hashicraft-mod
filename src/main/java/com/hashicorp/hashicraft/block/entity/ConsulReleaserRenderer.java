@@ -2,7 +2,6 @@ package com.hashicorp.hashicraft.block.entity;
 
 import com.hashicorp.hashicraft.Mod;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -55,7 +54,8 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
             new TextureUV(0.0F, 1.0F)
     );
 
-    public ConsulReleaserRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public ConsulReleaserRenderer(BlockEntityRendererFactory.Context ctx) {
+    }
 
     private static class Coordinates {
         float width;

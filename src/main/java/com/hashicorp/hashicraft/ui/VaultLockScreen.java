@@ -4,7 +4,7 @@ import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 
 public class VaultLockScreen extends CottonClientScreen {
-  public VaultLockScreen(GuiDescription description) {
-    super(description);
-  }
+    public VaultLockScreen(GuiDescription description) {
+        super(description);
+    }
 }

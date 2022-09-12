@@ -2,6 +2,7 @@ package com.hashicorp.hashicraft.consul;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+
 import java.util.List;
 import java.util.Map;
 
