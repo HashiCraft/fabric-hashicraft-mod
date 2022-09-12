@@ -1,11 +1,9 @@
 package com.hashicorp.hashicraft.block;
 
-import java.util.concurrent.ExecutorService;
-
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.NomadServerEntity;
 import com.hashicorp.hashicraft.item.ModItems;
-import com.hashicorp.hashicraft.item.NbtData;
+import com.hashicorp.hashicraft.item.CartNbtData;
 import com.hashicorp.hashicraft.ui.event.NomadServerClicked;
 
 import net.minecraft.block.Block;
@@ -79,7 +77,7 @@ public class NomadServerBlock extends StatefulBlock {
             return ActionResult.SUCCESS;
           }
 
-          NbtData data = NbtData.getCustomNbt(stack);
+          CartNbtData data = CartNbtData.getCustomNbt(stack);
 
           boolean created = server.createJob(
                   data.getName(), data.getVersion(), data.getNomadDeployment());

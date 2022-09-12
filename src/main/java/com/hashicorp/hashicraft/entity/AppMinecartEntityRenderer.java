@@ -1,7 +1,6 @@
 package com.hashicorp.hashicraft.entity;
 
 import com.hashicorp.hashicraft.Mod;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -72,41 +71,19 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     }
     matrixStack.translate(0.0, 0.0, 0.0);
     matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0f - f));
-    // matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-o));
 
-    // int r = ((AbstractMinecartEntity) abstractMinecartEntity).getBlockOffset();
-    // BlockState blockState = ((AbstractMinecartEntity)
-    // abstractMinecartEntity).getContainedBlock();
-    // if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
-    // matrixStack.push();
-    // float s = 0.75f;
-    // matrixStack.scale(0.75f, 0.75f, 0.75f);
-    // matrixStack.translate(-0.5, (float) (r - 8) / 16.0f, 0.5);
-    // matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0f));
-    // this.renderBlock(abstractMinecartEntity, g, blockState, matrixStack,
-    // vertexConsumerProvider, i);
-    // matrixStack.pop();
-    // }
-    // matrixStack.scale(-1.0f, -1.0f, 1.0f);
 
-    // AppMinecartEntity minecart = (AppMinecartEntity) entity;
 
     this.model.setAngles(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
     VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.getLayer(this.getTexture(entity)));
     this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, 1.0f);
     matrixStack.pop();
 
-    Text allocation = Text.literal("allocation ID");
-    // Text allocation = minecart.getAllocation();
-    // if (allocation != null)
+    Text allocation = entity.getAllocationID();
     renderAllocation(matrixStack, f, allocation, 0.0f, 1.85f, 0.0f, 0.02F);
-    Text application = Text.literal("Application name");
-    // Text application = minecart.getApplication();
-    // if (application != null)
+    Text application = entity.getApplication();
     renderName(matrixStack, f, application, 0.0f, 1.6f, 0.0f, 0.03F);
-    Text version = Text.literal("Version");
-    // Text version = minecart.getVersion();
-    // if (version != null)
+    Text version = entity.getVersion();
     renderVersion(matrixStack, f, version, 0.0f, 1.3f, 0.0f, 0.02F);
   }
 

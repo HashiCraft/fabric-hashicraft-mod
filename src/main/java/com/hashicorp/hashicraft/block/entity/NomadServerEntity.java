@@ -287,15 +287,14 @@ public class NomadServerEntity extends StatefulBlockEntity {
     }
 
     AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
-    // entity.setAllocation(Text.literal(id));
-    // entity.setApplication(Text.literal(application));
-    // entity.setVersion(Text.literal(version));
     entity.setPos(
         (double) output.getX() + 0.5,
         (double) output.getY() + 0.0625 + d,
         (double) output.getZ() + 0.5);
 
-    entity.setCustomName(Text.literal(id));
+    entity.setAllocationID(Text.literal(id.substring(0, 8)));
+    entity.setApplication(Text.literal(application));
+    entity.setVersion(Text.literal(version));
     world.spawnEntity(entity);
     this.getWorld().emitGameEvent(null, GameEvent.ENTITY_PLACE, output);
 

@@ -4,7 +4,7 @@ import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
 import com.google.common.collect.Lists;
 import com.hashicorp.hashicraft.item.ModItems;
-import com.hashicorp.hashicraft.item.NbtData;
+import com.hashicorp.hashicraft.item.CartNbtData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 
 import static com.hashicorp.hashicraft.item.Dyes.COLORS;
 import static com.hashicorp.hashicraft.item.Dyes.DEFAULT_COLOR;
-import static com.hashicorp.hashicraft.item.NbtData.DEFAULT_APPLICATION;
-import static com.hashicorp.hashicraft.item.NbtData.DEFAULT_NOMAD_DEPLOYMENT;
+import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_APPLICATION;
+import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_NOMAD_DEPLOYMENT;
 
 public class NomadDispenserEntity extends StatefulBlockEntity {
 
@@ -111,7 +111,7 @@ public class NomadDispenserEntity extends StatefulBlockEntity {
   public ItemStack getApplication() {
     ItemStack application = new ItemStack(ModItems.APPLICATION_ITEM);
 
-    NbtData data = new NbtData(this.getName(), this.getVersion(), this.getNomadDeployment());
+    CartNbtData data = new CartNbtData(this.getName(), this.getVersion(), this.getNomadDeployment());
     data.setCustomNbt(application);
 
     return application;

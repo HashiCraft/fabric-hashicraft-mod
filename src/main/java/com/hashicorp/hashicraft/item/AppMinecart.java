@@ -115,7 +115,7 @@ public class AppMinecart extends Item {
             return;
         }
 
-        NbtData data = NbtData.getCustomNbt(itemStack);
+        CartNbtData data = CartNbtData.getCustomNbt(itemStack);
 
         tooltip.add(Text.literal("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
         tooltip.add(Text.literal(data.getName()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));

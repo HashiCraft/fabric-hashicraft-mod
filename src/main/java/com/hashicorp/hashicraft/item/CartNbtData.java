@@ -3,17 +3,17 @@ package com.hashicorp.hashicraft.item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 
-public class NbtData {
+public class CartNbtData {
 
     public static final String DEFAULT_APPLICATION = "payments";
     public static final String DEFAULT_NOMAD_DEPLOYMENT = "payments-deployment";
     public static final String DEFAULT_NOMAD_NAMESPACE = "default";
 
-    private String name;
-    private String version;
-    private String nomadDeployment;
+    private final String name;
+    private final String version;
+    private final String nomadDeployment;
 
-    public NbtData(String name, String version, String nomadDeployment) {
+    public CartNbtData(String name, String version, String nomadDeployment) {
         this.name = name;
         this.version = version;
         this.nomadDeployment = nomadDeployment;
@@ -31,12 +31,12 @@ public class NbtData {
         return nomadDeployment;
     }
 
-    public static NbtData getCustomNbt(ItemStack stack) {
+    public static CartNbtData getCustomNbt(ItemStack stack) {
         NbtCompound identity = stack.getOrCreateNbt();
         String name = identity.getString("name");
         String version = identity.getString("version");
         String nomadDeployment = identity.getString("nomad_deployment");
-        return new NbtData(name, version, nomadDeployment);
+        return new CartNbtData(name, version, nomadDeployment);
     }
 
     public void setCustomNbt(ItemStack stack) {

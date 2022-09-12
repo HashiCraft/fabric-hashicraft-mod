@@ -3,101 +3,115 @@ package com.hashicorp.hashicraft.entity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.vehicle.MinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.Optional;
+
 public class AppMinecartEntity extends MinecartEntity {
-  // private Text allocation;
-  // private Text application;
-  // private Text version;
 
-  // private static final TrackedData<Optional<Text>> ALLOCATION =
-  // DataTracker.registerData(AppMinecartEntity.class,
-  // TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
-  // private static final TrackedData<Optional<Text>> APPLICATION =
-  // DataTracker.registerData(AppMinecartEntity.class,
-  // TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
-  // private static final TrackedData<Optional<Text>> VERSION =
-  // DataTracker.registerData(AppMinecartEntity.class,
-  // TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+    private static final TrackedData<Optional<Text>> ALLOCATION;
+    private static final TrackedData<Optional<Text>> APPLICATION;
+    private static final TrackedData<Optional<Text>> VERSION;
 
-  public AppMinecartEntity(EntityType<?> type, World world) {
-    super(type, world);
-  }
+    static {
+        ALLOCATION = DataTracker.registerData(
+                AppMinecartEntity.class, TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+        APPLICATION = DataTracker.registerData(
+                AppMinecartEntity.class, TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+        VERSION = DataTracker.registerData(
+                AppMinecartEntity.class, TrackedDataHandlerRegistry.OPTIONAL_TEXT_COMPONENT);
+    }
 
-  @Override
-  public Type getMinecartType() {
-    return null;
-  }
+    public AppMinecartEntity(EntityType<?> type, World world) {
+        super(type, world);
+        this.dataTracker.startTracking(ALLOCATION, Optional.empty());
+        this.dataTracker.startTracking(APPLICATION, Optional.empty());
+        this.dataTracker.startTracking(VERSION, Optional.empty());
+    }
 
-  // public void setAllocation(Text allocation) {
-  // this.dataTracker.set(ALLOCATION, Optional.ofNullable(allocation));
-  // }
+    public void setAllocationID(@Nullable Text allocationID) {
+        this.dataTracker.set(ALLOCATION, Optional.ofNullable(allocationID));
+    }
 
-  // public Text getAllocation() {
-  // return this.dataTracker.get(ALLOCATION).orElse(null);
-  // }
+    @Nullable
+    public Text getAllocationID() {
+        return (Text) ((Optional) this.dataTracker.get(ALLOCATION)).orElse(Text.empty());
+    }
 
-  // public void setApplication(Text application) {
-  // this.dataTracker.set(APPLICATION, Optional.ofNullable(application));
-  // }
+    public void setApplication(@Nullable Text application) {
+        this.dataTracker.set(APPLICATION, Optional.ofNullable(application));
+    }
 
-  // public Text getApplication() {
-  // return this.dataTracker.get(APPLICATION).orElse(null);
-  // }
+    @Nullable
+    public Text getApplication() {
+        return (Text) ((Optional) this.dataTracker.get(APPLICATION)).orElse(Text.empty());
+    }
 
-  // public void setVersion(Text version) {
-  // this.dataTracker.set(VERSION, Optional.ofNullable(version));
-  // }
+    public void setVersion(@Nullable Text version) {
+        this.dataTracker.set(VERSION, Optional.ofNullable(version));
+    }
 
-  // public Text getVersion() {
-  // return this.dataTracker.get(VERSION).orElse(null);
-  // }
+    @Nullable
+    public Text getVersion() {
+        return (Text) ((Optional) this.dataTracker.get(VERSION)).orElse(Text.empty());
+    }
 
-  @Override
-  protected void readCustomDataFromNbt(NbtCompound nbt) {
-    super.readCustomDataFromNbt(nbt);
-  }
+    @Override
+    public Type getMinecartType() {
+        return null;
+    }
 
-  @Override
-  protected void writeCustomDataToNbt(NbtCompound nbt) {
-    super.writeCustomDataToNbt(nbt);
-  }
+    @Override
+    protected void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+    }
 
-  @Override
-  public Packet<?> createSpawnPacket() {
-    return new EntitySpawnS2CPacket(this);
-  }
+    @Override
+    protected void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+    }
 
-  @Override
-  protected Item getItem() {
-    return null;
-  }
+    @Override
+    public Packet<?> createSpawnPacket() {
+        return new EntitySpawnS2CPacket(this);
+    }
 
-  @Override
-  public void dropItems(DamageSource damageSource) {
-    this.kill();
-  }
+    @Override
+    protected Item getItem() {
+        return null;
+    }
 
-  @Override
-  protected void moveOnRail(BlockPos pos, BlockState state) {
-    super.moveOnRail(pos, state);
-  }
+    @Override
+    public void dropItems(DamageSource damageSource) {
+        this.kill();
+    }
 
-  @Override
-  public void tick() {
-    super.tick();
-  }
+    @Override
+    protected void moveOnRail(BlockPos pos, BlockState state) {
+        super.moveOnRail(pos, state);
+    }
 
-  @Override
-  public boolean damage(DamageSource source, float amount) {
-    // this.discard();
-    // return true;
-    return false;
-  }
+    @Override
+    public void tick() {
+        super.tick();
+    }
+
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        // this.discard();
+        // return true;
+        return false;
+    }
 }

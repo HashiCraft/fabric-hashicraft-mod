@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.hashicorp.hashicraft.block.ConsulReleaserBlock.HEALTHY;
-import static com.hashicorp.hashicraft.item.NbtData.*;
+import static com.hashicorp.hashicraft.item.CartNbtData.*;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
