@@ -124,9 +124,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
       ArrayList<Allocation> list = gson.fromJson(response.body(), allocationListType);
       for (Allocation allocation : list) {
-        Job.Spec job = getJob(allocation.JobID);
-        String version = job.Meta != null ? job.Meta.getOrDefault("version", "") : "";
-        if (createCart(allocation.ID, allocation.JobID, version))
+        if (createCart(allocation.ID, allocation.JobID, getVersionMetadata(allocation.JobID)))
         {
           allocations.add(allocation.ID);
         }
@@ -141,6 +139,11 @@ public class NomadServerEntity extends StatefulBlockEntity {
       e.printStackTrace();
       return -1;
     }
+  }
+
+  private String getVersionMetadata(String jobID) {
+      Job.Spec job = getJob(jobID);
+      return job.Meta != null ? job.Meta.getOrDefault("version", "") : "";
   }
 
   public ArrayList<Allocation> getEvents(int index) {
@@ -182,13 +185,13 @@ public class NomadServerEntity extends StatefulBlockEntity {
                   && allocation.DesiredStatus.equalsIgnoreCase("run")) {
                 if (!allocations.contains(allocation.ID)) {
                   Mod.LOGGER.info("[pending -> run] Creating allocation: " + allocation.ID);
-                  if (createCart(allocation.ID, allocation.JobID, "green"))
+                  if (createCart(allocation.ID, allocation.JobID, getVersionMetadata(allocation.JobID)))
                     allocations.add(allocation.ID);
                 } else {
                   Mod.LOGGER.info("[pending -> run] Restarting allocation: " + allocation.ID);
                   if (destroyCart(allocation.ID))
                     allocations.remove(allocation.ID);
-                  if (createCart(allocation.ID, allocation.JobID, "green"))
+                  if (createCart(allocation.ID, allocation.JobID, getVersionMetadata(allocation.JobID)))
                     allocations.add(allocation.ID);
                 }
               }
