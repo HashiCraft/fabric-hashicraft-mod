@@ -79,7 +79,7 @@ resource "boundary_target" "postgres" {
     boundary_host_set.postgres.id
   ]
 
-  default_port = 15672
+  default_port = 5432
 }
 
 resource "boundary_account" "boundary_admin" {

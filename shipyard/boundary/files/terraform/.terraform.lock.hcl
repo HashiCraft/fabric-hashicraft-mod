@@ -6,6 +6,7 @@ provider "registry.terraform.io/hashicorp/boundary" {
   constraints = "1.0.10"
   hashes = [
     "h1:1sqqvz1kuj9R65TGWkFSf8/q4iX+n+EpuSFD9NTfLzk=",
+    "h1:VnvUOeMP5TAQ/IfLx7XUIu0OFSqlcAdBkYELYt3LBdw=",
     "zh:0f15108e674249ffeb6c26197c1309e55472ee86a81e41c2719034f470196951",
     "zh:58b3886a8a509b5d0a4cc3d21562f9b5016020d5f0cb27519af8d66e25d7d203",
     "zh:62b0fc18614074763f07893c5dc77a31ef6324be73c3f0f3393f5a1e3d35c2e1",

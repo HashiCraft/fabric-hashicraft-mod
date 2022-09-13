@@ -25,3 +25,8 @@ module "minecraft" {
 module "browserless" {
   source = "./browserless"
 }
+
+module "boundary_connect" {
+  source = "./boundary-connect"
+  depends_on = ["module.boundary"]
+}

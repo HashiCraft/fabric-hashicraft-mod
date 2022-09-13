@@ -109,13 +109,17 @@ template "boundary_setup" {
   #!/bin/bash
   terraform -chdir=/terraform init
   terraform -chdir=/terraform apply -auto-approve
+  terraform -chdir=/terraform output -raw auth_method_id > /boundary-auth/auth_method_id
+  terraform -chdir=/terraform output -raw username > /boundary-auth/username
+  terraform -chdir=/terraform output -raw password > /boundary-auth/password
+  terraform -chdir=/terraform output -raw target_id > /boundary-auth/target_id
   EOT
   destination = "${data("boundary")}/setup.sh"
 }
 
 exec_remote "boundary_setup" {
   image {
-    name = "shipyardrun/hashicorp-tools:v0.9.0"
+    name = "shipyardrun/hashicorp-tools:v0.10.0"
   }
 
   cmd = "/bin/bash"
@@ -131,6 +135,11 @@ exec_remote "boundary_setup" {
   volume {
     source = "${file_dir()}/files/terraform"
     destination = "/terraform"
+  }
+
+  volume {
+    source = "${data("boundary-auth")}"
+    destination = "/boundary-auth"
   }
 
   network {
