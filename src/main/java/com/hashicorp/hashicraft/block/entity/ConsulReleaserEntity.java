@@ -17,22 +17,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.hashicorp.hashicraft.block.ConsulReleaserBlock.HEALTHY;
+import static com.hashicorp.hashicraft.item.CartNbtData.*;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
-    private String address = "";
+    private String address = "http://releaser.ingress.shipyard.run";
 
     @Syncable
-    public String application = "payments";
+    public String application = DEFAULT_APPLICATION;
 
     @Syncable
     public String prometheusAddress = "http://localhost:9090";
 
     @Syncable
-    public String nomadDeployment = "payments-deployment";
+    public String nomadDeployment = DEFAULT_NOMAD_DEPLOYMENT;
 
     @Syncable
-    public String nomadNamespace = "default";
+    public String nomadNamespace = DEFAULT_NOMAD_NAMESPACE;
 
     @Syncable
     public String status = "";

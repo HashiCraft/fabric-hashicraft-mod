@@ -5,7 +5,6 @@ import com.hashicorp.hashicraft.block.entity.BlockEntities;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;
 import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.ui.event.ConsulReleaserClicked;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

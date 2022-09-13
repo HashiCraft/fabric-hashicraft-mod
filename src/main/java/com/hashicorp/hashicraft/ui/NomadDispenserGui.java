@@ -2,7 +2,6 @@ package com.hashicorp.hashicraft.ui;
 
 import com.hashicorp.hashicraft.block.entity.NomadDispenserEntity;
 import com.hashicorp.hashicraft.ui.event.SaveCallback;
-
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
@@ -17,6 +16,7 @@ public class NomadDispenserGui extends LightweightGuiDescription {
     public NomadDispenserGui(NomadDispenserEntity dispenser, SaveCallback callback) {
         String name = dispenser.getName();
         String color = dispenser.getColors();
+        String nomadDeployment = dispenser.getNomadDeployment();
 
         WGridPanel root = new WGridPanel();
         setRootPanel(root);
@@ -26,8 +26,15 @@ public class NomadDispenserGui extends LightweightGuiDescription {
         root.add(nameLabel, 0, 0, 4, 1);
 
         WTextField nameField = new WTextField();
-        root.add(nameField, 0, 1, 16, 1);
+        root.add(nameField, 0, 1, 8, 1);
         nameField.setMaxLength(255);
+
+        WLabel nomadDeploymentLabel = new WLabel(Text.literal("Nomad Deployment"));
+        root.add(nomadDeploymentLabel, 9, 0, 4, 1);
+
+        WTextField nomadDeploymentField = new WTextField();
+        root.add(nomadDeploymentField, 9, 1, 8, 1);
+        nomadDeploymentField.setMaxLength(255);
 
         WLabel colorLabel = new WLabel(Text.literal("Colors (Application Versions). Comma-Separated."));
         root.add(colorLabel, 0, 3, 4, 1);
@@ -41,6 +48,11 @@ public class NomadDispenserGui extends LightweightGuiDescription {
             String nameText = nameField.getText();
             if (!nameText.isEmpty()) {
                 dispenser.setName(nameText);
+            }
+
+            String nomadDeploymentText = nomadDeploymentField.getText();
+            if (!nomadDeploymentText.isEmpty()) {
+                dispenser.setNomadDeployment(nomadDeploymentText);
             }
 
             String colorText = colorField.getText();
@@ -63,6 +75,10 @@ public class NomadDispenserGui extends LightweightGuiDescription {
 
         if (color != null) {
             colorField.setText(color);
+        }
+
+        if (nomadDeployment != null) {
+            nomadDeploymentField.setText(nomadDeployment);
         }
 
         root.validate(this);

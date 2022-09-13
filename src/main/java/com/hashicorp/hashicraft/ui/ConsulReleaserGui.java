@@ -2,7 +2,6 @@ package com.hashicorp.hashicraft.ui;
 
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;
 import com.hashicorp.hashicraft.ui.event.SaveCallback;
-
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
