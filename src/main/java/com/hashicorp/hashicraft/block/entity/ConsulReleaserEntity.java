@@ -22,13 +22,13 @@ import static com.hashicorp.hashicraft.item.CartNbtData.*;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
-    private String address = "http://releaser.ingress.shipyard.run";
+    private String address = "http://releaser.container.shipyard.run:8080";
 
     @Syncable
     public String application = DEFAULT_APPLICATION;
 
     @Syncable
-    public String prometheusAddress = "http://localhost:9090";
+    public String prometheusAddress = "http://prometheus.container.shipyard.run:9090";
 
     @Syncable
     public String nomadDeployment = DEFAULT_NOMAD_DEPLOYMENT;
