@@ -3,7 +3,7 @@ variable "network" {
 }
 
 variable "boundary_version" {
-  default = "0.10.1"
+  default = "0.10.5"
 }
 
 variable "boundary_postgres_version" {

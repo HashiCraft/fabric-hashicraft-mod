@@ -4,17 +4,23 @@ output "auth_method_id" {
 }
 
 output "username" {
-  value       = boundary_account.boundary_admin.login_name
+  value       = boundary_account.hashicraft.login_name
   description = "Username for Boundary authentication"
 }
 
 output "password" {
-  value       = boundary_account.boundary_admin.password
+  value       = boundary_account.hashicraft.password
   description = "Password for Boundary authentication"
   sensitive   = true
 }
 
 output "target_id" {
-  value = boundary_target.postgres.id
+  value       = boundary_target.consul.id
   description = "Target ID for Boundary session"
+}
+
+output "admin_password" {
+  value       = boundary_account.boundary_admin.password
+  description = "Admin password for Boundary authentication"
+  sensitive   = true
 }

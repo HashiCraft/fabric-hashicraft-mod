@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import java.lang.reflect.Type;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -73,7 +74,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
     }
 
     public synchronized void start() {
-        Mod.LOGGER.info("Starting background thread");
+        Mod.LOGGER.info("Starting background thread - Nomad");
         if (executor == null || executor.isShutdown()) {
             executor = Executors.newFixedThreadPool(1);
             executor.submit(() -> {
@@ -98,7 +99,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
     public void stop() {
         if (executor != null && !executor.isShutdown()) {
-            Mod.LOGGER.info("Stopping background thread");
+            Mod.LOGGER.info("Stopping background thread - Nomad");
             executor.shutdown();
         }
     }
@@ -136,6 +137,9 @@ public class NomadServerEntity extends StatefulBlockEntity {
             Mod.LOGGER.info("Starting off at index " + index);
 
             return Integer.parseInt(index);
+        } catch (ConnectException e) {
+            Mod.LOGGER.warn("Cannot connect to Nomad");
+            return -1;
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -233,6 +237,9 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
             });
 
+            return null;
+        } catch (ConnectException e) {
+            Mod.LOGGER.warn("Cannot connect to Nomad");
             return null;
         } catch (Exception e) {
             e.printStackTrace();
