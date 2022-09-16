@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.net.ConnectException;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,13 +22,13 @@ import static com.hashicorp.hashicraft.item.CartNbtData.*;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
-    private String address = "http://releaser.ingress.shipyard.run";
+    private String address = "http://releaser.container.shipyard.run:8080";
 
     @Syncable
     public String application = DEFAULT_APPLICATION;
 
     @Syncable
-    public String prometheusAddress = "http://localhost:9090";
+    public String prometheusAddress = "http://prometheus.container.shipyard.run:9090";
 
     @Syncable
     public String nomadDeployment = DEFAULT_NOMAD_DEPLOYMENT;
@@ -136,7 +137,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
 
     public void stop() {
         if (executor != null && !executor.isShutdown()) {
-            Mod.LOGGER.info("Stopping background thread");
+            Mod.LOGGER.info("Stopping background thread - Consul releaser");
             executor.shutdown();
         }
     }
@@ -180,6 +181,8 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
                     setHealth();
                 }
             });
+        } catch (ConnectException e) {
+            Mod.LOGGER.warn("Cannot connect to Consul releaser");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -10,17 +10,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class BoundaryLockEntity extends StatefulBlockEntity {
     @Syncable
-    private String address = "";
+    private String address = "http://boundary-proxy.container.shipyard.run:38500";
 
     private ExecutorService executor;
 
@@ -51,17 +51,21 @@ public class BoundaryLockEntity extends StatefulBlockEntity {
     }
 
     public synchronized void start() {
-        Mod.LOGGER.info("Starting background thread");
+        Mod.LOGGER.info("Starting background thread - Boundary");
         if (executor == null || executor.isShutdown()) {
             executor = Executors.newFixedThreadPool(1);
             executor.submit(() -> {
                 try {
                     while (!executor.isShutdown() && !executor.isTerminated()) {
-                        boolean hasAccess = checkAccess();
+                        if (!address.isEmpty()) {
+                            boolean hasAccess = checkAccess();
 
-                        BlockPos pos = this.getPos();
-                        BlockState newState = world.getBlockState(pos).with(BoundaryLockBlock.POWERED, hasAccess);
-                        world.setBlockState(pos, newState, Block.NOTIFY_ALL);
+                            BlockPos pos = this.getPos();
+                            BlockState newState = world.getBlockState(pos).with(BoundaryLockBlock.POWERED, hasAccess);
+                            world.setBlockState(pos, newState, Block.NOTIFY_ALL);
+                        } else {
+                            Mod.LOGGER.info("Boundary proxy address not set, retrying in 5 seconds");
+                        }
 
                         TimeUnit.SECONDS.sleep(5);
                     }
@@ -74,38 +78,38 @@ public class BoundaryLockEntity extends StatefulBlockEntity {
 
     public void stop() {
         if (executor != null && !executor.isShutdown()) {
-            Mod.LOGGER.info("Stopping background thread");
+            Mod.LOGGER.info("Stopping background thread - Boundary");
             executor.shutdown();
         }
     }
 
     public boolean checkAccess() {
-        if (address.isBlank()) {
-            return false;
-        }
-
-        String[] parts = address.split(":");
-        if (parts.length != 2) {
-            return false;
-        }
+        HttpClient client = HttpClient.newHttpClient();
 
         try {
-            String host = parts[0];
-            int port = Integer.parseInt(parts[1]);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(String.format("%s/v1/catalog/services", address)))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
 
-            SocketAddress socketAddress = new InetSocketAddress(host, port);
-            Socket socket = new Socket();
-            socket.connect(socketAddress, 1000);
-            socket.close();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            int statusCode = response.statusCode();
+            if (statusCode >= 400 || statusCode < 200) {
+                Mod.LOGGER.warn("Cannot connect to Boundary target");
+                return false;
+            }
+
+            Mod.LOGGER.info("Connected to Boundary target");
             return true;
-        } catch (ConnectException e) {
+        } catch (InterruptedException | IOException e) {
+            Mod.LOGGER.warn("Cannot connect to Boundary proxy");
             return false;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
     public void setAddress(String address) {

@@ -16,6 +16,7 @@ module "consul_nomad" {
 
 module "releaser" {
   source = "./releaser"
+  depends_on = ["module.consul_nomad", "module.monitoring"]
 }
 
 module "minecraft" {

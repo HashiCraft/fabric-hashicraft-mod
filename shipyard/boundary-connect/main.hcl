@@ -1,5 +1,5 @@
 template "boundary_auth" {
-  source = <<EOT
+  source      = <<EOT
   #!/bin/sh
   boundary authenticate password \
     -auth-method-id=$(cat /boundary-auth/auth_method_id) \
@@ -14,13 +14,13 @@ exec_remote "boundary_auth" {
     name = "hashicorp/boundary:${var.boundary_version}"
   }
 
-  cmd = "/bin/sh"
+  cmd  = "/bin/sh"
   args = [
     "/boundary-auth/setup.sh"
   ]
 
   volume {
-    source = "${data("boundary-auth")}"
+    source      = "${data("boundary-auth")}"
     destination = "/boundary-auth"
   }
 
@@ -29,23 +29,23 @@ exec_remote "boundary_auth" {
   }
 
   env {
-    key = "BOUNDARY_ADDR"
+    key   = "BOUNDARY_ADDR"
     value = var.boundary_address
   }
 
   env {
-    key = "BOUNDARY_CLI_FORMAT"
+    key   = "BOUNDARY_CLI_FORMAT"
     value = "table"
   }
 
   env {
-    key = "BOUNDARY_KEYRING_TYPE"
+    key   = "BOUNDARY_KEYRING_TYPE"
     value = "none"
   }
 }
 
 template "boundary_proxy" {
-  source = <<EOT
+  source      = <<EOT
   #!/bin/bash
   while true
   do
@@ -57,36 +57,31 @@ template "boundary_proxy" {
 }
 
 container "boundary_proxy" {
-  image  {
+  image {
     name = "joatmon08/hashicorp-tools-psql:0.10.0"
   }
 
   command = ["/bin/sh", "/boundary-proxy/setup.sh"]
 
   port {
-    local = 35432
-    remote = 35432
-    host = 35432
+    local  = var.boundary_proxy_listen_port
+    remote = var.boundary_proxy_listen_port
+    host   = var.boundary_proxy_listen_port
   }
 
   env {
-    key   = "PGUSER"
-    value = var.boundary_postgres_user
-  }
-
-  env {
-    key   = "PGPASSWORD"
-    value = var.boundary_postgres_password
-  }
-
-  env {
-    key = "BOUNDARY_ADDR"
+    key   = "BOUNDARY_ADDR"
     value = var.boundary_address
   }
 
   env {
-    key = "BOUNDARY_CONNECT_LISTEN_PORT"
-    value = "35432"
+    key   = "BOUNDARY_CONNECT_LISTEN_ADDR"
+    value = "0.0.0.0"
+  }
+
+  env {
+    key   = "BOUNDARY_CONNECT_LISTEN_PORT"
+    value = "${var.boundary_proxy_listen_port}"
   }
 
   network {
@@ -94,12 +89,12 @@ container "boundary_proxy" {
   }
 
   volume {
-    source = data("boundary-auth")
+    source      = data("boundary-auth")
     destination = "/boundary-auth"
   }
 
   volume {
-    source = data("boundary-proxy")
+    source      = data("boundary-proxy")
     destination = "/boundary-proxy"
   }
 
