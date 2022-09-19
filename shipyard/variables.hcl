@@ -15,6 +15,10 @@ variable "cn_nomad_client_nodes" {
   default = 3
 }
 
+variable "cn_consul_version" {
+  default = "1.12.2"
+}
+
 variable "cn_nomad_version" {
   default = "1.3.1"
 }

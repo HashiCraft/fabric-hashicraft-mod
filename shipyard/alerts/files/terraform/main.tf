@@ -1,69 +1,172 @@
-data "terracurl_request" "datasource" {
-  name           = "datasource"
-  url            = "http://${var.grafana_url}/api/datasources/name/${var.grafana_datasource_name}"
-  method         = "GET"
+data "terracurl_request" "grafana_datasource" {
+  name   = "datasource"
+  url    = "http://${var.grafana_url}/api/datasources/name/${var.grafana_datasource_name}"
+  method = "GET"
   headers = {
     Content-Type = "application/json"
   }
 }
 
-output "datasource_id" {
-  value = data.terracurl_request.datasource.response
+resource "grafana_contact_point" "rift_webhook" {
+  name = "rift"
+
+  webhook {
+    url         = var.rift_url
+    http_method = "POST"
+  }
 }
 
-# resource "terracurl_request" "mount" {
-#   name           = "vault-mount"
-#   url            = "http://localhost:8200/v1/sys/mounts/aws"
-#   method         = "POST"
-#   request_body   = <<-EOF
-#   {
-#     "type": "aws",
-#     "config": {
-#       "force_no_cache": true
-#     }
-#   }
-#   EOF
+data "terracurl_request" "grafana_webhook" {
+  name   = grafana_contact_point.rift_webhook.name
+  url    = "http://${var.grafana_url}/api/v1/provisioning/contact-points"
+  method = "GET"
+  headers = {
+    Content-Type = "application/json"
+  }
+}
 
-#   headers = {
-#     X-Vault-Token = "root"
-#   }
+resource "terracurl_request" "grafana_folder" {
+  name = "folder"
 
-#   response_codes = [200,204]
+  # Create
+  url          = "http://${var.grafana_url}/api/folders"
+  method       = "POST"
+  request_body = <<-EOF
+  {
+    "uid": "${var.grafana_folder_name}",
+    "title": "${var.grafana_folder_name}"
+  }
+  EOF
 
-#   destroy_url    = "http://localhost:8200/v1/sys/mounts/aws"
-#   destroy_method = "DELETE"
+  headers = {
+    Content-Type = "application/json"
+  }
 
-#   destroy_headers = {
-#     X-Vault-Token = "root"
-#   }
+  response_codes = [200, 201, 204]
 
-#   destroy_response_codes = [204]
-# }
+  # Destroy
+  destroy_url    = "http://${var.grafana_url}/api/folders/${var.grafana_folder_name}?forceDeleteRules=true"
+  destroy_method = "DELETE"
 
-# resource "shell_script" "grafana_alerts" {
-#   environment = {
-#     GRAFANA_URL = "admin:admin@grafana.ingress.shipyard.run"
+  destroy_headers = {
+    Content-Type = "application/json"
+  }
 
-#     DATASOURCE_NAME = "Prometheus"
-#     ORGANIZATION    = "1"
-#     FOLDER_NAME     = var.application_name
-#     GROUP           = var.application_name
-#     TITLE           = var.application_name
+  destroy_response_codes = [200, 202, 204]
+}
 
-#     ENVIRONMENT = "production"
-#     PROJECT     = boundary_scope.project.id
-#     TARGETS     = boundary_target.application_database.id
-#     TEAMS       = join(",", var.boundary_groups)
-#   }
+locals {
+  grafana_datasource_id = jsondecode(data.terracurl_request.grafana_datasource.response).uid
+  grafana_folder_id     = jsondecode(terracurl_request.grafana_folder.response).uid
 
-#   sensitive_environment = {}
+  # Webhook uid computation.
+  webhook            = jsondecode(data.terracurl_request.grafana_webhook.response)
+  webhook_index      = try(index(local.webhook.*.name, "rift"), -1)
+  grafana_webhook_id = local.webhook_index == -1 ? "null" : local.webhook[local.webhook_index].uid
+}
 
-#   lifecycle_commands {
-#     create = file("${path.module}/files/create.sh")
-#     delete = file("${path.module}/files/delete.sh")
-#   }
+resource "terracurl_request" "grafana_alert_rules" {
+  name = "alert-rules"
 
-#   interpreter = ["/bin/bash", "-c"]
+  # Create
+  url          = "http://${var.grafana_url}/api/v1/provisioning/alert-rules"
+  method       = "POST"
+  request_body = <<-EOF
+  {
+    "orgID": ${var.grafana_organization},
+    "folderUID": "${local.grafana_folder_id}",
+    "ruleGroup": "${var.grafana_rule_group}",
+    "title": "${var.grafana_rule_title}",
+    "condition": "B",
+    "data": [
+      {
+        "refId": "A",
+        "queryType": "",
+        "relativeTimeRange": {
+          "from": 600,
+          "to": 0
+        },
+        "datasourceUid": "${local.grafana_datasource_id}",
+        "model": {
+          "editorMode": "builder",
+          "expr": "count(envoy_server_uptime{job=\"api-deployment\"})",
+          "hide": false,
+          "intervalMs": 1000,
+          "legendFormat": "__auto",
+          "maxDataPoints": 43200,
+          "range": true,
+          "refId": "A"
+        }
+      },
+      {
+        "refId": "B",
+        "queryType": "",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        },
+        "datasourceUid": "-100",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  3
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "A"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "-100"
+          },
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "B",
+          "type": "classic_conditions"
+        }
+      }
+    ],
+    "noDataState": "NoData",
+    "execErrState": "Alerting",
+    "for": "300s",
+    "labels": {
+      "environment": "${var.boundary_environment}",
+      "project": "${var.boundary_project}",
+      "targets": "${var.boundary_targets}",
+      "teams": "${var.boundary_teams}"
+    }
+  }
+  EOF
 
-#   working_directory = path.module
-# }
+  headers = {
+    Content-Type = "application/json"
+  }
+
+  response_codes = [200, 201, 204]
+
+  # Destroy
+  destroy_url    = "http://${var.grafana_url}/api/v1/provisioning/contact-points/${local.grafana_webhook_id}"
+  destroy_method = "DELETE"
+
+  destroy_headers = {
+    Content-Type = "application/json"
+  }
+
+  destroy_response_codes = [200, 202, 204]
+}

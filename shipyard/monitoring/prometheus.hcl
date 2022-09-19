@@ -25,6 +25,40 @@ template "prometheus_config" {
     static_configs:
     - targets:
       - 0.0.0.0:9090
+  - job_name: "nomad_server"
+    metrics_path: "/v1/metrics"
+    params:
+      format:
+      - "prometheus"
+    consul_sd_configs:
+    - server: "${var.consul_url}"
+      services:
+        - "nomad"
+      tags:
+        - "http"
+  - job_name: "nomad_client"
+    metrics_path: "/v1/metrics"
+    params:
+      format:
+      - "prometheus"
+    consul_sd_configs:
+    - server: "${var.consul_url}"
+      services:
+        - "nomad-client"
+  - job_name: "applications"
+    metrics_path: "/metrics"
+    params:
+      format:
+      - "prometheus"
+    consul_sd_configs:
+    - server: "${var.consul_url}"
+      tags:
+        - "metrics"
+    relabel_configs:
+    - source_labels: [__meta_consul_service_metadata_job]
+      target_label: job
+    - source_labels: [__meta_consul_service_metadata_datacenter]
+      target_label: datacenter
   EOF
   destination = "${data("prometheus")}/prometheus.yml"
 }

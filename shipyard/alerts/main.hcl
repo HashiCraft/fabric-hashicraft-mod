@@ -1,6 +1,11 @@
 template "alerts_setup" {
   source = <<EOT
   #!/bin/bash
+  until curl -s ${var.grafana_url}/api/datasources/name/Prometheus; do
+    echo "Waiting for Grafana to start"
+    sleep 1
+  done
+
   terraform -chdir=/terraform init
   terraform -chdir=/terraform apply -auto-approve
   EOT
