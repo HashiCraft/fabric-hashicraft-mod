@@ -23,6 +23,8 @@ import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
+import java.util.Optional;
+
 @Environment(value = EnvType.CLIENT)
 public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity> {
     private static final Identifier TEXTURE = Mod.identifier("textures/entity/app_minecart.png");
@@ -78,12 +80,23 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
         this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, 1.0f);
         matrixStack.pop();
 
+
         Text allocation = entity.getAllocationID();
-        renderAllocation(matrixStack, f, allocation, 0.0f, 1.85f, 0.0f, 0.02F);
+        Text truncatedAllocation = truncateAllocation(allocation);
+        renderAllocation(matrixStack, f, truncatedAllocation, 0.0f, 1.85f, 0.0f, 0.02F);
         Text application = entity.getApplication();
         renderName(matrixStack, f, application, 0.0f, 1.6f, 0.0f, 0.03F);
         Text version = entity.getVersion();
         renderVersion(matrixStack, f, version, 0.0f, 1.3f, 0.0f, 0.02F);
+    }
+
+    private Text truncateAllocation(Text allocation) {
+        if (allocation != null) {
+            String alloc = allocation.getString();
+            String truncated = alloc.substring(0, Math.min(alloc.length(), 8));
+            return Text.literal(truncated);
+        }
+        return Text.literal("");
     }
 
     private void renderAllocation(MatrixStack matrices, float rotation, Text text, float x, float y, float z,

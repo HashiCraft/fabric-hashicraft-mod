@@ -95,7 +95,7 @@ public class ConsulReleaserRenderer<T extends ConsulReleaserEntity> implements B
         } else if (message.contentEquals(STATUS_FAILED)) {
             color = 0xFFd6510f;
             renderStatus(matrices, direction, light, overlay, FAILURE_TEXTURE);
-        } else if (!message.contentEquals(STATUS_IDLE)) {
+        } else if (!message.contentEquals(STATUS_IDLE) && !message.contentEquals(STATUS_NOT_CONFIGURED)) {
             renderStatus(matrices, direction, light, overlay, PROGRESS_TEXTURE);
         }
 

@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.net.ConnectException;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,12 +47,14 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public Integer traffic = 0;
 
     private ExecutorService executor;
-    private Releaser releaser = new Releaser(address);
+    private final Releaser releaser = new Releaser(address);
 
     public final static String STATUS_FAILED = "FAILED";
     public final static String STATUS_SUCCESS = "SUCCESS";
 
     public final static String STATUS_IDLE = "IDLE";
+
+    public final static String STATUS_NOT_CONFIGURED = "NOT CONFIGURED";
 
     public ConsulReleaserEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.CONSUL_RELEASER_ENTITY, pos, state, null);
@@ -172,15 +175,30 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
         }
     }
 
+    private boolean hasReleases(List<ReleaseStatus> releases) {
+        if (!releases.isEmpty()) {
+            return true;
+        }
+        ReleaseStatus release = new ReleaseStatus();
+        release.Status = null;
+        release.DeploymentStatus = "";
+        release.CandidateTraffic = 0;
+        syncStatus(release);
+        return false;
+    }
+
     public void getReleases() {
         try {
             releaser.setAddress(address);
-            releaser.list().forEach((status) -> {
-                if (Objects.equals(status.Name, this.application)) {
-                    syncStatus(status);
-                    setHealth();
-                }
-            });
+            List<ReleaseStatus> releases = releaser.list();
+            if (hasReleases(releases)) {
+                releases.forEach((status) -> {
+                    if (Objects.equals(status.Name, this.application)) {
+                        syncStatus(status);
+                    }
+                });
+            }
+            setHealth();
         } catch (ConnectException e) {
             Mod.LOGGER.warn("Cannot connect to Consul releaser");
         } catch (Exception e) {
@@ -197,23 +215,25 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public String getStatus() {
         String message = STATUS_IDLE;
 
-        if (status != null) {
-            if (status.contentEquals("state_monitor") || status.contentEquals("state_deploy")) {
-                if (deploymentStatus.contentEquals("strategy_status_progressing")) {
-                    message = traffic + "% / " + (100 - traffic) + "%";
-                } else if (deploymentStatus.contentEquals("strategy_status_failing")) {
-                    message = "FAILING";
-                } else {
-                    message = "DEPLOYING";
-                }
-            } else if (deploymentStatus.contentEquals("strategy_status_complete")) {
-                message = STATUS_SUCCESS;
-            } else if (deploymentStatus.contentEquals("strategy_status_failed")) {
-                if (status.contentEquals("state_rollback")) {
-                    message = "ROLLBACK";
-                } else {
-                    message = STATUS_FAILED;
-                }
+        if (status == null || status.contentEquals("state_destroy")) {
+            return STATUS_NOT_CONFIGURED;
+        }
+
+        if (status.contentEquals("state_monitor") || status.contentEquals("state_deploy")) {
+            if (deploymentStatus.contentEquals("strategy_status_progressing")) {
+                message = traffic + "% / " + (100 - traffic) + "%";
+            } else if (deploymentStatus.contentEquals("strategy_status_failing")) {
+                message = "FAILING";
+            } else {
+                message = "DEPLOYING";
+            }
+        } else if (deploymentStatus.contentEquals("strategy_status_complete")) {
+            message = STATUS_SUCCESS;
+        } else if (deploymentStatus.contentEquals("strategy_status_failed")) {
+            if (status.contentEquals("state_rollback")) {
+                message = "ROLLBACK";
+            } else {
+                message = STATUS_FAILED;
             }
         }
 
