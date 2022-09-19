@@ -32,22 +32,19 @@ public class Job {
         public List<TaskGroup> TaskGroups;
         public Map<String, String> Meta;
 
-
         public Spec(String name, String version, String nomadDeployment) {
             Name = nomadDeployment;
             ID = nomadDeployment;
-            TaskGroups = version.contentEquals(ERROR_VERSION) ?
-                    Lists.newArrayList(new TaskGroup(name, version, true)) :
-                    Lists.newArrayList(new TaskGroup(name, version, false));
+            TaskGroups = version.contentEquals(ERROR_VERSION) ? Lists.newArrayList(new TaskGroup(name, version, true))
+                    : Lists.newArrayList(new TaskGroup(name, version, false));
             Meta = Map.of("version", version);
         }
 
         static class TaskGroup {
             String Name;
-            int Count = 3;
+            int Count = 1;
             List<Network> Networks = Lists.newArrayList(
-                    new Network()
-            );
+                    new Network());
             List<Service> Services;
             List<Task> Tasks;
 
@@ -64,8 +61,7 @@ public class Job {
                                 String.format("%d", APPLICATION_PORT),
                                 null,
                                 null,
-                                true)
-                );
+                                true));
                 Tasks = Lists.newArrayList(
                         new Task(name,
                                 createEnvironmentVariables(addErrors, version),
@@ -73,8 +69,7 @@ public class Job {
                                         CONTAINER_IMAGE,
                                         Lists.newArrayList("http"),
                                         null),
-                                new Task.Resources(500, 128)
-                        ),
+                                new Task.Resources(500, 128)),
                         new Task("socat",
                                 null,
                                 new Task.Config(
@@ -83,9 +78,7 @@ public class Job {
                                         Lists.newArrayList(
                                                 "TCP-LISTEN:19002,fork,bind=127.0.0.1",
                                                 "TCP:127.0.0.2:19002")),
-                                null
-                        )
-                );
+                                null));
             }
 
             private Map<String, String> createEnvironmentVariables(boolean addErrors, String version) {
@@ -104,8 +97,7 @@ public class Job {
             String Mode = "bridge";
             List<Network.DynamicPort> DynamicPorts = Lists.newArrayList(
                     new Network.DynamicPort("http", APPLICATION_PORT),
-                    new Network.DynamicPort("metrics", METRICS_PORT)
-            );
+                    new Network.DynamicPort("metrics", METRICS_PORT));
 
             static class DynamicPort {
                 String Label;
@@ -154,7 +146,6 @@ public class Job {
             String Driver = "docker";
             Map<String, String> Env;
             Resources Resources;
-
 
             public Task(String name, Map<String, String> env, Config config, Resources resources) {
                 Name = name;

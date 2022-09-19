@@ -33,7 +33,7 @@ bin/
 run/
 
 # Terraform
-shipyard/boundary/files/terraform/.terraform
+.terraform
 *.tfstate*
 
 # Shipyard setup

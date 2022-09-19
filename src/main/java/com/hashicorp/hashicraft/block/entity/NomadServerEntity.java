@@ -1,28 +1,5 @@
 package com.hashicorp.hashicraft.block.entity;
 
-import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
-import com.github.hashicraft.stateful.blocks.Syncable;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.hashicorp.hashicraft.Mod;
-import com.hashicorp.hashicraft.block.NomadServerBlock;
-import com.hashicorp.hashicraft.entity.AppMinecartEntity;
-import com.hashicorp.hashicraft.entity.ModEntities;
-import com.hashicorp.hashicraft.nomad.Allocation;
-import com.hashicorp.hashicraft.nomad.Chunk;
-import com.hashicorp.hashicraft.nomad.Job;
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.enums.RailShape;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-
 import java.lang.reflect.Type;
 import java.net.ConnectException;
 import java.net.URI;
@@ -38,6 +15,30 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+
+import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
+import com.github.hashicraft.stateful.blocks.Syncable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.hashicorp.hashicraft.Mod;
+import com.hashicorp.hashicraft.block.NomadServerBlock;
+import com.hashicorp.hashicraft.entity.AppMinecartEntity;
+import com.hashicorp.hashicraft.entity.ModEntities;
+import com.hashicorp.hashicraft.nomad.Allocation;
+import com.hashicorp.hashicraft.nomad.Chunk;
+import com.hashicorp.hashicraft.nomad.Job;
+
+import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.enums.RailShape;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 
 public class NomadServerEntity extends StatefulBlockEntity {
     @Syncable
@@ -190,13 +191,15 @@ public class NomadServerEntity extends StatefulBlockEntity {
                                     && allocation.DesiredStatus.equalsIgnoreCase("run")) {
                                 if (!allocations.contains(allocation.ID)) {
                                     Mod.LOGGER.info("[pending -> run] Creating allocation: " + allocation.ID);
-                                    if (createCart(allocation.ID, allocation.JobID, getVersionMetadata(allocation.JobID)))
+                                    if (createCart(allocation.ID, allocation.JobID,
+                                            getVersionMetadata(allocation.JobID)))
                                         allocations.add(allocation.ID);
                                 } else {
                                     Mod.LOGGER.info("[pending -> run] Restarting allocation: " + allocation.ID);
                                     if (destroyCart(allocation.ID))
                                         allocations.remove(allocation.ID);
-                                    if (createCart(allocation.ID, allocation.JobID, getVersionMetadata(allocation.JobID)))
+                                    if (createCart(allocation.ID, allocation.JobID,
+                                            getVersionMetadata(allocation.JobID)))
                                         allocations.add(allocation.ID);
                                 }
                             }
@@ -208,7 +211,8 @@ public class NomadServerEntity extends StatefulBlockEntity {
                                     if (destroyCart(allocation.ID))
                                         allocations.remove(allocation.ID);
                                 } else {
-                                    Mod.LOGGER.info("[running -> stop] Destroying unknown allocation: " + allocation.ID);
+                                    Mod.LOGGER
+                                            .info("[running -> stop] Destroying unknown allocation: " + allocation.ID);
                                     if (destroyCart(allocation.ID))
                                         allocations.remove(allocation.ID);
                                 }
@@ -300,29 +304,40 @@ public class NomadServerEntity extends StatefulBlockEntity {
                 (double) output.getY() + 0.0625 + d,
                 (double) output.getZ() + 0.5);
 
-        entity.setAllocationID(Text.literal(id.substring(0, 8)));
+        entity.setAllocationID(Text.literal(id));
         entity.setApplication(Text.literal(application));
         entity.setVersion(Text.literal(version));
         world.spawnEntity(entity);
         this.getWorld().emitGameEvent(null, GameEvent.ENTITY_PLACE, output);
 
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+
         BlockState newState = world.getBlockState(pos).with(NomadServerBlock.POWERED, true);
         world.setBlockState(pos, newState, Block.NOTIFY_ALL);
-        world.createAndScheduleBlockTick(pos, newState.getBlock(), 20);
+        world.createAndScheduleBlockTick(pos, newState.getBlock(), 40);
 
         return true;
     }
 
     public boolean destroyCart(String id) {
         Box box = new Box(this.getPos()).expand(128.0);
-        List<AppMinecartEntity> minecarts = this.getWorld().getEntitiesByClass(AppMinecartEntity.class, box, (entity) -> {
-            return true;
-        });
+        List<AppMinecartEntity> minecarts = this.getWorld().getEntitiesByClass(AppMinecartEntity.class, box,
+                (entity) -> {
+                    return true;
+                });
 
         minecarts.forEach((cart) -> {
-            Mod.LOGGER.info(cart.getCustomName().getString() + " vs " + id);
-            if (cart.getCustomName().getString().equalsIgnoreCase(id)) {
-                Mod.LOGGER.info("destroying cart: " + id);
+            if (cart.getAllocationID().getString().equalsIgnoreCase(id)) {
+                Mod.LOGGER.info(
+                        String.format("Destroyed cart: %s, %s, %s",
+                                cart.getAllocationID().getString(),
+                                cart.getApplication().getString(),
+                                cart.getVersion().getString()));
                 cart.discard();
                 this.getWorld().emitGameEvent(null, GameEvent.ENTITY_DIE, cart.getBlockPos());
             }

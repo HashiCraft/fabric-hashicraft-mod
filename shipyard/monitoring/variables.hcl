@@ -13,3 +13,7 @@ variable "prometheus_version" {
 variable "loki_version" {
   default = "latest"
 }
+
+variable "consul_url" {
+  default = "http://1.consul.server.container.shipyard.run:8500"
+}
