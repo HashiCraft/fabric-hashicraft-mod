@@ -832,7 +832,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "sum by (envoy_response_code) (rate(envoy_cluster_upstream_rq{envoy_cluster_name=\"local_app\", job=~\"payments-deployment\"}[$__rate_interval]))",
+          "expr": "sum by (envoy_response_code) (rate(envoy_cluster_upstream_rq{local_cluster=\"payments\", job=~\"payments-deployment\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Canary - {{envoy_response_code}}",
           "refId": "A"
@@ -843,7 +843,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "sum by (envoy_response_code) (rate(envoy_cluster_upstream_rq{job=~\"payments-primary\",envoy_cluster_name=\"local_app\"}[$__rate_interval]))",
+          "expr": "sum by (envoy_response_code) (rate(envoy_cluster_upstream_rq{job=~\"payments-primary\",local_cluster=\"payments\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Primary - {{envoy_response_code}}",
           "refId": "B"

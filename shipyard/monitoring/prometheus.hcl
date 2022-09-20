@@ -50,6 +50,8 @@ template "prometheus_config" {
     params:
       format:
       - "prometheus"
+    scrape_interval: 15s
+    scrape_timeout: 5s
     consul_sd_configs:
     - server: "${var.consul_url}"
       tags:

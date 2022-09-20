@@ -82,22 +82,40 @@ public class Release {
             String address;
             List<Query> queries;
 
+            final static String ENVOY_REQUEST_SUCCESS = "sum(rate(envoy_cluster_upstream_rq{" +
+                    "job!~\"{{ .ReleaseName }}-primary\"," +
+                    "job=~\"{{ .CandidateName }}\"," +
+                    "local_cluster=\"{{ .ReleaseName }}\"," +
+                    "envoy_response_code!~\"5.*\"}[{{ .Interval }}]))/" +
+                    "sum(rate(envoy_cluster_upstream_rq{" +
+                    "local_cluster=\"{{ .ReleaseName }}\"," +
+                    "job!~\"{{ .ReleaseName }}-primary\"," +
+                    "job=~\"{{ .CandidateName }}\",}[{{ .Interval }}])) * 100";
+
+            final static String ENVOY_REQUEST_DURATION = "histogram_quantile(" +
+                    "0.99, sum(rate(envoy_cluster_upstream_rq_time_bucket{" +
+                    "local_cluster=\"{{ .ReleaseName }}\"," +
+                    "job!~\"{{ .ReleaseName }}-primary\"," +
+                    "job=~\"{{ .CandidateName }}\"," +
+                    "}[{{ .Interval }}])) by (le))";
+
             static class Query {
                 String name;
-                String preset;
+                String query;
+
                 Integer min;
                 Integer max;
 
-                Query(String name, String preset, Integer min) {
+                Query(String name, String query, Integer min) {
                     this.name = name;
-                    this.preset = preset;
+                    this.query = query;
                     this.min = min;
                     this.max = null;
                 }
 
-                Query(String name, String preset, Integer min, Integer max) {
+                Query(String name, String query, Integer min, Integer max) {
                     this.name = name;
-                    this.preset = preset;
+                    this.query = query;
                     this.min = min;
                     this.max = max;
                 }
@@ -106,8 +124,8 @@ public class Release {
             public Config(String address) {
                 this.address = address;
                 this.queries = Lists.newArrayList(
-                        new Query("request-success", "envoy-request-success", 99),
-                        new Query("request-duration", "envoy-request-duration", 2, 200)
+                        new Query("custom-request-success", ENVOY_REQUEST_SUCCESS, 99),
+                        new Query("custom-request-duration", ENVOY_REQUEST_DURATION, 2, 200)
                 );
             }
         }
