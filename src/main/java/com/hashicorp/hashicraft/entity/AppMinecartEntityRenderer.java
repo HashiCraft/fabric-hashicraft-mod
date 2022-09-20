@@ -23,8 +23,6 @@ import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
-import java.util.Optional;
-
 @Environment(value = EnvType.CLIENT)
 public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity> {
     private static final Identifier TEXTURE = Mod.identifier("textures/entity/app_minecart.png");
@@ -38,7 +36,7 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
 
     @Override
     public void render(AppMinecartEntity entity, float f, float g, MatrixStack matrixStack,
-                       VertexConsumerProvider vertexConsumerProvider, int i) {
+            VertexConsumerProvider vertexConsumerProvider, int i) {
         super.render(entity, f, g, matrixStack, vertexConsumerProvider, i);
         matrixStack.push();
         long l = (long) ((Entity) entity).getId() * 493286711L;
@@ -74,12 +72,10 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
         matrixStack.translate(0.0, 0.0, 0.0);
         matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0f - f));
 
-
         this.model.setAngles(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.getLayer(this.getTexture(entity)));
         this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, 1.0f);
         matrixStack.pop();
-
 
         Text allocation = entity.getAllocationID();
         Text truncatedAllocation = truncateAllocation(allocation);
@@ -100,7 +96,7 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     }
 
     private void renderAllocation(MatrixStack matrices, float rotation, Text text, float x, float y, float z,
-                                  float scale) {
+            float scale) {
         float xTranslate = x;
         float zTranslate = z;
         float yTranslate = y;
@@ -129,7 +125,7 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     }
 
     private void renderName(MatrixStack matrices, float rotation, Text text, float x, float y, float z,
-                            float scale) {
+            float scale) {
         float xTranslate = x;
         float zTranslate = z;
         float yTranslate = y;
@@ -158,7 +154,7 @@ public class AppMinecartEntityRenderer extends EntityRenderer<AppMinecartEntity>
     }
 
     private void renderVersion(MatrixStack matrices, float rotation, Text text, float x, float y, float z,
-                               float scale) {
+            float scale) {
         float xTranslate = x;
         float zTranslate = z;
         float yTranslate = y;

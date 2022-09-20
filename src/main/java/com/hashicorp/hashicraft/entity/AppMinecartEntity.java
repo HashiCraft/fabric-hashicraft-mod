@@ -46,7 +46,7 @@ public class AppMinecartEntity extends MinecartEntity {
 
     @Nullable
     public Text getAllocationID() {
-        return (Text) ((Optional) this.dataTracker.get(ALLOCATION)).orElse(Text.empty());
+        return (Text) ((Optional<Text>) this.dataTracker.get(ALLOCATION)).orElse(Text.empty());
     }
 
     public void setApplication(@Nullable Text application) {
@@ -55,7 +55,7 @@ public class AppMinecartEntity extends MinecartEntity {
 
     @Nullable
     public Text getApplication() {
-        return (Text) ((Optional) this.dataTracker.get(APPLICATION)).orElse(Text.empty());
+        return (Text) ((Optional<Text>) this.dataTracker.get(APPLICATION)).orElse(Text.empty());
     }
 
     public void setVersion(@Nullable Text version) {
@@ -64,7 +64,7 @@ public class AppMinecartEntity extends MinecartEntity {
 
     @Nullable
     public Text getVersion() {
-        return (Text) ((Optional) this.dataTracker.get(VERSION)).orElse(Text.empty());
+        return (Text) ((Optional<Text>) this.dataTracker.get(VERSION)).orElse(Text.empty());
     }
 
     @Override
