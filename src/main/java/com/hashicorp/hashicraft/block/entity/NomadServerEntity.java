@@ -173,7 +173,6 @@ public class NomadServerEntity extends StatefulBlockEntity {
                     // Stop parsing events when the thread has shut down.
                     return;
 
-                // Mod.LOGGER.info("body: " + body);
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
                 Chunk chunk = gson.fromJson(body, Chunk.class);

@@ -1,6 +1,11 @@
 package com.hashicorp.hashicraft.entity;
 
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -14,9 +19,6 @@ import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class AppMinecartEntity extends MinecartEntity {
 
@@ -109,8 +111,21 @@ public class AppMinecartEntity extends MinecartEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        // this.discard();
-        // return true;
+        return false;
+    }
+
+    @Override
+    public boolean collides() {
+        return false;
+    }
+
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean collidesWith(Entity other) {
         return false;
     }
 }
