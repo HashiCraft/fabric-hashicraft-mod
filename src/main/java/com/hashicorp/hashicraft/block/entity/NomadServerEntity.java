@@ -298,6 +298,13 @@ public class NomadServerEntity extends StatefulBlockEntity {
             d = 0.5;
         }
 
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+
         AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
         entity.setPos(
                 (double) output.getX() + 0.5,
@@ -309,13 +316,6 @@ public class NomadServerEntity extends StatefulBlockEntity {
         entity.setVersion(Text.literal(version));
         world.spawnEntity(entity);
         this.getWorld().emitGameEvent(null, GameEvent.ENTITY_PLACE, output);
-
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
 
         BlockState newState = world.getBlockState(pos).with(NomadServerBlock.POWERED, true);
         world.setBlockState(pos, newState, Block.NOTIFY_ALL);
