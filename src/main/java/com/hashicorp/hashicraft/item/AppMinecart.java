@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -128,5 +129,26 @@ public class AppMinecart extends Item {
         tooltip.add(Text.literal("Nomad Deployment").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
         tooltip.add(Text.literal(data.getNomadDeployment()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
         tooltip.add(Text.literal(""));
+    }
+
+    @Override
+    public Text getName() {
+        return Text.translatable(this.getTranslationKey());
+    }
+
+    @Override
+    public Text getName(ItemStack stack) {
+        CartNbtData data = CartNbtData.getCustomNbt(stack);
+        String name = data.getName();
+        String version = data.getVersion();
+
+        MutableText text = Text.translatable(this.getTranslationKey());
+
+        if (name != "" && version != "") {
+            text.append(
+                    Text.literal(" (" + name + ":" + version + ")").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        }
+
+        return text;
     }
 }
