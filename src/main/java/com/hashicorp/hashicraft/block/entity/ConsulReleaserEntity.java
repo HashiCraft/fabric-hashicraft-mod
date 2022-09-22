@@ -156,8 +156,11 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public boolean createRelease() {
         try {
             releaser.setAddress(address);
-            Mod.LOGGER.info("Deleting previous release for Consul releaser");
-            releaser.delete(application);
+
+            // Lets keep this around in case it does not work as smoothly as it seems..
+            // Mod.LOGGER.info("Deleting previous release for Consul releaser");
+            // releaser.delete(application);
+
             Mod.LOGGER.info("Update release for Consul releaser");
             releaser.create(new Release().build(
                     application,
