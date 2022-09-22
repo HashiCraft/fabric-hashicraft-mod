@@ -33,6 +33,7 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.RailShape;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -80,9 +81,14 @@ public class NomadServerEntity extends StatefulBlockEntity {
             executor = Executors.newFixedThreadPool(1);
             executor.submit(() -> {
                 try {
+                    destroyAllCarts();
+
                     while (!executor.isShutdown() && !executor.isTerminated()) {
 
                         if (!address.isEmpty()) {
+                            // Get rid of all unnamed carts still hanging around.
+                            TimeUnit.SECONDS.sleep(5);
+
                             int index = getAllocations();
                             getEvents(index);
                         } else {
@@ -100,8 +106,23 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
     public void stop() {
         if (executor != null && !executor.isShutdown()) {
+            // Get rid of all carts still hanging around.
+            destroyAllCarts();
+
             Mod.LOGGER.info("Stopping background thread - Nomad");
             executor.shutdown();
+        }
+    }
+
+    public void sendStatusMessage(String message) {
+        Box box = new Box(this.getPos()).expand(32.0);
+        List<PlayerEntity> players = this.getWorld().getEntitiesByClass(PlayerEntity.class, box,
+                (player) -> {
+                    return true;
+                });
+
+        for (PlayerEntity player : players) {
+            player.sendMessage(Text.literal(message), true);
         }
     }
 
@@ -134,7 +155,6 @@ public class NomadServerEntity extends StatefulBlockEntity {
             }
 
             String index = response.headers().firstValue("X-Nomad-Index").orElse("-1");
-
             Mod.LOGGER.info("Starting off at index " + index);
 
             return Integer.parseInt(index);
@@ -323,8 +343,21 @@ public class NomadServerEntity extends StatefulBlockEntity {
         return true;
     }
 
+    public void destroyAllCarts() {
+        Mod.LOGGER.info("Destroying all carts");
+        Box box = new Box(this.getPos()).expand(32.0);
+        List<AppMinecartEntity> minecarts = this.getWorld().getEntitiesByClass(AppMinecartEntity.class, box,
+                (entity) -> {
+                    return true;
+                });
+
+        minecarts.forEach((cart) -> {
+            cart.discard();
+        });
+    }
+
     public boolean destroyCart(String id) {
-        Box box = new Box(this.getPos()).expand(128.0);
+        Box box = new Box(this.getPos()).expand(32.0);
         List<AppMinecartEntity> minecarts = this.getWorld().getEntitiesByClass(AppMinecartEntity.class, box,
                 (entity) -> {
                     return true;
