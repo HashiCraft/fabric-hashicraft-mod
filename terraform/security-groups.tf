@@ -26,14 +26,24 @@ resource "aws_security_group_rule" "server_allow_outbound" {
   description       = "Allow any outbound traffic"
 }
 
-resource "aws_security_group_rule" "server_allow_grafana_from_lb" {
+resource "aws_security_group_rule" "server_allow_minecraft_from_lb" {
   security_group_id        = aws_security_group.server.id
   source_security_group_id = aws_security_group.lb.id
   type                     = "ingress"
   protocol                 = "tcp"
-  from_port                = 3000
-  to_port                  = 3000
-  description              = "Allow traffic to Grafana from lb to server security group"
+  from_port                = 25565
+  to_port                  = 25565
+  description              = "Allow traffic to Minecraft from lb to server security group"
+}
+
+resource "aws_security_group_rule" "server_allow_geyser_from_lb" {
+  security_group_id        = aws_security_group.server.id
+  source_security_group_id = aws_security_group.lb.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 19132
+  to_port                  = 19132
+  description              = "Allow traffic to Geyser from lb to server security group"
 }
 
 resource "aws_security_group" "lb" {
@@ -43,14 +53,24 @@ resource "aws_security_group" "lb" {
   tags        = { "Name" = "${var.name}-lb" }
 }
 
-resource "aws_security_group_rule" "lb_allow_inbound" {
+resource "aws_security_group_rule" "lb_allow_minecraft_inbound" {
   security_group_id = aws_security_group.lb.id
   type              = "ingress"
   protocol          = "tcp"
-  from_port         = 3000
-  to_port           = 3000
+  from_port         = 25565
+  to_port           = 25565
   cidr_blocks       = ["0.0.0.0/0"]
-  description       = "Allow inbound traffic to Grafana dashboard"
+  description       = "Allow inbound traffic to Minecraft"
+}
+
+resource "aws_security_group_rule" "lb_allow_geyser_inbound" {
+  security_group_id = aws_security_group.lb.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 19132
+  to_port           = 19132
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow inbound traffic to Minecraft"
 }
 
 resource "aws_security_group_rule" "lb_allow_outbound" {

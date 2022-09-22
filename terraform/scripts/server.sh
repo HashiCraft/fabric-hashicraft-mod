@@ -1,6 +1,5 @@
 #!/bin/bash
 
-apt update
 
 ## Set up EBS volume for Docker
 
@@ -9,6 +8,7 @@ mkdir -p /var/lib/docker
 mount /dev/nvme1n1 /var/lib/docker
 
 ## Install HashiCorp tools
+apt update
 apt install -y gnupg software-properties-common
 
 wget -O- https://apt.releases.hashicorp.com/gpg | \
@@ -24,7 +24,6 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
     sudo tee /etc/apt/sources.list.d/hashicorp.list
 
 apt update
-
 apt install -y terraform consul vault boundary nomad
 
 ## Install Docker & Docker-Compose
@@ -42,20 +41,20 @@ echo \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt update
-
 apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+usermod -aG docker ubuntu
 
 ## Install Shipyard and dependencies
-
 echo "deb [trusted=yes] https://apt.fury.io/shipyard-run/ /" | sudo tee -a /etc/apt/sources.list.d/fury.list
 apt update
-
 apt install -y shipyard git
 
-## Create Shipyard blueprint
-shipyard run github.com/HashiCraft/fabric-hashicraft-mod//shipyard
+sudo -i -u ubuntu bash << EOF
+git clone https://github.com/HashiCraft/fabric-hashicraft-mod.git
+shipyard run fabric-hashicraft-mod/shipyard
 
 if [ $? -eq 1 ]
 then
-    shipyard run github.com/HashiCraft/fabric-hashicraft-mod//shipyard
+    shipyard run fabric-hashicraft-mod/shipyard
 fi
+EOF

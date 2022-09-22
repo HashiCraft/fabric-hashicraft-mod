@@ -4,9 +4,17 @@ resource "aws_elb" "server" {
   security_groups = [aws_security_group.lb.id]
 
   listener {
-    instance_port     = 3000
+    instance_port     = 25565
     instance_protocol = "tcp"
-    lb_port           = 3000
+    lb_port           = 25565
+    lb_protocol       = "tcp"
+  }
+
+  // This might not work for UDP(?)
+  listener {
+    instance_port     = 19132
+    instance_protocol = "tcp"
+    lb_port           = 19132
     lb_protocol       = "tcp"
   }
 
@@ -14,7 +22,7 @@ resource "aws_elb" "server" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:3000/"
+    target              = "TCP:25565"
     interval            = 30
   }
 
