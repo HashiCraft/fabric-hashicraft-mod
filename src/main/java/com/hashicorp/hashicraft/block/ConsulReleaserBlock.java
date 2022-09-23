@@ -65,17 +65,15 @@ public class ConsulReleaserBlock extends StatefulBlock {
         if (blockEntity instanceof ConsulReleaserEntity releaser) {
             ItemStack stack = player.getStackInHand(hand);
 
-            if (world.isClient) {
-                if (stack.isOf(ModItems.WRENCH_ITEM)) {
-                    ConsulReleaserClicked.EVENT.invoker().interact(releaser, releaser::markForUpdate);
-                    if (releaser.createRelease()) {
-                        player.sendMessage(Text.literal("INFO - Release created"), true);
-                    } else {
-                        player.sendMessage(Text.literal("ERROR - Release not created"), true);
-                    }
+            if (stack.isOf(ModItems.WRENCH_ITEM)) {
+                ConsulReleaserClicked.EVENT.invoker().interact(releaser, releaser::markForUpdate);
+                if (releaser.createRelease()) {
+                    player.sendMessage(Text.literal("INFO - Release created"), true);
+                } else {
+                    player.sendMessage(Text.literal("ERROR - Release not created"), true);
                 }
-                return ActionResult.SUCCESS;
             }
+            return ActionResult.SUCCESS;
         }
         return ActionResult.SUCCESS;
     }
