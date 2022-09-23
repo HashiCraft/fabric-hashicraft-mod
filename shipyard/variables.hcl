@@ -63,6 +63,10 @@ variable "minecraft_restic_version" {
   default = "v0.0.1"
 }
 
+variable "minecraft_restic_backup_path" {
+  default = "${file_dir()}/minecraft/"
+}
+
 variable "minecraft_restic_repository" {
   default = ""
 }
