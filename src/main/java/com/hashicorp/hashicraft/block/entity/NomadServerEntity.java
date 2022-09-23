@@ -43,7 +43,7 @@ import net.minecraft.world.event.GameEvent;
 
 public class NomadServerEntity extends StatefulBlockEntity {
     @Syncable
-    private String address = "";
+    private String address = "http://server.local.nomad-cluster.shipyard.run:4646";
 
     private final Set<String> allocations = new HashSet<>();
 
