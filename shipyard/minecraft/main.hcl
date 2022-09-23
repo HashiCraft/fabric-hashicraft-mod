@@ -82,6 +82,11 @@ container "minecraft" {
   }
 
   env {
+    key = "ENABLE_COMMAND_BLOCK"
+    value = "true"
+  }
+
+  env {
     key   = "SPAWN_NPCS"
     value = "true"
   }
