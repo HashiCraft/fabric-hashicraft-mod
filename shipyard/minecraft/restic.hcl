@@ -35,6 +35,11 @@ container "restic" {
   }
 
   env {
+    key = "IAM_ROLE"
+    value = "hashicraft"
+  }
+
+  env {
     key   = "AWS_ACCESS_KEY_ID"
     value = var.minecraft_restic_key
   }

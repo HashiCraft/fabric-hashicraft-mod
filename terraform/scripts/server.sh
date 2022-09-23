@@ -50,11 +50,18 @@ apt update
 apt install -y shipyard git
 
 sudo -i -u ubuntu bash << EOF
+cat <<EOT > local.shipyardvars
+minecraft_enable_backups=true
+minecraft_restic_version="aws"
+minecraft_restic_repository="${minecraft_restic_repository}"
+minecraft_restic_password="${minecraft_restic_password}"
+EOT
+
 git clone https://github.com/HashiCraft/fabric-hashicraft-mod.git
-shipyard run fabric-hashicraft-mod/shipyard
+shipyard run --vars-file=./local.shipyardvars fabric-hashicraft-mod/shipyard
 
 if [ $? -eq 1 ]
 then
-    shipyard run fabric-hashicraft-mod/shipyard
+    shipyard run --vars-file=./local.shipyardvars fabric-hashicraft-mod/shipyard
 fi
 EOF

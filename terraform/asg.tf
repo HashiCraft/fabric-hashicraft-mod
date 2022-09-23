@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "allow_ec2" {
 resource "aws_iam_role" "server" {
   name                = var.name
   assume_role_policy  = data.aws_iam_policy_document.allow_ec2.json
-  managed_policy_arns = [data.aws_iam_policy.security_compute_access.arn]
+  managed_policy_arns = [data.aws_iam_policy.security_compute_access.arn, aws_iam_policy.hashicraft_backup.arn]
 }
 
 resource "aws_iam_instance_profile" "server" {
@@ -66,7 +66,10 @@ resource "aws_launch_template" "server" {
 
   tags = { "Name" = "${var.name}-server-launch-template" }
 
-  user_data = base64encode(file("${path.module}/scripts/server.sh"))
+  user_data = base64encode(templatefile("${path.module}/scripts/server.sh", {
+    minecraft_restic_repository = "s3:s3.amazonaws.com/${aws_s3_bucket.hashicraft_backup.bucket}"
+    minecraft_restic_password   = random_password.hashicraft_backup.result
+  }))
 }
 
 resource "aws_autoscaling_group" "server" {

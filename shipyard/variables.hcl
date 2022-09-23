@@ -59,8 +59,24 @@ variable "minecraft_enable_backups" {
   default = false
 }
 
-variable "minecraft_restic_backup_path" {
-  default = "${file_dir()}/backups/minecraft"
+variable "minecraft_restic_version" {
+  default = "v0.0.1"
+}
+
+variable "minecraft_restic_repository" {
+  default = ""
+}
+
+variable "minecraft_restic_password" {
+  default = ""
+}
+
+variable "minecraft_restic_key" {
+  default = ""
+}
+
+variable "minecraft_restic_secret" {
+  default = ""
 }
 
 // Browserless
