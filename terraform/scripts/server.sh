@@ -55,6 +55,8 @@ minecraft_enable_backups=true
 minecraft_restic_version="aws"
 minecraft_restic_repository="${minecraft_restic_repository}"
 minecraft_restic_password="${minecraft_restic_password}"
+minecraft_world_backup="https://github.com/HashiCraft/fabric-hashicraft-mod/releases/download/v1.2.1/hashiconf-global-world.tar.gz"
+minecraft_mods_backup="https://github.com/HashiCraft/fabric-hashicraft-mod/releases/download/v1.2.1/hashiconf-global-mods.tar.gz"
 EOT
 
 git clone https://github.com/HashiCraft/fabric-hashicraft-mod.git
