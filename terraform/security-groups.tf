@@ -46,6 +46,16 @@ resource "aws_security_group_rule" "server_allow_geyser_from_lb" {
   description              = "Allow traffic to Geyser from lb to server security group"
 }
 
+resource "aws_security_group_rule" "server_allow_grafana_from_lb" {
+  security_group_id        = aws_security_group.server.id
+  source_security_group_id = aws_security_group.lb.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 3000
+  to_port                  = 3000
+  description              = "Allow traffic to Grafana from lb to server security group"
+}
+
 resource "aws_security_group" "lb" {
   name_prefix = "${var.name}-lb"
   description = "Security groups for the load balancer in front of server"
@@ -71,6 +81,16 @@ resource "aws_security_group_rule" "lb_allow_geyser_inbound" {
   to_port           = 19132
   cidr_blocks       = ["0.0.0.0/0"]
   description       = "Allow inbound traffic to Minecraft"
+}
+
+resource "aws_security_group_rule" "lb_allow_grafana_inbound" {
+  security_group_id = aws_security_group.lb.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 3000
+  to_port           = 3000
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow inbound traffic to Grafana"
 }
 
 resource "aws_security_group_rule" "lb_allow_outbound" {

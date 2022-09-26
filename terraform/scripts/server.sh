@@ -64,6 +64,7 @@ shipyard run --vars-file=./local.shipyardvars fabric-hashicraft-mod/shipyard
 
 if [ $? -eq 1 ]
 then
+    sleep 30
     shipyard run --vars-file=./local.shipyardvars fabric-hashicraft-mod/shipyard
 fi
 EOF
