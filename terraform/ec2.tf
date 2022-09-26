@@ -38,7 +38,8 @@ resource "aws_instance" "server" {
   ami           = data.aws_ami.hashicorp.id
   instance_type = "m5.4xlarge"
 
-  subnet_id = module.vpc.private_subnets.0
+  subnet_id       = module.vpc.private_subnets.0
+  security_groups = [aws_security_group.server.id]
 
   iam_instance_profile = aws_iam_instance_profile.server.name
 
@@ -60,7 +61,7 @@ resource "aws_instance" "server" {
   }
 
   ebs_block_device {
-    delete_on_termination = false
+    delete_on_termination = true
     device_name           = "/dev/sdf"
     encrypted             = false
     tags = {

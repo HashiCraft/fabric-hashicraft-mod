@@ -56,6 +56,26 @@ resource "aws_security_group_rule" "server_allow_grafana_from_lb" {
   description              = "Allow traffic to Grafana from lb to server security group"
 }
 
+resource "aws_security_group_rule" "server_allow_consul_from_lb" {
+  security_group_id        = aws_security_group.server.id
+  source_security_group_id = aws_security_group.lb.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 8500
+  to_port                  = 8500
+  description              = "Allow traffic to Consul from lb to server security group"
+}
+
+resource "aws_security_group_rule" "server_allow_boundary_from_lb" {
+  security_group_id        = aws_security_group.server.id
+  source_security_group_id = aws_security_group.lb.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 9200
+  to_port                  = 9200
+  description              = "Allow traffic to Boundary from lb to server security group"
+}
+
 resource "aws_security_group" "lb" {
   name_prefix = "${var.name}-lb"
   description = "Security groups for the load balancer in front of server"
@@ -91,6 +111,26 @@ resource "aws_security_group_rule" "lb_allow_grafana_inbound" {
   to_port           = 3000
   cidr_blocks       = ["0.0.0.0/0"]
   description       = "Allow inbound traffic to Grafana"
+}
+
+resource "aws_security_group_rule" "lb_allow_consul_inbound" {
+  security_group_id = aws_security_group.lb.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 8500
+  to_port           = 8500
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow inbound traffic to Consul"
+}
+
+resource "aws_security_group_rule" "lb_allow_boundary_inbound" {
+  security_group_id = aws_security_group.lb.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 9200
+  to_port           = 9200
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow inbound traffic to Boundary"
 }
 
 resource "aws_security_group_rule" "lb_allow_outbound" {

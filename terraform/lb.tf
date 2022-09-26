@@ -26,6 +26,22 @@ resource "aws_elb" "server" {
     lb_protocol       = "tcp"
   }
 
+  // consul
+  listener {
+    instance_port     = 8500
+    instance_protocol = "tcp"
+    lb_port           = 8500
+    lb_protocol       = "tcp"
+  }
+
+  // boundary
+  listener {
+    instance_port     = 9200
+    instance_protocol = "tcp"
+    lb_port           = 9200
+    lb_protocol       = "tcp"
+  }
+
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
