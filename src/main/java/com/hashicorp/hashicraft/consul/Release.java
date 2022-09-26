@@ -85,7 +85,7 @@ public class Release {
             final static String ENVOY_REQUEST_SUCCESS = "sum(rate(envoy_cluster_upstream_rq{" +
                     "job!~\"{{ .ReleaseName }}-primary\"," +
                     "job=~\"{{ .CandidateName }}\"," +
-                    "local_cluster=\"{{ .ReleaseName }}\"," +
+                    "envoy_cluster_name=\"local_app\",local_cluster=\"{{ .ReleaseName }}\"," +
                     "envoy_response_code!~\"5.*\"}[{{ .Interval }}]))/" +
                     "sum(rate(envoy_cluster_upstream_rq{" +
                     "local_cluster=\"{{ .ReleaseName }}\"," +
@@ -94,7 +94,7 @@ public class Release {
 
             final static String ENVOY_REQUEST_DURATION = "histogram_quantile(" +
                     "0.99, sum(rate(envoy_cluster_upstream_rq_time_bucket{" +
-                    "local_cluster=\"{{ .ReleaseName }}\"," +
+                    "envoy_cluster_name=\"local_app\",local_cluster=\"{{ .ReleaseName }}\"," +
                     "job!~\"{{ .ReleaseName }}-primary\"," +
                     "job=~\"{{ .CandidateName }}\"," +
                     "}[{{ .Interval }}])) by (le))";

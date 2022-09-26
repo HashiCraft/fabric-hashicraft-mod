@@ -5,6 +5,7 @@ provider "registry.terraform.io/devops-rob/terracurl" {
   version     = "0.1.1"
   constraints = "0.1.1"
   hashes = [
+    "h1:7HhDw+lBQotWsVNgnt7WW6Zi05tZLsu5ZdoZmmac1c0=",
     "h1:FRevntx2jvKpxYYFSyBJiBjDOmshZH86cFSTAbvqVAg=",
     "zh:49d31a23c55cc59a71c3869f3d62a1ae53b681dbc317c65fe812ceadce4afc00",
     "zh:73c2ac8bc2d1a103eece557dd3dcbdb676aa0989832dc72eff31e09f4b90f717",
@@ -19,6 +20,7 @@ provider "registry.terraform.io/grafana/grafana" {
   version     = "1.28.2"
   constraints = "1.28.2"
   hashes = [
+    "h1:R2zQwQnyVVUDzc2vi7LWTrdc6QihY+/FYOYp04P6kqw=",
     "h1:iWmL/sFw6oTJFLlhS6l0/CTj8MtmXu3TNYDuxpE0TiE=",
     "zh:037aa0ce2ac27f09a9727a6e74fad08a1592386ffb6099a775340aa8b6fe08bf",
     "zh:1554908741b0cd9513060441c15b1780e9533cd980743f19d857fd36c3909e64",

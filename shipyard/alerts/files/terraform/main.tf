@@ -66,6 +66,10 @@ locals {
 }
 
 resource "terracurl_request" "grafana_alert_rules" {
+  depends_on = [
+    terracurl_request.grafana_folder,
+    grafana_contact_point.rift_webhook
+  ]
   name = "alert-rules"
 
   # Create
@@ -89,7 +93,7 @@ resource "terracurl_request" "grafana_alert_rules" {
         "datasourceUid": "${local.grafana_datasource_id}",
         "model": {
           "editorMode": "builder",
-          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\", envoy_response_code=\"500\"}[10m]) > 0",
+          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[10m])>0",
           "hide": false,
           "intervalMs": 1000,
           "legendFormat": "__auto",
