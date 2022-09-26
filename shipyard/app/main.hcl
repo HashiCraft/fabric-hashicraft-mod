@@ -58,3 +58,20 @@ nomad_job "jobs" {
     "${file_dir()}/files/nomad/loadtest.hcl",
   ]
 }
+
+nomad_ingress "ingress-http" {
+  cluster = var.cn_nomad_cluster_name
+  job     = "ingress"
+  group   = "ingress"
+  task    = "ingress"
+
+  network {
+    name = "network.${var.network}"
+  }
+
+  port {
+    local  = 18080
+    remote = "http"
+    host   = 18080
+  }
+}
