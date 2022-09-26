@@ -57,7 +57,7 @@ container "rift" {
   depends_on = ["exec_remote.rift_config"]
 
   image {
-    name = "hashicraft/rift:${var.rift_version}"
+    name = "joatmon08/rift:v0.2.1"
   }
 
   port {
