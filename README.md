@@ -1,5 +1,9 @@
 # HashiCraft Mod for Minecraft
 
+## World Map
+
+![HashiCraft world map, including build zone](assets/map.png)
+
 ## Setup
 
 ### Prerequisites
