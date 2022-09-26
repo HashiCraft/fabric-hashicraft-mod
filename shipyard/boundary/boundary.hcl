@@ -113,6 +113,11 @@ template "boundary_setup" {
   terraform -chdir=/terraform output -raw username > /boundary-auth/username
   terraform -chdir=/terraform output -raw password > /boundary-auth/password
   terraform -chdir=/terraform output -raw target_id > /boundary-auth/target_id
+
+  # Rift
+  terraform -chdir=/terraform output -raw organization > /boundary-auth/organization
+  terraform -chdir=/terraform output -raw scope > /boundary-auth/scope
+  terraform -chdir=/terraform output -raw admin_password > /boundary-auth/admin_password
   EOT
   destination = "${data("boundary")}/setup.sh"
 }

@@ -23,6 +23,11 @@ module "releaser" {
   depends_on = ["module.consul_nomad", "module.monitoring"]
 }
 
+module "rift" {
+  source = "./rift"
+  depends_on = ["module.boundary", "module.monitoring"]
+}
+
 module "minecraft" {
   source = "./minecraft"
 }
