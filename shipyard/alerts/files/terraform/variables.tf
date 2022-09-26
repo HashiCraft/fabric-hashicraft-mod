@@ -35,12 +35,12 @@ variable "boundary_environment" {
 
 variable "boundary_project" {
   type    = string
-  default = "hashicraft"
+  default = "hashiconf"
 }
 
 variable "boundary_targets" {
   type    = string
-  default = "hashicraft"
+  default = "consul"
 }
 
 variable "boundary_teams" {

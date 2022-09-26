@@ -16,6 +16,22 @@ resource "grafana_contact_point" "rift_webhook" {
   }
 }
 
+resource "grafana_notification_policy" "rift" {
+  group_by      = ["project"]
+  contact_point = grafana_contact_point.rift_webhook.name
+
+  policy {
+    matcher {
+      label = "project"
+      match = "="
+      value = var.boundary_project
+    }
+
+    contact_point = grafana_contact_point.rift_webhook.name
+    group_by      = ["targets"]
+  }
+}
+
 data "terracurl_request" "grafana_webhook" {
   name   = grafana_contact_point.rift_webhook.name
   url    = "http://${var.grafana_url}/api/v1/provisioning/contact-points"
@@ -58,6 +74,7 @@ resource "terracurl_request" "grafana_folder" {
 locals {
   grafana_datasource_id = jsondecode(data.terracurl_request.grafana_datasource.response).uid
   grafana_folder_id     = jsondecode(terracurl_request.grafana_folder.response).uid
+  grafana_alert_rule_id = jsondecode(terracurl_request.grafana_alert_rules.response).uid
 
   # Webhook uid computation.
   webhook            = jsondecode(data.terracurl_request.grafana_webhook.response)
@@ -93,7 +110,7 @@ resource "terracurl_request" "grafana_alert_rules" {
         "datasourceUid": "${local.grafana_datasource_id}",
         "model": {
           "editorMode": "builder",
-          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[10m])>0",
+          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[5m])>0",
           "hide": false,
           "intervalMs": 1000,
           "legendFormat": "__auto",
@@ -148,7 +165,7 @@ resource "terracurl_request" "grafana_alert_rules" {
     ],
     "noDataState": "NoData",
     "execErrState": "Alerting",
-    "for": "300s",
+    "for": "30s",
     "labels": {
       "environment": "${var.boundary_environment}",
       "project": "${var.boundary_project}",
