@@ -60,13 +60,14 @@ public class ConsulReleaserBlock extends StatefulBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-                              BlockHitResult hit) {
+            BlockHitResult hit) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof ConsulReleaserEntity releaser) {
             ItemStack stack = player.getStackInHand(hand);
 
             if (stack.isOf(ModItems.WRENCH_ITEM)) {
-                ConsulReleaserClicked.EVENT.invoker().interact(releaser, releaser::markForUpdate);
+                // ConsulReleaserClicked.EVENT.invoker().interact(releaser,
+                // releaser::markForUpdate);
                 if (releaser.createRelease()) {
                     player.sendMessage(Text.literal("INFO - Release created"), true);
                 } else {
@@ -80,7 +81,7 @@ public class ConsulReleaserBlock extends StatefulBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,
-                                                                  BlockEntityType<T> type) {
+            BlockEntityType<T> type) {
         return checkType(type, BlockEntities.CONSUL_RELEASER_ENTITY, ConsulReleaserEntity::tick);
     }
 
