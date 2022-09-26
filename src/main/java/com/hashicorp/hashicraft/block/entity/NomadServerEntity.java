@@ -81,12 +81,8 @@ public class NomadServerEntity extends StatefulBlockEntity {
             executor = Executors.newFixedThreadPool(1);
             executor.submit(() -> {
                 try {
-                    destroyAllCarts();
-
                     while (!executor.isShutdown() && !executor.isTerminated()) {
-
                         if (!address.isEmpty()) {
-                            // Get rid of all unnamed carts still hanging around.
                             TimeUnit.SECONDS.sleep(5);
 
                             int index = getAllocations();
@@ -151,6 +147,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
             for (Allocation allocation : list) {
                 if (createCart(allocation.ID, allocation.JobID, getVersionMetadata(allocation.JobID))) {
                     allocations.add(allocation.ID);
+                    wait(2);
                 }
             }
 
@@ -170,6 +167,14 @@ public class NomadServerEntity extends StatefulBlockEntity {
     private String getVersionMetadata(String jobID) {
         Job.Spec job = getJob(jobID);
         return job.Meta != null ? job.Meta.getOrDefault("version", "") : "";
+    }
+
+    private void wait(int duration) {
+        try {
+            TimeUnit.SECONDS.sleep(duration);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Allocation> getEvents(int index) {
@@ -213,13 +218,18 @@ public class NomadServerEntity extends StatefulBlockEntity {
                                     if (createCart(allocation.ID, allocation.JobID,
                                             getVersionMetadata(allocation.JobID)))
                                         allocations.add(allocation.ID);
+                                    wait(2);
                                 } else {
                                     Mod.LOGGER.info("[pending -> run] Restarting allocation: " + allocation.ID);
-                                    if (destroyCart(allocation.ID))
+                                    if (destroyCart(allocation.ID)) {
                                         allocations.remove(allocation.ID);
-                                    if (createCart(allocation.ID, allocation.JobID,
-                                            getVersionMetadata(allocation.JobID)))
-                                        allocations.add(allocation.ID);
+                                        wait(2);
+
+                                        if (createCart(allocation.ID, allocation.JobID,
+                                                getVersionMetadata(allocation.JobID)))
+                                            allocations.add(allocation.ID);
+                                        wait(2);
+                                    }
                                 }
                             }
                             // Check if we need to destroy an existing cart.
@@ -257,7 +267,6 @@ public class NomadServerEntity extends StatefulBlockEntity {
                             Mod.LOGGER.info("Uncaught event: " + event.Topic);
                     }
                 });
-
             });
 
             return null;
@@ -315,13 +324,6 @@ public class NomadServerEntity extends StatefulBlockEntity {
         double d = 0.0;
         if (railShape.isAscending()) {
             d = 0.5;
-        }
-
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
         }
 
         AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
