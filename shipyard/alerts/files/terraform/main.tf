@@ -74,7 +74,6 @@ resource "terracurl_request" "grafana_folder" {
 locals {
   grafana_datasource_id = jsondecode(data.terracurl_request.grafana_datasource.response).uid
   grafana_folder_id     = jsondecode(terracurl_request.grafana_folder.response).uid
-  grafana_alert_rule_id = jsondecode(terracurl_request.grafana_alert_rules.response).uid
 
   # Webhook uid computation.
   webhook            = jsondecode(data.terracurl_request.grafana_webhook.response)
@@ -104,13 +103,13 @@ resource "terracurl_request" "grafana_alert_rules" {
         "refId": "A",
         "queryType": "",
         "relativeTimeRange": {
-          "from": 600,
+          "from": 300,
           "to": 0
         },
         "datasourceUid": "${local.grafana_datasource_id}",
         "model": {
-          "editorMode": "builder",
-          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[5m])>0",
+          "editorMode": "code",
+          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[5m])",
           "hide": false,
           "intervalMs": 1000,
           "legendFormat": "__auto",
@@ -132,9 +131,9 @@ resource "terracurl_request" "grafana_alert_rules" {
             {
               "evaluator": {
                 "params": [
-                  3
+                  0
                 ],
-                "type": "lt"
+                "type": "gt"
               },
               "operator": {
                 "type": "and"
@@ -155,6 +154,7 @@ resource "terracurl_request" "grafana_alert_rules" {
             "type": "__expr__",
             "uid": "-100"
           },
+          "expression": "A",
           "hide": false,
           "intervalMs": 1000,
           "maxDataPoints": 43200,
@@ -163,9 +163,9 @@ resource "terracurl_request" "grafana_alert_rules" {
         }
       }
     ],
-    "noDataState": "NoData",
-    "execErrState": "Alerting",
-    "for": "30s",
+    "noDataState": "OK",
+    "execErrState": "OK",
+    "for": "20s",
     "labels": {
       "environment": "${var.boundary_environment}",
       "project": "${var.boundary_project}",

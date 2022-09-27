@@ -3,5 +3,5 @@ variable "network" {
 }
 
 variable "rift_version" {
-  default = "v0.2.0"
+  default = "v0.2.2"
 }
