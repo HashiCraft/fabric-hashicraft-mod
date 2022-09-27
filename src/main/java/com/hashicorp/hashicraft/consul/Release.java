@@ -88,7 +88,7 @@ public class Release {
                     "envoy_cluster_name=\"local_app\",local_cluster=\"{{ .ReleaseName }}\"," +
                     "envoy_response_code!~\"5.*\"}[{{ .Interval }}]))/" +
                     "sum(rate(envoy_cluster_upstream_rq{" +
-                    "local_cluster=\"{{ .ReleaseName }}\"," +
+                    "envoy_cluster_name=\"local_app\",local_cluster=\"{{ .ReleaseName }}\"," +
                     "job!~\"{{ .ReleaseName }}-primary\"," +
                     "job=~\"{{ .CandidateName }}\",}[{{ .Interval }}])) * 100";
 
