@@ -46,4 +46,4 @@
 
 1. Select **PLAY**.
 
-1. Join the HashiConf server in Minecraft: `hashiconf.hashicraft.com`
+1. Join the HashiConf server in Minecraft: `hashiconf.hashicraft.com:25565`

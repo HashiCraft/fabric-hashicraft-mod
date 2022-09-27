@@ -1,7 +1,7 @@
 data "terracurl_request" "grafana_datasource" {
-  name   = "datasource"
-  url    = "http://${var.grafana_url}/api/datasources/name/${var.grafana_datasource_name}"
-  method = "GET"
+  name    = "datasource"
+  url     = "http://${var.grafana_url}/api/datasources/name/${var.grafana_datasource_name}"
+  method  = "GET"
   headers = {
     Content-Type = "application/json"
   }
@@ -20,6 +20,9 @@ resource "grafana_notification_policy" "rift" {
   group_by      = ["project"]
   contact_point = grafana_contact_point.rift_webhook.name
 
+  group_interval = "1m"
+  group_wait     = "20s"
+
   policy {
     matcher {
       label = "project"
@@ -33,9 +36,9 @@ resource "grafana_notification_policy" "rift" {
 }
 
 data "terracurl_request" "grafana_webhook" {
-  name   = grafana_contact_point.rift_webhook.name
-  url    = "http://${var.grafana_url}/api/v1/provisioning/contact-points"
-  method = "GET"
+  name    = grafana_contact_point.rift_webhook.name
+  url     = "http://${var.grafana_url}/api/v1/provisioning/contact-points"
+  method  = "GET"
   headers = {
     Content-Type = "application/json"
   }
@@ -92,7 +95,7 @@ resource "terracurl_request" "grafana_alert_rules" {
   url          = "http://${var.grafana_url}/api/v1/provisioning/alert-rules"
   method       = "POST"
   request_body = <<-EOF
-  {
+    {
     "orgID": ${var.grafana_organization},
     "folderUID": "${local.grafana_folder_id}",
     "ruleGroup": "${var.grafana_rule_group}",
@@ -103,13 +106,14 @@ resource "terracurl_request" "grafana_alert_rules" {
         "refId": "A",
         "queryType": "",
         "relativeTimeRange": {
-          "from": 300,
+          "from": 60,
           "to": 0
         },
         "datasourceUid": "${local.grafana_datasource_id}",
         "model": {
           "editorMode": "code",
-          "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[5m])",
+
+            "expr": "rate(envoy_cluster_external_upstream_rq{job=\"payments-deployment\",envoy_response_code=\"500\"}[3m])",
           "hide": false,
           "intervalMs": 1000,
           "legendFormat": "__auto",
@@ -173,21 +177,4 @@ resource "terracurl_request" "grafana_alert_rules" {
       "teams": "${var.boundary_teams}"
     }
   }
-  EOF
-
-  headers = {
-    Content-Type = "application/json"
-  }
-
-  response_codes = [200, 201, 204]
-
-  # Destroy
-  destroy_url    = "http://${var.grafana_url}/api/v1/provisioning/contact-points/${local.grafana_webhook_id}"
-  destroy_method = "DELETE"
-
-  destroy_headers = {
-    Content-Type = "application/json"
-  }
-
-  destroy_response_codes = [200, 202, 204]
 }

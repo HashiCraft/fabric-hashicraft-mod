@@ -26,11 +26,11 @@ output "admin_password" {
 }
 
 output "organization" {
-  value = boundary_scope.org.id
+  value       = boundary_scope.org.id
   description = "Organization scope that rift will use to create roles in"
 }
 
 output "scope" {
-  value = boundary_scope.project.id
+  value       = boundary_scope.project.id
   description = "Project scope that rift will use to create roles in"
 }
