@@ -1,6 +1,8 @@
 # HashiCraft Mod for Minecraft
 
-## World Map
+> Note: This mod only works for Java. If you have Bedrock, navigate to the
+> [Minecraft Build Contest](https://hashiconf.com/global/minecraft/)
+> area by looking for a sign next to the gold teleportation button where you spawn.
 
 ![HashiCraft world map, including build zone](assets/map.png)
 
@@ -8,8 +10,7 @@
 
 ### Prerequisites
 
-- Minecraft License (preferably
-  [Java or Bedrock Edition for PC](https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc))
+- Minecraft License for [Java](https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc)
 
 ### Install
 
@@ -34,7 +35,7 @@
 
 1. Open the `mods` folder.
 
-1. Copy the JAR files into the `mods` folder. 
+1. Copy the JAR files into the `mods` folder.
 
 1. Open Minecraft Launcher.
 
@@ -46,4 +47,4 @@
 
 1. Select **PLAY**.
 
-1. Join the HashiConf server in Minecraft: `hashiconf.hashicraft.com:25565`
+1. Join the HashiConf server in Minecraft: `hashiconf.hashicraft.com`
