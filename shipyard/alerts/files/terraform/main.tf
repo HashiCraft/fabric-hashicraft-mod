@@ -177,4 +177,21 @@ resource "terracurl_request" "grafana_alert_rules" {
       "teams": "${var.boundary_teams}"
     }
   }
+  EOF
+
+  headers = {
+    Content-Type = "application/json"
+  }
+
+  response_codes = [200, 201, 204]
+
+  # Destroy
+  destroy_url    = "http://${var.grafana_url}/api/v1/provisioning/contact-points/${local.grafana_webhook_id}"
+  destroy_method = "DELETE"
+
+  destroy_headers = {
+    Content-Type = "application/json"
+  }
+
+  destroy_response_codes = [200, 202, 204]
 }
