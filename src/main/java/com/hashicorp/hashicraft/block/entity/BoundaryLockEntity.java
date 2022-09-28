@@ -1,22 +1,25 @@
 package com.hashicorp.hashicraft.block.entity;
 
-import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
-import com.github.hashicraft.stateful.blocks.Syncable;
-import com.hashicorp.hashicraft.Mod;
-import com.hashicorp.hashicraft.block.BoundaryLockBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import java.io.IOException;
-import java.net.*;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
+import com.github.hashicraft.stateful.blocks.Syncable;
+import com.hashicorp.hashicraft.Mod;
+import com.hashicorp.hashicraft.block.BoundaryLockBlock;
+import com.hashicorp.sound.ModSounds;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class BoundaryLockEntity extends StatefulBlockEntity {
     @Syncable
@@ -59,6 +62,15 @@ public class BoundaryLockEntity extends StatefulBlockEntity {
                     while (!executor.isShutdown() && !executor.isTerminated()) {
                         if (!address.isEmpty()) {
                             boolean hasAccess = checkAccess();
+                            if (hasAccess) {
+                                world.playSound(
+                                        null,
+                                        pos,
+                                        ModSounds.BOUNDARY_ALERT,
+                                        SoundCategory.BLOCKS,
+                                        1f,
+                                        1f);
+                            }
 
                             BlockPos pos = this.getPos();
                             BlockState newState = world.getBlockState(pos).with(BoundaryLockBlock.POWERED, hasAccess);

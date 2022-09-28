@@ -4,6 +4,7 @@ import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.BoundaryLockEntity;
 import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.ui.event.BoundaryLockClicked;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -65,7 +66,7 @@ public class BoundaryLockBlock extends StatefulBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-                              BlockHitResult hit) {
+            BlockHitResult hit) {
         ItemStack stack = player.getStackInHand(hand);
         BlockEntity entity = world.getBlockEntity(pos);
 
@@ -83,6 +84,5 @@ public class BoundaryLockBlock extends StatefulBlock {
         }
 
         return ActionResult.SUCCESS;
-
     }
 }

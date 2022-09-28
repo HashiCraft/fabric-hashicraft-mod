@@ -9,6 +9,9 @@ public class ModSounds {
     // Music
     public static SoundEvent HASHICONF_MUSIC = registerSoundEvent("hashiconf_music");
 
+    // Boundary
+    public static SoundEvent BOUNDARY_ALERT = registerSoundEvent("boundary_alert");
+
     private static SoundEvent registerSoundEvent(String name) {
         Identifier id = new Identifier(Mod.MOD_ID, name);
         return Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));

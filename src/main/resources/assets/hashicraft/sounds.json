@@ -1,4 +1,10 @@
 {
+  "boundary_alert": {
+    "subtitle": "hashicraft.boundary_alert",
+    "sounds": [
+      "hashicraft:boundary_alert"
+    ]
+  },
   "hashiconf_music": {
     "sounds": [{
       "name":"hashicraft:hashiconf_music",
