@@ -80,6 +80,6 @@ resource "boundary_target" "consul" {
   ]
 
   default_port             = 8500
-  session_connection_limit = 5
+  session_connection_limit = 15
   session_max_seconds      = 30
 }
