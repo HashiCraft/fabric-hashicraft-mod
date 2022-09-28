@@ -1,17 +1,10 @@
 package com.hashicorp.hashicraft.block.entity;
 
-import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
-import com.github.hashicraft.stateful.blocks.Syncable;
-import com.hashicorp.hashicraft.Mod;
-import com.hashicorp.hashicraft.consul.Release;
-import com.hashicorp.hashicraft.consul.ReleaseStatus;
-import com.hashicorp.hashicraft.consul.Releaser;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import static com.hashicorp.hashicraft.block.ConsulReleaserBlock.HEALTHY;
+import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_APPLICATION;
+import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_NOMAD_DEPLOYMENT;
+import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_NOMAD_NAMESPACE;
 
-import java.io.IOException;
 import java.net.ConnectException;
 import java.util.List;
 import java.util.Objects;
@@ -19,8 +12,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.hashicorp.hashicraft.block.ConsulReleaserBlock.HEALTHY;
-import static com.hashicorp.hashicraft.item.CartNbtData.*;
+import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
+import com.github.hashicraft.stateful.blocks.Syncable;
+import com.hashicorp.hashicraft.Mod;
+import com.hashicorp.hashicraft.consul.Release;
+import com.hashicorp.hashicraft.consul.ReleaseStatus;
+import com.hashicorp.hashicraft.consul.Releaser;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
