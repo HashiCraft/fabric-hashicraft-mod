@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.util.List;
 import java.util.Objects;
@@ -51,9 +52,7 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
 
     public final static String STATUS_FAILED = "FAILED";
     public final static String STATUS_SUCCESS = "SUCCESS";
-
     public final static String STATUS_IDLE = "IDLE";
-
     public final static String STATUS_NOT_CONFIGURED = "NOT CONFIGURED";
 
     public ConsulReleaserEntity(BlockPos pos, BlockState state) {
@@ -105,6 +104,8 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public void setWorld(World world) {
         super.setWorld(world);
         if (!world.isClient) {
+            Mod.LOGGER.info("Creating release for Consul releaser");
+            this.createRelease();
             this.start();
         }
     }
@@ -113,6 +114,13 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public void markRemoved() {
         super.markRemoved();
         if (this.hasWorld() && !this.getWorld().isClient) {
+            try {
+                Mod.LOGGER.info("Deleting release for Consul releaser");
+                releaser.delete(application);
+            } catch (Exception e) {
+                Mod.LOGGER.info("Could not delete release for Consul releaser");
+                e.printStackTrace();
+            }
             this.stop();
         }
     }
@@ -124,7 +132,6 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
             executor.submit(() -> {
                 try {
                     while (!executor.isShutdown() && !executor.isTerminated()) {
-
                         if (!(address == null || address.isEmpty() || address.isBlank())) {
                             getReleases();
                         }
@@ -156,12 +163,6 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     public boolean createRelease() {
         try {
             releaser.setAddress(address);
-
-            // Lets keep this around in case it does not work as smoothly as it seems..
-            // Mod.LOGGER.info("Deleting previous release for Consul releaser");
-            // releaser.delete(application);
-
-            Mod.LOGGER.info("Update release for Consul releaser");
             releaser.create(new Release().build(
                     application,
                     new Release.NomadConfig(nomadDeployment, nomadNamespace),

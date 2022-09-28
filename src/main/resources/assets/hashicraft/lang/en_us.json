@@ -7,7 +7,8 @@
   "block.hashicraft.boundary_lock": "Boundary Lock",
   "itemGroup.hashicraft.hashicraft": "HashiCraft",
   "item.hashicraft.vault_card": "Keycard",
-  "item.hashicraft.app_minecart": "Application",
+  "item.hashicraft.application": "Application",
+  "item.hashicraft.app_minecart": "Cartridge",
   "item.hashicraft.hashiconf_music": "HashiConf Anthem",
   "item.hashicraft.hashiconf_music.desc": "HashiConf Europe 2022"
 }

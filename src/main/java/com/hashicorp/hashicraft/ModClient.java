@@ -53,14 +53,6 @@ public class ModClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntities.CONSUL_RELEASER_ENTITY,
                 ConsulReleaserRenderer::new);
 
-        ConsulReleaserClicked.EVENT.register((block, callback) -> {
-            ConsulReleaserGui gui = new ConsulReleaserGui(block, callback);
-            ConsulReleaserScreen screen = new ConsulReleaserScreen(gui);
-            MinecraftClient.getInstance().setScreen(screen);
-
-            return ActionResult.PASS;
-        });
-
         // Vault Dispenser
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.VAULT_DISPENSER_BLOCK,
                 RenderLayer.getCutoutMipped());
