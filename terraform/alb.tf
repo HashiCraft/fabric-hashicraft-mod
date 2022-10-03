@@ -6,10 +6,10 @@ module "nlb" {
 
   load_balancer_type = "network"
 
-  vpc_id             = module.vpc.vpc_id
-  subnets            = module.vpc.public_subnets
+  vpc_id  = module.vpc.vpc_id
+  subnets = module.vpc.public_subnets
 
-   target_groups = [
+  target_groups = [
     {
       name_prefix      = "g-"
       backend_protocol = "UDP"
@@ -17,7 +17,7 @@ module "nlb" {
       target_type      = "instance"
       health_check = {
         protocol = "TCP"
-        port = 25565
+        port     = 25565
       }
     },
     {

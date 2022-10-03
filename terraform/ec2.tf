@@ -38,7 +38,7 @@ resource "aws_instance" "server" {
   ami           = data.aws_ami.hashicorp.id
   instance_type = "m5.4xlarge"
 
-  subnet_id       = module.vpc.private_subnets.0
+  subnet_id = module.vpc.private_subnets.0
   # security_groups = [aws_security_group.server.id]
 
   vpc_security_group_ids = [aws_security_group.server.id]

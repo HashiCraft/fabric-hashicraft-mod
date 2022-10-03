@@ -37,23 +37,33 @@ resource "aws_security_group_rule" "server_allow_minecraft_from_lb" {
 }
 
 resource "aws_security_group_rule" "server_allow_geyser_from_internet" {
-  security_group_id        = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
   cidr_blocks       = ["0.0.0.0/0"]
-  type                     = "ingress"
-  protocol                 = "udp"
-  from_port                = 19132
-  to_port                  = 19132
-  description              = "Allow traffic to Geyser from lb to server security group"
+  type              = "ingress"
+  protocol          = "udp"
+  from_port         = 19132
+  to_port           = 19132
+  description       = "Allow traffic to Geyser from lb to server security group"
 }
 
-resource "aws_security_group_rule" "server_allow_minecraft_from_internet" {
-  security_group_id        = aws_security_group.server.id
+resource "aws_security_group_rule" "server_allow_minecraft_from_internet_tcp" {
+  security_group_id = aws_security_group.server.id
   cidr_blocks       = ["0.0.0.0/0"]
-  type                     = "ingress"
-  protocol                 = "udp"
-  from_port                = 25565
-  to_port                  = 25565
-  description              = "Allow traffic to Minecraft from lb to server security group"
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 25565
+  to_port           = 25565
+  description       = "Allow traffic to Minecraft from lb to server security group"
+}
+
+resource "aws_security_group_rule" "server_allow_minecraft_from_internet_udp" {
+  security_group_id = aws_security_group.server.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  type              = "ingress"
+  protocol          = "udp"
+  from_port         = 25565
+  to_port           = 25565
+  description       = "Allow traffic to Minecraft from lb to server security group"
 }
 
 resource "aws_security_group_rule" "server_allow_geyser_from_lb" {
