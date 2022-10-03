@@ -36,11 +36,31 @@ resource "aws_security_group_rule" "server_allow_minecraft_from_lb" {
   description              = "Allow traffic to Minecraft from lb to server security group"
 }
 
+resource "aws_security_group_rule" "server_allow_geyser_from_internet" {
+  security_group_id        = aws_security_group.server.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  type                     = "ingress"
+  protocol                 = "udp"
+  from_port                = 19132
+  to_port                  = 19132
+  description              = "Allow traffic to Geyser from lb to server security group"
+}
+
+resource "aws_security_group_rule" "server_allow_minecraft_from_internet" {
+  security_group_id        = aws_security_group.server.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  type                     = "ingress"
+  protocol                 = "udp"
+  from_port                = 25565
+  to_port                  = 25565
+  description              = "Allow traffic to Minecraft from lb to server security group"
+}
+
 resource "aws_security_group_rule" "server_allow_geyser_from_lb" {
   security_group_id        = aws_security_group.server.id
   source_security_group_id = aws_security_group.lb.id
   type                     = "ingress"
-  protocol                 = "tcp"
+  protocol                 = "udp"
   from_port                = 19132
   to_port                  = 19132
   description              = "Allow traffic to Geyser from lb to server security group"
@@ -96,7 +116,7 @@ resource "aws_security_group_rule" "lb_allow_minecraft_inbound" {
 resource "aws_security_group_rule" "lb_allow_geyser_inbound" {
   security_group_id = aws_security_group.lb.id
   type              = "ingress"
-  protocol          = "tcp"
+  protocol          = "udp"
   from_port         = 19132
   to_port           = 19132
   cidr_blocks       = ["0.0.0.0/0"]
