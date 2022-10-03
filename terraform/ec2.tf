@@ -39,7 +39,9 @@ resource "aws_instance" "server" {
   instance_type = "m5.4xlarge"
 
   subnet_id       = module.vpc.private_subnets.0
-  security_groups = [aws_security_group.server.id]
+  # security_groups = [aws_security_group.server.id]
+
+  vpc_security_group_ids = [aws_security_group.server.id]
 
   iam_instance_profile = aws_iam_instance_profile.server.name
 
@@ -75,4 +77,16 @@ resource "aws_instance" "server" {
 resource "aws_elb_attachment" "server" {
   elb      = aws_elb.server.id
   instance = aws_instance.server.id
+}
+
+resource "aws_lb_target_group_attachment" "geyser" {
+  target_group_arn = module.nlb.target_group_arns[0]
+  target_id        = aws_instance.server.id
+  port             = 19132
+}
+
+resource "aws_lb_target_group_attachment" "minecraft" {
+  target_group_arn = module.nlb.target_group_arns[1]
+  target_id        = aws_instance.server.id
+  port             = 25565
 }

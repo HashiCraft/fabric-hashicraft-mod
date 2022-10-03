@@ -8,13 +8,22 @@ module "nlb" {
 
   vpc_id             = module.vpc.vpc_id
   subnets            = module.vpc.public_subnets
-  security_groups    = [aws_security_group.lb.id]
 
    target_groups = [
     {
-      name_prefix      = "tg-"
-      backend_protocol = "TCP_UDP"
+      name_prefix      = "g-"
+      backend_protocol = "UDP"
       backend_port     = 19132
+      target_type      = "instance"
+      health_check = {
+        protocol = "TCP"
+        port = 25565
+      }
+    },
+    {
+      name_prefix      = "mc-"
+      backend_protocol = "TCP"
+      backend_port     = 25565
       target_type      = "instance"
     }
   ]
@@ -22,8 +31,13 @@ module "nlb" {
   http_tcp_listeners = [
     {
       port               = 19132
-      protocol           = "TCP_UDP"
+      protocol           = "UDP"
       target_group_index = 0
+    },
+    {
+      port               = 25565
+      protocol           = "TCP"
+      target_group_index = 1
     }
   ]
 
