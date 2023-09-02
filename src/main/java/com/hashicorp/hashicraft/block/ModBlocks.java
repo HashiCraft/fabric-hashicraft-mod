@@ -1,55 +1,50 @@
 package com.hashicorp.hashicraft.block;
 
 import com.hashicorp.hashicraft.Mod;
-import com.hashicorp.hashicraft.item.ItemGroups;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public class ModBlocks {
-    // Consul
-    public static final Block CONSUL_RELEASER_BLOCK = registerBlock("consul_releaser",
-            new ConsulReleaserBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-            ItemGroups.HASHICRAFT);
+  // Consul
+  public static final Identifier CONSUL_RELEASER_ID = Mod.identifier("consul_releaser");
+  public static final Block CONSUL_RELEASER_BLOCK = new ConsulReleaserBlock(
+      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
 
-    // Nomad
-    public static final Block NOMAD_SERVER_BLOCK = registerBlock("nomad_server",
-            new NomadServerBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-            ItemGroups.HASHICRAFT);
+  // Nomad
+  public static final Identifier NOMAD_SERVER_ID = Mod.identifier("nomad_server");
+  public static final Block NOMAD_SERVER_BLOCK = new NomadServerBlock(
+      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
 
-    public static final Block NOMAD_DISPENSER_BLOCK = registerBlock("nomad_dispenser",
-            new NomadDispenserBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-            ItemGroups.HASHICRAFT);
+  public static final Identifier NOMAD_DISPENSER_ID = Mod.identifier("nomad_dispenser");
+  public static final Block NOMAD_DISPENSER_BLOCK = new NomadDispenserBlock(
+      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
 
-    // Vault
-    public static final Block VAULT_DISPENSER_BLOCK = registerBlock("vault_dispenser",
-            new VaultDispenserBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-            ItemGroups.HASHICRAFT);
+  // Vault
+  public static final Identifier VAULT_DISPENSER_ID = Mod.identifier("vault_dispenser");
+  public static final Block VAULT_DISPENSER_BLOCK = new VaultDispenserBlock(
+      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
 
-    public static final Block VAULT_LOCK_BLOCK = registerBlock("vault_lock",
-            new VaultLockBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()), ItemGroups.HASHICRAFT);
+  public static final Identifier VAULT_LOCK_ID = Mod.identifier("vault_lock");
+  public static final Block VAULT_LOCK_BLOCK = new VaultLockBlock(
+      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
 
-    // Boundary
-    public static final Block BOUNDARY_LOCK_BLOCK = registerBlock("boundary_lock",
-            new BoundaryLockBlock(FabricBlockSettings.of(Material.METAL).nonOpaque()),
-            ItemGroups.HASHICRAFT);
+  // Boundary
+  public static final Identifier BOUNDARY_LOCK_ID = Mod.identifier("boundary_lock");
+  public static final Block BOUNDARY_LOCK_BLOCK = new BoundaryLockBlock(
+      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
 
-    private static Block registerBlock(String name, Block block, ItemGroup group) {
-        registerBlockItem(name, block, group);
+  public static void register() {
+    Registry.register(Registries.BLOCK, CONSUL_RELEASER_ID, CONSUL_RELEASER_BLOCK);
 
-        return Registry.register(Registry.BLOCK, Mod.identifier(name), block);
-    }
+    Registry.register(Registries.BLOCK, NOMAD_SERVER_ID, NOMAD_SERVER_BLOCK);
+    Registry.register(Registries.BLOCK, NOMAD_DISPENSER_ID, NOMAD_DISPENSER_BLOCK);
 
-    private static Item registerBlockItem(String name, Block block, ItemGroup group) {
-        return Registry.register(Registry.ITEM, Mod.identifier(name),
-                new BlockItem(block, new FabricItemSettings().group(group)));
-    }
+    Registry.register(Registries.BLOCK, VAULT_DISPENSER_ID, VAULT_DISPENSER_BLOCK);
+    Registry.register(Registries.BLOCK, VAULT_LOCK_ID, VAULT_LOCK_BLOCK);
 
-    public static void register() {
-    }
+    Registry.register(Registries.BLOCK, BOUNDARY_LOCK_ID, BOUNDARY_LOCK_BLOCK);
+  }
 }

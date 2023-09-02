@@ -28,90 +28,90 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class NomadServerBlock extends StatefulBlock {
-    public static final BooleanProperty POWERED = BooleanProperty.of("powered");
-    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+  public static final BooleanProperty POWERED = BooleanProperty.of("powered");
+  public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
-    public NomadServerBlock(Settings settings) {
-        super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState()
-                .with(FACING, Direction.NORTH)
-                .with(POWERED, false));
-    }
+  public NomadServerBlock(Settings settings) {
+    super(settings);
+    this.setDefaultState(this.stateManager.getDefaultState()
+        .with(FACING, Direction.NORTH)
+        .with(POWERED, false));
+  }
 
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        builder.add(FACING, POWERED);
-    }
+  @Override
+  protected void appendProperties(Builder<Block, BlockState> builder) {
+    builder.add(FACING, POWERED);
+  }
 
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
-    }
+  @Override
+  public BlockRenderType getRenderType(BlockState state) {
+    return BlockRenderType.MODEL;
+  }
 
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
-    }
+  @Override
+  public BlockState getPlacementState(ItemPlacementContext ctx) {
+    return getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+  }
 
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-                              BlockHitResult hit) {
-        ItemStack stack = player.getStackInHand(hand);
-        BlockEntity entity = world.getBlockEntity(pos);
+  @Override
+  public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+      BlockHitResult hit) {
+    ItemStack stack = player.getStackInHand(hand);
+    BlockEntity entity = world.getBlockEntity(pos);
 
-        if (entity instanceof NomadServerEntity) {
-            NomadServerEntity server = (NomadServerEntity) entity;
+    if (entity instanceof NomadServerEntity) {
+      NomadServerEntity server = (NomadServerEntity) entity;
 
-            if (world.isClient) {
-                if (stack.isOf(ModItems.WRENCH_ITEM)) {
-                    NomadServerClicked.EVENT.invoker().interact(server, () -> {
-                        server.markForUpdate();
-                    });
-                }
-                return ActionResult.SUCCESS;
-            } else {
-                if (stack.isOf(ModItems.APP_MINECART_ITEM)) {
-                    if (server.getAddress() == "") {
-                        player.sendMessage(Text.literal("ERROR - Nomad address is not set"), true);
-                        return ActionResult.SUCCESS;
-                    }
-
-                    CartNbtData data = CartNbtData.getCustomNbt(stack);
-
-                    boolean created = server.createJob(
-                            data.getName(), data.getVersion(), data.getNomadDeployment());
-                    if (created) {
-                        player.sendMessage(Text.literal("INFO - Nomad job created"), true);
-                    } else {
-                        player.sendMessage(Text.literal("ERROR - Could not create Nomad job"), true);
-                    }
-                }
-            }
+      if (world.isClient) {
+        if (stack.isOf(ModItems.WRENCH_ITEM)) {
+          NomadServerClicked.EVENT.invoker().interact(server, () -> {
+            server.markForUpdate();
+          });
         }
-
         return ActionResult.SUCCESS;
-    }
+      } else {
+        if (stack.isOf(ModItems.APP_MINECART_ITEM)) {
+          if (server.getAddress() == "") {
+            player.sendMessage(Text.literal("ERROR - Nomad address is not set"), true);
+            return ActionResult.SUCCESS;
+          }
 
-    @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (!state.get(POWERED).booleanValue()) {
-            return;
+          CartNbtData data = CartNbtData.getCustomNbt(stack);
+
+          boolean created = server.createJob(
+              data.getName(), data.getVersion(), data.getNomadDeployment());
+          if (created) {
+            player.sendMessage(Text.literal("INFO - Nomad job created"), true);
+          } else {
+            player.sendMessage(Text.literal("ERROR - Could not create Nomad job"), true);
+          }
         }
-
-        BlockState newState = state.with(POWERED, false);
-        world.setBlockState(pos, newState, Block.NOTIFY_ALL);
+      }
     }
 
-    public boolean emitsRedstonePower(BlockState state) {
-        return true;
+    return ActionResult.SUCCESS;
+  }
+
+  @Override
+  public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    if (!state.get(POWERED).booleanValue()) {
+      return;
     }
 
-    public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return state.get(POWERED) != false ? 15 : 0;
-    }
+    BlockState newState = state.with(POWERED, false);
+    world.setBlockState(pos, newState, Block.NOTIFY_ALL);
+  }
 
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new NomadServerEntity(pos, state);
-    }
+  public boolean emitsRedstonePower(BlockState state) {
+    return true;
+  }
+
+  public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
+    return state.get(POWERED) != false ? 15 : 0;
+  }
+
+  @Override
+  public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    return new NomadServerEntity(pos, state);
+  }
 }

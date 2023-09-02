@@ -1,22 +1,18 @@
 package com.hashicorp.sound;
 
 import com.hashicorp.hashicraft.Mod;
+
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class ModSounds {
-    // Music
-    public static SoundEvent HASHICONF_MUSIC = registerSoundEvent("hashiconf_music");
+  // Boundary
+  public static Identifier BOUNDARY_ALERT_ID = Mod.identifier("boundary_alert");
+  public static SoundEvent BOUNDARY_ALERT = SoundEvent.of(BOUNDARY_ALERT_ID);
 
-    // Boundary
-    public static SoundEvent BOUNDARY_ALERT = registerSoundEvent("boundary_alert");
-
-    private static SoundEvent registerSoundEvent(String name) {
-        Identifier id = new Identifier(Mod.MOD_ID, name);
-        return Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
-    }
-
-    public static void register() {
-    }
+  public static void register() {
+    Registry.register(Registries.SOUND_EVENT, BOUNDARY_ALERT_ID, BOUNDARY_ALERT);
+  }
 }

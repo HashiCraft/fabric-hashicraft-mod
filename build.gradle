@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -43,6 +43,8 @@ dependencies {
 
     // HashiCraft
     modImplementation include("com.github.hashicraft:fabric-stateful-mod:${stateful_version}")
+
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 }
 
 processResources {

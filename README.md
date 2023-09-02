@@ -1,10 +1,13 @@
 # HashiCraft Mod for Minecraft
 
+Contains custom blocks that allow interaction with the following HashiCorp products
+* Nomad
+* Consul
+* Vault
+
 > Note: This mod only works for Java. If you have Bedrock, navigate to the
 > [Minecraft Build Contest](https://hashiconf.com/global/minecraft/)
 > area by looking for a sign next to the gold teleportation button where you spawn.
-
-![HashiCraft world map, including build zone](assets/map.png)
 
 ## Setup
 
@@ -44,7 +47,3 @@
 1. The play screen should have a dropdown menu with various Minecraft versions.
    Choose the`fabric-loader` package listed.
    ![fabric loader mod for Minecraft Java edition](assets/instructions/fabric.png)
-
-1. Select **PLAY**.
-
-1. Join the HashiConf server in Minecraft: `hashiconf.hashicraft.com`

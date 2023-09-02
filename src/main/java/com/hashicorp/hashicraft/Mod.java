@@ -12,21 +12,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Mod implements ModInitializer {
-    public static final String MOD_ID = "hashicraft";
-    public static final Logger LOGGER = LoggerFactory.getLogger("hashicraft");
+  public static final String MOD_ID = "hashicraft";
+  public static final Logger LOGGER = LoggerFactory.getLogger("hashicraft");
 
-    @Override
-    public void onInitialize() {
-        EntityServerState.RegisterStateUpdates();
+  @Override
+  public void onInitialize() {
 
-        ModSounds.register();
-        ModBlocks.register();
-        ModItems.register();
-        BlockEntities.register();
-        ModEntities.register();
-    }
+    ModSounds.register();
+    ModBlocks.register();
+    ModItems.register();
+    BlockEntities.register();
+    ModEntities.register();
 
-    public static Identifier identifier(String path) {
-        return new Identifier(MOD_ID, path);
-    }
+    EntityServerState.RegisterStateUpdates();
+  }
+
+  public static Identifier identifier(String path) {
+    return new Identifier(MOD_ID, path);
+  }
 }
