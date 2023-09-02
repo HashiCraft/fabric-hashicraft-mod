@@ -2,7 +2,6 @@ package com.hashicorp.hashicraft.entity;
 
 import com.hashicorp.hashicraft.Mod;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -13,8 +12,6 @@ import net.minecraft.util.Identifier;
 public class ModEntities {
 
   public static final Identifier APP_MINECART_ID = Mod.identifier("app_minecart");
-  public static final EntityModelLayer APP_MINECART_LAYER = new EntityModelLayer(APP_MINECART_ID,
-      "main");
 
   public static final EntityType<AppMinecartEntity> APP_MINECART = Registry.register(
       Registries.ENTITY_TYPE,

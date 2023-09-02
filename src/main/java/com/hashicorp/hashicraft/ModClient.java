@@ -24,6 +24,8 @@ import net.minecraft.util.ActionResult;
 @Environment(EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
 
+  public static final EntityModelLayer APP_MINECART_LAYER = new EntityModelLayer(ModEntities.APP_MINECART_ID, "main");
+
   @Override
   public void onInitializeClient() {
     //// Nomad Dispenser
@@ -84,12 +86,14 @@ public class ModClient implements ClientModInitializer {
       return ActionResult.PASS;
     });
 
+    ModEntities.register();
+
     // App Minecart
     EntityRendererRegistry.register(ModEntities.APP_MINECART, (context) -> {
-      return new AppMinecartEntityRenderer(context, ModEntities.APP_MINECART_LAYER);
+      return new AppMinecartEntityRenderer(context, APP_MINECART_LAYER);
     });
 
-    EntityModelLayerRegistry.registerModelLayer(ModEntities.APP_MINECART_LAYER,
+    EntityModelLayerRegistry.registerModelLayer(APP_MINECART_LAYER,
         AppMinecartEntityModel::getTexturedModelData);
   }
 }

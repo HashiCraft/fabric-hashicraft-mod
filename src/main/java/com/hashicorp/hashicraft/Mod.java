@@ -22,7 +22,6 @@ public class Mod implements ModInitializer {
     ModBlocks.register();
     ModItems.register();
     BlockEntities.register();
-    ModEntities.register();
 
     EntityServerState.RegisterStateUpdates();
   }
