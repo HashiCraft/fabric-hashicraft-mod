@@ -13,41 +13,41 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 public class VaultDispenserGui extends LightweightGuiDescription {
-    public VaultDispenserGui(VaultDispenserEntity dispenser, SaveCallback callback) {
-        String policy = dispenser.getPolicy();
+  public VaultDispenserGui(VaultDispenserEntity dispenser, SaveCallback callback) {
+    String userpass = dispenser.getUserpass();
 
-        WGridPanel root = new WGridPanel();
-        setRootPanel(root);
-        root.setInsets(Insets.ROOT_PANEL);
+    WGridPanel root = new WGridPanel();
+    setRootPanel(root);
+    root.setInsets(Insets.ROOT_PANEL);
 
-        WLabel label = new WLabel(Text.literal("Policies"));
-        root.add(label, 0, 0, 4, 1);
+    WLabel label = new WLabel(Text.literal("Userpass Mount Path"));
+    root.add(label, 0, 0, 4, 1);
 
-        WTextField policyField;
-        policyField = new WTextField(Text.literal("Policies added to the card"));
-        root.add(policyField, 0, 1, 16, 2);
-        policyField.setMaxLength(255);
+    WTextField userpassField;
+    userpassField = new WTextField(Text.literal("Mount point for userpass authentication method"));
+    root.add(userpassField, 0, 1, 16, 2);
+    userpassField.setMaxLength(255);
 
-        WButton button = new WButton(Text.literal("Save"));
-        button.setOnClick(() -> {
-            String text = policyField.getText();
-            if (!text.isEmpty()) {
-                dispenser.setPolicy(text);
-            }
+    WButton button = new WButton(Text.literal("Save"));
+    button.setOnClick(() -> {
+      String text = userpassField.getText();
+      if (!text.isEmpty()) {
+        dispenser.setUserpass(text);
+      }
 
-            callback.onSave();
+      callback.onSave();
 
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.player.closeScreen();
-            MinecraftClient.getInstance().setScreen((Screen) null);
-        });
+      MinecraftClient client = MinecraftClient.getInstance();
+      client.player.closeScreen();
+      MinecraftClient.getInstance().setScreen((Screen) null);
+    });
 
-        root.add(button, 0, 7, 16, 1);
+    root.add(button, 0, 7, 16, 1);
 
-        if (policy != null) {
-            policyField.setText(policy);
-        }
-
-        root.validate(this);
+    if (userpass != null) {
+      userpassField.setText(userpass);
     }
+
+    root.validate(this);
+  }
 }

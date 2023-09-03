@@ -5,6 +5,7 @@ import com.github.hashicraft.stateful.blocks.Syncable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hashicorp.hashicraft.Mod;
+import com.hashicorp.hashicraft.environment.Env;
 import com.hashicorp.hashicraft.vault.Decrypted;
 import com.hashicorp.hashicraft.vault.Secret;
 
@@ -62,6 +63,19 @@ public class VaultLockEntity extends StatefulBlockEntity {
     return this.key;
   }
 
+  // resolve any environment variables in the path string
+  private String resolvePath() {
+    return Env.getValueSubstitution(this.path);
+  }
+
+  private String resolveKey() {
+    return Env.getValueSubstitution(this.key);
+  }
+
+  private String resolveValue() {
+    return Env.getValueSubstitution(this.value);
+  }
+
   public VaultLockEntity(BlockPos pos, BlockState state) {
     super(BlockEntities.VAULT_LOCK_ENTITY, pos, state, null);
   }
@@ -74,7 +88,7 @@ public class VaultLockEntity extends StatefulBlockEntity {
     try {
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
-          .uri(URI.create(vaultAddress + "/v1/" + path))
+          .uri(URI.create(vaultAddress + "/v1/" + resolvePath()))
           .header("Accept", "application/json")
           .header("X-Vault-Token", token)
           .GET()
@@ -93,7 +107,8 @@ public class VaultLockEntity extends StatefulBlockEntity {
       Gson gson = builder.create();
       Secret secret = gson.fromJson(response.body(), Secret.class);
 
-      if (secret.getData().getData().get(value).equals(key)) {
+      // check to see if the value in the secret matches the value defined in the lock
+      if (secret.getData().getData().get(resolveValue()).equals(resolveKey())) {
         return true;
       }
 

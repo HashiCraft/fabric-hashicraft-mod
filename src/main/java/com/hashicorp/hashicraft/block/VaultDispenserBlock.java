@@ -72,7 +72,6 @@ public class VaultDispenserBlock extends StatefulBlock {
         }
         return ActionResult.SUCCESS;
       } else {
-
         if (!stack.isOf(ModItems.WRENCH_ITEM)) {
           // Create a new card.
           ItemStack card = new ItemStack(ModItems.VAULT_CARD_ITEM);
