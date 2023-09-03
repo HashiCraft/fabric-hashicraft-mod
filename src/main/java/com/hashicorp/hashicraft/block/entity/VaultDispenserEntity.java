@@ -92,8 +92,8 @@ public class VaultDispenserEntity extends StatefulBlockEntity {
 
       Mod.LOGGER.debug(response.body());
 
-      GsonBuilder builder = new GsonBuilder();
-      Gson gson = builder.create();
+      GsonBuilder jsonbuilder = new GsonBuilder();
+      Gson gson = jsonbuilder.create();
       Login login = gson.fromJson(response.body(), Login.class);
       return login;
     } catch (Exception e) {

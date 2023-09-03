@@ -116,8 +116,8 @@ public class VaultLockEntity extends StatefulBlockEntity {
       Mod.LOGGER.info(response.body());
 
       // check the value of the key in the secret
-      GsonBuilder builder = new GsonBuilder();
-      Gson gson = builder.create();
+      GsonBuilder jsonbuilder = new GsonBuilder();
+      Gson gson = jsonbuilder.create();
       Secret secret = gson.fromJson(response.body(), Secret.class);
 
       // check to see if the value in the secret matches the value defined in the lock
