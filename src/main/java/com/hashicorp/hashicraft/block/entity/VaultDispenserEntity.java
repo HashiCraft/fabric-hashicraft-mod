@@ -23,12 +23,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Base64;
 
 public class VaultDispenserEntity extends StatefulBlockEntity {
   public static final String vaultAddress = System.getenv().getOrDefault("VAULT_ADDR", "http://localhost:8200");
   public static final String vaultToken = System.getenv().getOrDefault("VAULT_TOKEN", "root");
+  public static final String vaultNamespace = System.getenv().getOrDefault("VAULT_NAMESPACE", "");
 
   @Syncable
   // userpass could contain a variable substitution like ${env.userpass}
@@ -69,11 +71,17 @@ public class VaultDispenserEntity extends StatefulBlockEntity {
           """, password);
 
       HttpClient client = HttpClient.newHttpClient();
-      HttpRequest request = HttpRequest.newBuilder()
+      Builder builder = HttpRequest.newBuilder()
           .uri(URI.create(vaultAddress + "/v1/auth/" + resolveUserpass() + "/login/" + username))
           .header("Accept", "application/json")
-          .header("X-Vault-Token", vaultToken)
-          .POST(HttpRequest.BodyPublishers.ofString(payload))
+          .header("X-Vault-Token", vaultToken);
+
+      // if a namespace is set, use it
+      if (vaultNamespace != "") {
+        builder = builder.header("X-Vault-Namespace", vaultNamespace);
+      }
+
+      HttpRequest request = builder.POST(HttpRequest.BodyPublishers.ofString(payload))
           .build();
 
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
