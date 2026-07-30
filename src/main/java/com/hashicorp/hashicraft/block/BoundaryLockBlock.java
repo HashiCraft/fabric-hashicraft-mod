@@ -80,10 +80,9 @@ public class BoundaryLockBlock extends StatefulBlock {
 
       if (level.isClientSide()) {
         if (stack.is(ModItems.WRENCH_ITEM)) {
-          // TODO: Fabric API Event - Uncomment after updating Fabric API
-          // BoundaryLockClicked.EVENT.invoker().interact(lock, () -> {
-          //   lock.markForUpdate();
-          // });
+          BoundaryLockClicked.EVENT.invoker().interact(lock, () -> {
+            lock.markForUpdate();
+          });
         }
         return InteractionResult.SUCCESS;
       }

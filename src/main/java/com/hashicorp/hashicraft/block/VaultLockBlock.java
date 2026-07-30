@@ -83,10 +83,9 @@ public class VaultLockBlock extends StatefulBlock {
 
       if (level.isClientSide()) {
         if (stack.is(ModItems.WRENCH_ITEM)) {
-          // TODO: Fabric API Event - Uncomment after updating Fabric API
-          // VaultLockClicked.EVENT.invoker().interact(lock, () -> {
-          //   lock.markForUpdate();
-          // });
+          VaultLockClicked.EVENT.invoker().interact(lock, () -> {
+            lock.markForUpdate();
+          });
         }
         return InteractionResult.SUCCESS;
       }

@@ -71,10 +71,9 @@ public class VaultDispenserBlock extends StatefulBlock {
 
       if (level.isClientSide()) {
         if (stack.is(ModItems.WRENCH_ITEM)) {
-          // TODO: Fabric API Event - Uncomment after updating Fabric API
-          // VaultDispenserClicked.EVENT.invoker().interact(dispenser, () -> {
-          //   dispenser.markForUpdate();
-          // });
+          VaultDispenserClicked.EVENT.invoker().interact(dispenser, () -> {
+            dispenser.markForUpdate();
+          });
         }
         return InteractionResult.SUCCESS;
       } else {

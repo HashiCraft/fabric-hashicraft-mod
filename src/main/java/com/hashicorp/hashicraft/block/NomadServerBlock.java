@@ -69,10 +69,9 @@ public class NomadServerBlock extends StatefulBlock {
 
       if (level.isClientSide()) {
         if (stack.is(ModItems.WRENCH_ITEM)) {
-          // TODO: Fabric API Event - Uncomment after updating Fabric API
-          // NomadServerClicked.EVENT.invoker().interact(server, () -> {
-          //   server.markForUpdate();
-          // });
+          NomadServerClicked.EVENT.invoker().interact(server, () -> {
+            server.markForUpdate();
+          });
         }
         return InteractionResult.SUCCESS;
       } else {

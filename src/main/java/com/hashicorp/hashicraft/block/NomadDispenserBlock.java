@@ -67,7 +67,7 @@ public class NomadDispenserBlock extends StatefulBlock {
 
       if (level.isClientSide()) {
         if (stack.is(ModItems.WRENCH_ITEM)) {
-          // TODO: Fabric API Event - NomadDispenserClicked.EVENT.invoker().interact(dispenser, dispenser::markForUpdate);
+          NomadDispenserClicked.EVENT.invoker().interact(dispenser, dispenser::markForUpdate);
         }
         return InteractionResult.SUCCESS;
       }

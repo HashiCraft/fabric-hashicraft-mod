@@ -9,6 +9,7 @@ import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.component.DataComponents;
@@ -41,8 +42,8 @@ public class BoundaryLockGui extends LightweightGuiDescription {
 
             callback.onSave();
 
-            Minecraft.getInstance().gui.setScreen(null);
-            Minecraft.getInstance().gui.setScreen((Screen) null);
+            // Close the screen
+            Minecraft.getInstance().setScreenAndShow(null);
         });
 
         root.add(button, 0, 7, 16, 1);
