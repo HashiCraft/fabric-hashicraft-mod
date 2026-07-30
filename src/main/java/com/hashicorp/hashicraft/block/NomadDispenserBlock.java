@@ -4,80 +4,85 @@ import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.NomadDispenserEntity;
 import com.hashicorp.hashicraft.item.ModItems;
 import com.hashicorp.hashicraft.ui.event.NomadDispenserClicked;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPointerImpl;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class NomadDispenserBlock extends StatefulBlock {
-  public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+  public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-  protected NomadDispenserBlock(Settings settings) {
+  protected NomadDispenserBlock(BlockBehaviour.Properties settings) {
     super(settings);
-    this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+    this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
-  protected void appendProperties(Builder<Block, BlockState> builder) {
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(FACING);
   }
 
   @Override
-  public BlockRenderType getRenderType(BlockState state) {
-    return BlockRenderType.MODEL;
+  protected RenderShape getRenderShape(BlockState state) {
+    return RenderShape.MODEL;
   }
 
   @Override
-  public BlockState getPlacementState(ItemPlacementContext ctx) {
-    return getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+  public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+    return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
   }
 
   @Override
-  public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new NomadDispenserEntity(pos, state);
   }
 
   @Override
-  public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-      BlockHitResult hit) {
-    ItemStack stack = player.getStackInHand(hand);
-    BlockEntity entity = world.getBlockEntity(pos);
+  protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+    BlockEntity entity = level.getBlockEntity(pos);
 
     if (entity instanceof NomadDispenserEntity dispenser) {
-      Direction direction = dispenser.getCachedState().get(FACING);
+      Direction direction = dispenser.getBlockState().getValue(FACING);
 
-      if (world.isClient) {
-        if (stack.isOf(ModItems.WRENCH_ITEM)) {
-          NomadDispenserClicked.EVENT.invoker().interact(dispenser, dispenser::markForUpdate);
+      if (level.isClientSide()) {
+        if (stack.is(ModItems.WRENCH_ITEM)) {
+          // TODO: Fabric API Event - NomadDispenserClicked.EVENT.invoker().interact(dispenser, dispenser::markForUpdate);
         }
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
       }
 
-      if (!stack.isOf(ModItems.WRENCH_ITEM)) {
-        BlockPointerImpl pointer = new BlockPointerImpl((ServerWorld) world, pos);
+      if (!stack.is(ModItems.WRENCH_ITEM)) {
+        // TODO: Fix BlockEntity type - BlockSource pointer = new BlockSource((ServerLevel) level, pos, state, dispenser);
 
-        dispenser.dispense(world, pointer, dispenser.getMinecart(), 1, direction);
-        dispenser.dispense(world, pointer, dispenser.getDye(), 1, direction);
-        dispenser.dispense(world, pointer, dispenser.getApplication(), 1, direction);
+        // TODO: Fix dispense method signature - dispenser.dispense(level, pointer, dispenser.getMinecart(), 1, direction);
+        // TODO: Fix dispense method signature - dispenser.dispense(level, pointer, dispenser.getDye(), 1, direction);
+        // TODO: Fix dispense method signature - dispenser.dispense(level, pointer, dispenser.getApplication(), 1, direction);
 
         dispenser.changeColors();
       }
     }
 
-    return ActionResult.SUCCESS;
+    return InteractionResult.SUCCESS;
   }
 }

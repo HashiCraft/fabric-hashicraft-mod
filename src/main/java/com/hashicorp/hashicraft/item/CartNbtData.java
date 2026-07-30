@@ -1,7 +1,9 @@
 package com.hashicorp.hashicraft.item;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class CartNbtData {
 
@@ -32,18 +34,18 @@ public class CartNbtData {
     }
 
     public static CartNbtData getCustomNbt(ItemStack stack) {
-        NbtCompound identity = stack.getOrCreateNbt();
-        String name = identity.getString("name");
-        String version = identity.getString("version");
-        String nomadDeployment = identity.getString("nomad_deployment");
+        CompoundTag identity = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        String name = identity.getString("name").orElse("");
+        String version = identity.getString("version").orElse("");
+        String nomadDeployment = identity.getString("nomad_deployment").orElse("");
         return new CartNbtData(name, version, nomadDeployment);
     }
 
     public void setCustomNbt(ItemStack stack) {
-        NbtCompound identity = stack.getOrCreateNbt();
+        CompoundTag identity = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         identity.putString("name", name);
         identity.putString("version", version);
         identity.putString("nomad_deployment", nomadDeployment);
-        stack.setNbt(identity);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(identity));
     }
 }

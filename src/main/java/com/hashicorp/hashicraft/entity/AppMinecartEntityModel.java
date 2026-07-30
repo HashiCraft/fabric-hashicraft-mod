@@ -2,34 +2,26 @@ package com.hashicorp.hashicraft.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
-@Environment(value = EnvType.CLIENT)
-public class AppMinecartEntityModel extends SinglePartEntityModel<AppMinecartEntity> {
+@Environment(EnvType.CLIENT)
+// TODO: Fix EntityModel - requires EntityRenderState type
+public class AppMinecartEntityModel /* extends EntityModel<AppMinecartRenderState> */ {
+  
+  /* public AppMinecartEntityModel(ModelPart root) {
+    // TODO: Implement model for Minecraft 26.x
+  } */
 
-    private final ModelPart root;
+  public void setupAnim(net.minecraft.client.renderer.entity.state.EntityRenderState state) {
+    // TODO: Implement animation
+  }
 
-    public AppMinecartEntityModel(ModelPart root) {
-        this.root = root;
-    }
-
-    public static TexturedModelData getTexturedModelData() {
-        ModelData modelData = new ModelData();
-        ModelPartData modelPartData = modelData.getRoot();
-        modelPartData.addChild("bottom",
-                ModelPartBuilder.create().uv(0, 0).cuboid(-8.0f, -8.0f, -16.0f, 16.0f, 16.0f, 16.0f),
-                ModelTransform.of(0.0f, 0.0f, 0.0f, 1.5707964f, 0.0f, 0.0f));
-        return TexturedModelData.of(modelData, 64, 64);
-    }
-
-    @Override
-    public void setAngles(AppMinecartEntity entity, float limbAngle, float limbDistance, float animationProgress,
-                          float headYaw, float headPitch) {
-    }
-
-    @Override
-    public ModelPart getPart() {
-        return this.root;
-    }
+  public void renderToBuffer(com.mojang.blaze3d.vertex.PoseStack poseStack, 
+      com.mojang.blaze3d.vertex.VertexConsumer buffer, int packedLight, int packedOverlay, 
+      int color) {
+    // TODO: Implement rendering
+  }
 }

@@ -2,87 +2,90 @@ package com.hashicorp.hashicraft.item;
 
 import com.hashicorp.hashicraft.Mod;
 import com.hashicorp.hashicraft.block.ModBlocks;
-
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import java.util.function.Function;
 
 public class ModItems {
-  public static final Identifier VAULT_CARD_ID = Mod.identifier("vault_card_item");
-  public static final Item VAULT_CARD_ITEM = new VaultCardItem(new Item.Settings());
+  public static final Item VAULT_CARD_ITEM = register("vault_card_item",
+      settings -> new VaultCardItem(settings),
+      new Item.Properties());
 
-  public static final Identifier APP_MINECART_ID = Mod.identifier("app_minecart_item");
-  public static final Item APP_MINECART_ITEM = new AppMinecart(new Item.Settings());
+  public static final Item APP_MINECART_ITEM = register("app_minecart_item",
+      settings -> new AppMinecart(settings),
+      new Item.Properties());
 
-  public static final Identifier APPLICATION_ID = Mod.identifier("application_item");
-  public static final Item APPLICATION_ITEM = new Application(new Item.Settings());
+  public static final Item APPLICATION_ITEM = register("application_item",
+      settings -> new Application(settings),
+      new Item.Properties());
 
-  public static final Identifier WRENCH_ID = Mod.identifier("wrench_item");
-  public static final Item WRENCH_ITEM = new WrenchItem(new Item.Settings().maxCount(1));
+  public static final Item WRENCH_ITEM = register("wrench_item",
+      settings -> new WrenchItem(settings),
+      new Item.Properties().stacksTo(1));
 
-  public static final Identifier CONSUL_RELEASER_ID = Mod.identifier("consul_releaser_item");
-  public static Item CONSUL_RELEASER_ITEM = new BlockItem(ModBlocks.CONSUL_RELEASER_BLOCK, new Item.Settings());
+  public static final Item CONSUL_RELEASER_ITEM = register("consul_releaser_item",
+      settings -> new BlockItem(ModBlocks.CONSUL_RELEASER_BLOCK, settings),
+      new Item.Properties());
 
-  public static final Identifier NOMAD_SERVER_ID = Mod.identifier("nomad_server_item");
-  public static Item NOMAD_SERVER_ITEM = new BlockItem(ModBlocks.NOMAD_SERVER_BLOCK, new Item.Settings());
+  public static final Item NOMAD_SERVER_ITEM = register("nomad_server_item",
+      settings -> new BlockItem(ModBlocks.NOMAD_SERVER_BLOCK, settings),
+      new Item.Properties());
 
-  public static final Identifier NOMAD_DISPENSER_ID = Mod.identifier("nomad_dispenser_item");
-  public static Item NOMAD_DISPENSER_ITEM = new BlockItem(ModBlocks.NOMAD_DISPENSER_BLOCK, new Item.Settings());
+  public static final Item NOMAD_DISPENSER_ITEM = register("nomad_dispenser_item",
+      settings -> new BlockItem(ModBlocks.NOMAD_DISPENSER_BLOCK, settings),
+      new Item.Properties());
 
-  public static final Identifier VAULT_DISPENSER_ID = Mod.identifier("vault_dispenser_item");
-  public static Item VAULT_DISPENSER_ITEM = new BlockItem(ModBlocks.VAULT_DISPENSER_BLOCK, new Item.Settings());
+  public static final Item VAULT_DISPENSER_ITEM = register("vault_dispenser_item",
+      settings -> new BlockItem(ModBlocks.VAULT_DISPENSER_BLOCK, settings),
+      new Item.Properties());
 
-  public static final Identifier VAULT_LOCK_ID = Mod.identifier("vault_lock_item");
-  public static Item VAULT_LOCK_ITEM = new BlockItem(ModBlocks.VAULT_LOCK_BLOCK, new Item.Settings());
+  public static final Item VAULT_LOCK_ITEM = register("vault_lock_item",
+      settings -> new BlockItem(ModBlocks.VAULT_LOCK_BLOCK, settings),
+      new Item.Properties());
 
-  public static final Identifier BOUNDARY_LOCK_ID = Mod.identifier("boundary_lock_item");
-  public static Item BOUNDARY_LOCK_ITEM = new BlockItem(ModBlocks.BOUNDARY_LOCK_BLOCK, new Item.Settings());
+  public static final Item BOUNDARY_LOCK_ITEM = register("boundary_lock_item",
+      settings -> new BlockItem(ModBlocks.BOUNDARY_LOCK_BLOCK, settings),
+      new Item.Properties());
 
-  public static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP,
-      new Identifier(Mod.MOD_ID, "hashicraft"));
+  public static final ResourceKey<CreativeModeTab> ITEM_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB,
+      Identifier.parse(Mod.MOD_ID + ":hashicraft"));
+
+  private static Item register(String path,
+                               Function<Item.Properties, Item> factory,
+                               Item.Properties settings) {
+    Identifier identifier = Mod.identifier(path);
+    ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, identifier);
+    return Registry.register(BuiltInRegistries.ITEM, registryKey, factory.apply(settings.setId(registryKey)));
+  }
 
   public static void register() {
-    Registry.register(Registries.ITEM, APP_MINECART_ID, APP_MINECART_ITEM);
-    Registry.register(Registries.ITEM, APPLICATION_ID, APPLICATION_ITEM);
-
-    Registry.register(Registries.ITEM, WRENCH_ID, WRENCH_ITEM);
-
-    Registry.register(Registries.ITEM, CONSUL_RELEASER_ID, CONSUL_RELEASER_ITEM);
-
-    Registry.register(Registries.ITEM, NOMAD_SERVER_ID, NOMAD_SERVER_ITEM);
-    Registry.register(Registries.ITEM, NOMAD_DISPENSER_ID, NOMAD_DISPENSER_ITEM);
-
-    Registry.register(Registries.ITEM, VAULT_CARD_ID, VAULT_CARD_ITEM);
-    Registry.register(Registries.ITEM, VAULT_DISPENSER_ID, VAULT_DISPENSER_ITEM);
-    Registry.register(Registries.ITEM, VAULT_LOCK_ID, VAULT_LOCK_ITEM);
-
-    Registry.register(Registries.ITEM, BOUNDARY_LOCK_ID, BOUNDARY_LOCK_ITEM);
-
-    Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
-        .icon(() -> new ItemStack(ModBlocks.NOMAD_SERVER_BLOCK))
-        .displayName(Text.translatable("hashicraft.hashistack"))
-        .build());
-
-    ItemGroupEvents.modifyEntriesEvent(ITEM_GROUP).register(content -> {
-      content.add(VAULT_CARD_ITEM);
-      content.add(APP_MINECART_ITEM);
-      content.add(APPLICATION_ITEM);
-      content.add(WRENCH_ITEM);
-      content.add(CONSUL_RELEASER_ITEM);
-      content.add(NOMAD_SERVER_ITEM);
-      content.add(NOMAD_DISPENSER_ITEM);
-      content.add(VAULT_DISPENSER_ITEM);
-      content.add(VAULT_LOCK_ITEM);
-      content.add(BOUNDARY_LOCK_ITEM);
-    });
+    // Items are already registered during static initialization
+    
+    // Register creative mode tab using native Minecraft API (1.21.4+)
+    Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ITEM_GROUP, 
+        CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+            .icon(() -> new ItemStack(ModBlocks.NOMAD_SERVER_BLOCK))
+            .title(Component.translatable("itemGroup.hashicraft.hashistack"))
+            .displayItems((parameters, output) -> {
+              output.accept(VAULT_CARD_ITEM);
+              output.accept(APP_MINECART_ITEM);
+              output.accept(APPLICATION_ITEM);
+              output.accept(WRENCH_ITEM);
+              output.accept(CONSUL_RELEASER_ITEM);
+              output.accept(NOMAD_SERVER_ITEM);
+              output.accept(NOMAD_DISPENSER_ITEM);
+              output.accept(VAULT_DISPENSER_ITEM);
+              output.accept(VAULT_LOCK_ITEM);
+              output.accept(BOUNDARY_LOCK_ITEM);
+            })
+            .build());
   }
 }

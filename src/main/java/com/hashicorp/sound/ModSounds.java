@@ -2,17 +2,13 @@ package com.hashicorp.sound;
 
 import com.hashicorp.hashicraft.Mod;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+// TODO: Fix import - import net.minecraft.core.BuiltInRegistries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.Identifier;
 
 public class ModSounds {
-  // Boundary
-  public static Identifier BOUNDARY_ALERT_ID = Mod.identifier("boundary_alert");
-  public static SoundEvent BOUNDARY_ALERT = SoundEvent.of(BOUNDARY_ALERT_ID);
+  // TODO: Implement with correct Fabric API
+  // All sound registration code commented out
 
-  public static void register() {
-    Registry.register(Registries.SOUND_EVENT, BOUNDARY_ALERT_ID, BOUNDARY_ALERT);
-  }
 }

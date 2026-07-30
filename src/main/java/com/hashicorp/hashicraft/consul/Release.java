@@ -2,6 +2,8 @@ package com.hashicorp.hashicraft.consul;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import java.util.List;
 import java.util.Map;

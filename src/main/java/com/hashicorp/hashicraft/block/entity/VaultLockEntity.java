@@ -8,10 +8,12 @@ import com.hashicorp.hashicraft.Mod;
 import com.hashicorp.hashicraft.environment.Env;
 import com.hashicorp.hashicraft.vault.Decrypted;
 import com.hashicorp.hashicraft.vault.Secret;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 
 import java.net.URI;
 import java.net.http.HttpClient;

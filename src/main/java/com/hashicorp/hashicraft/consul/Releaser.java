@@ -1,6 +1,8 @@
 package com.hashicorp.hashicraft.consul;
 
 import com.hashicorp.hashicraft.Mod;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import java.io.IOException;
 import java.net.URI;

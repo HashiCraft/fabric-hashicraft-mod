@@ -3,7 +3,9 @@ package com.hashicorp.hashicraft.watcher;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -60,16 +62,16 @@ public class Node implements Serializable {
     public BlockPos getSlotPos(String id) {
         switch (id) {
             case "bottom_right":
-                return new BlockPos(this.getPos().getX() + 3, this.getPos().getY(), this.getPos().getZ() + 3);
+                return new BlockPos(this.pos.getX() + 3, this.pos.getY(), this.pos.getZ() + 3);
             case "bottom_left":
-                return new BlockPos(this.getPos().getX() + 10, this.getPos().getY(), this.getPos().getZ() + 3);
+                return new BlockPos(this.pos.getX() + 10, this.pos.getY(), this.pos.getZ() + 3);
             case "top_right":
-                return new BlockPos(this.getPos().getX() + 3, this.getPos().getY(), this.getPos().getZ() + 10);
+                return new BlockPos(this.pos.getX() + 3, this.pos.getY(), this.pos.getZ() + 10);
             case "top_left":
-                return new BlockPos(this.getPos().getX() + 10, this.getPos().getY(), this.getPos().getZ() + 10);
+                return new BlockPos(this.pos.getX() + 10, this.pos.getY(), this.pos.getZ() + 10);
         }
 
-        return this.getPos();
+        return this.pos;
     }
 
     public HashMap<String, String> getSlots() {

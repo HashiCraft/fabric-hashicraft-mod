@@ -8,9 +8,11 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class VaultLockGui extends LightweightGuiDescription {
   public VaultLockGui(VaultLockEntity lock, SaveCallback callback) {
@@ -19,31 +21,31 @@ public class VaultLockGui extends LightweightGuiDescription {
     setRootPanel(root);
     root.setInsets(Insets.ROOT_PANEL);
 
-    WLabel labelPath = new WLabel(Text.literal("Path"));
+    WLabel labelPath = new WLabel(Component.literal("Path"));
     root.add(labelPath, 0, 0, 4, 1);
 
     WTextField pathField;
-    pathField = new WTextField(Text.literal("Path to Vault secret required for access"));
+    pathField = new WTextField(Component.literal("Path to Vault secret required for access"));
     root.add(pathField, 0, 1, 16, 2);
     pathField.setMaxLength(255);
 
-    WLabel labelValue = new WLabel(Text.literal("Value"));
+    WLabel labelValue = new WLabel(Component.literal("Value"));
     root.add(labelValue, 0, 3, 4, 1);
 
     WTextField valueField;
-    valueField = new WTextField(Text.literal("Name of the Value in the secret containing the key"));
+    valueField = new WTextField(Component.literal("Name of the Value in the secret containing the key"));
     root.add(valueField, 0, 4, 16, 2);
     valueField.setMaxLength(255);
 
-    WLabel labelKey = new WLabel(Text.literal("Key"));
+    WLabel labelKey = new WLabel(Component.literal("Key"));
     root.add(labelKey, 0, 6, 4, 1);
 
     WTextField keyField;
-    keyField = new WTextField(Text.literal("Key to compare the secret value to"));
+    keyField = new WTextField(Component.literal("Key to compare the secret value to"));
     root.add(keyField, 0, 7, 16, 2);
     keyField.setMaxLength(255);
 
-    WButton button = new WButton(Text.literal("Save"));
+    WButton button = new WButton(Component.literal("Save"));
     button.setOnClick(() -> {
       String p = pathField.getText();
       if (!p.isEmpty()) {
@@ -62,9 +64,8 @@ public class VaultLockGui extends LightweightGuiDescription {
 
       callback.onSave();
 
-      MinecraftClient client = MinecraftClient.getInstance();
-      client.player.closeScreen();
-      MinecraftClient.getInstance().setScreen((Screen) null);
+      Minecraft.getInstance().gui.setScreen(null);
+      Minecraft.getInstance().gui.setScreen((Screen) null);
     });
 
     root.add(button, 0, 9, 16, 1);

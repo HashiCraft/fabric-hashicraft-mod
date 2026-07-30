@@ -4,6 +4,8 @@ import static com.hashicorp.hashicraft.block.ConsulReleaserBlock.HEALTHY;
 import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_APPLICATION;
 import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_NOMAD_DEPLOYMENT;
 import static com.hashicorp.hashicraft.item.CartNbtData.DEFAULT_NOMAD_NAMESPACE;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import java.net.ConnectException;
 import java.util.List;
@@ -19,10 +21,11 @@ import com.hashicorp.hashicraft.consul.Release;
 import com.hashicorp.hashicraft.consul.ReleaseStatus;
 import com.hashicorp.hashicraft.consul.Releaser;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
 
 public class ConsulReleaserEntity extends StatefulBlockEntity {
     @Syncable
@@ -103,9 +106,9 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     }
 
     @Override
-    public void setWorld(World world) {
-        super.setWorld(world);
-        if (!world.isClient) {
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if (level != null && !level.isClientSide()) {
             Mod.LOGGER.info("Creating release for Consul releaser");
             this.createRelease();
             this.start();
@@ -113,9 +116,9 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     }
 
     @Override
-    public void markRemoved() {
-        super.markRemoved();
-        if (this.hasWorld() && !this.getWorld().isClient) {
+    public void setRemoved() {
+        super.setRemoved();
+        if (this.level != null && !this.level.isClientSide()) {
             try {
                 Mod.LOGGER.info("Deleting release for Consul releaser");
                 releaser.delete(application);
@@ -213,9 +216,9 @@ public class ConsulReleaserEntity extends StatefulBlockEntity {
     }
 
     private void setHealth() {
-        BlockState state = this.world.getBlockState(this.getPos());
-        state = getStatus().equals(STATUS_FAILED) ? state.with(HEALTHY, false) : state.with(HEALTHY, true);
-        world.setBlockState(this.pos, state, Block.NOTIFY_ALL);
+        BlockState state = this.level.getBlockState(this.getBlockPos());
+        state = getStatus().equals(STATUS_FAILED) ? state.setValue(HEALTHY, false) : state.setValue(HEALTHY, true);
+        level.setBlock(this.getBlockPos(), state, Block.UPDATE_ALL);
     }
 
     public String getStatus() {

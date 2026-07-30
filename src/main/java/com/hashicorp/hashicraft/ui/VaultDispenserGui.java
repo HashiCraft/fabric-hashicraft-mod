@@ -8,9 +8,11 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class VaultDispenserGui extends LightweightGuiDescription {
   public VaultDispenserGui(VaultDispenserEntity dispenser, SaveCallback callback) {
@@ -20,26 +22,25 @@ public class VaultDispenserGui extends LightweightGuiDescription {
     setRootPanel(root);
     root.setInsets(Insets.ROOT_PANEL);
 
-    WLabel label = new WLabel(Text.literal("Userpass Mount Path"));
+    WLabel label = new WLabel(Component.literal("Userpass Mount Path"));
     root.add(label, 0, 0, 4, 1);
 
     WTextField userpassField;
-    userpassField = new WTextField(Text.literal("Mount point for userpass authentication method"));
+    userpassField = new WTextField(Component.literal("Mount point for userpass authentication method"));
     root.add(userpassField, 0, 1, 16, 2);
     userpassField.setMaxLength(255);
 
-    WButton button = new WButton(Text.literal("Save"));
+    WButton button = new WButton(Component.literal("Save"));
     button.setOnClick(() -> {
-      String text = userpassField.getText();
-      if (!text.isEmpty()) {
-        dispenser.setUserpass(text);
+      String Component = userpassField.getText();
+      if (!Component.isEmpty()) {
+        dispenser.setUserpass(Component);
       }
 
       callback.onSave();
 
-      MinecraftClient client = MinecraftClient.getInstance();
-      client.player.closeScreen();
-      MinecraftClient.getInstance().setScreen((Screen) null);
+      Minecraft.getInstance().gui.setScreen(null);
+      Minecraft.getInstance().gui.setScreen((Screen) null);
     });
 
     root.add(button, 0, 7, 16, 1);

@@ -1,8 +1,13 @@
 {
   "variants": {
-    "facing=north": { "model": "hashicraft:block/consul_releaser", "uvlock": false },
-    "facing=east":  { "model": "hashicraft:block/consul_releaser", "y":  90, "uvlock": false },
-    "facing=south": { "model": "hashicraft:block/consul_releaser", "y": 180, "uvlock": false },
-    "facing=west":  { "model": "hashicraft:block/consul_releaser", "y": 270, "uvlock": false }
+    "facing=north,healthy=false": { "model": "hashicraft:block/consul_releaser_failed", "uvlock": false },
+    "facing=east,healthy=false":  { "model": "hashicraft:block/consul_releaser_failed", "y":  90, "uvlock": false },
+    "facing=south,healthy=false": { "model": "hashicraft:block/consul_releaser_failed", "y": 180, "uvlock": false },
+    "facing=west,healthy=false":  { "model": "hashicraft:block/consul_releaser_failed", "y": 270, "uvlock": false },
+
+    "facing=north,healthy=true": { "model": "hashicraft:block/consul_releaser_success", "uvlock": false },
+    "facing=east,healthy=true":  { "model": "hashicraft:block/consul_releaser_success", "y":  90, "uvlock": false },
+    "facing=south,healthy=true": { "model": "hashicraft:block/consul_releaser_success", "y": 180, "uvlock": false },
+    "facing=west,healthy=true":  { "model": "hashicraft:block/consul_releaser_success", "y": 270, "uvlock": false }
   }
 }

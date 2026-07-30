@@ -1,14 +1,14 @@
 package com.hashicorp.hashicraft.block.entity;
 
+import com.hashicorp.hashicraft.Mod;
 import com.hashicorp.hashicraft.block.ModBlocks;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.Registries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import java.util.Set;
 
 public class BlockEntities {
   // Nomad
-
   public static BlockEntityType<NomadServerEntity> NOMAD_SERVER_ENTITY;
   public static BlockEntityType<NomadDispenserEntity> NOMAD_DISPENSER_ENTITY;
 
@@ -23,23 +23,34 @@ public class BlockEntities {
   public static BlockEntityType<ConsulReleaserEntity> CONSUL_RELEASER_ENTITY;
 
   public static void register() {
-    // Nomad
-    NOMAD_SERVER_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, ModBlocks.NOMAD_SERVER_ID,
-        FabricBlockEntityTypeBuilder.create(NomadServerEntity::new, ModBlocks.NOMAD_SERVER_BLOCK).build());
+    NOMAD_SERVER_ENTITY = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Mod.identifier("nomad_server"),
+        new BlockEntityType<>(NomadServerEntity::new, Set.of(ModBlocks.NOMAD_SERVER_BLOCK)));
 
-    NOMAD_DISPENSER_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, ModBlocks.NOMAD_DISPENSER_ID,
-        FabricBlockEntityTypeBuilder.create(NomadDispenserEntity::new, ModBlocks.NOMAD_DISPENSER_BLOCK).build());
+    NOMAD_DISPENSER_ENTITY = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Mod.identifier("nomad_dispenser"),
+        new BlockEntityType<>(NomadDispenserEntity::new, Set.of(ModBlocks.NOMAD_DISPENSER_BLOCK)));
 
-    VAULT_DISPENSER_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, ModBlocks.VAULT_DISPENSER_ID,
-        FabricBlockEntityTypeBuilder.create(VaultDispenserEntity::new, ModBlocks.VAULT_DISPENSER_BLOCK).build());
+    VAULT_DISPENSER_ENTITY = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Mod.identifier("vault_dispenser"),
+        new BlockEntityType<>(VaultDispenserEntity::new, Set.of(ModBlocks.VAULT_DISPENSER_BLOCK)));
 
-    VAULT_LOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, ModBlocks.VAULT_LOCK_ID,
-        FabricBlockEntityTypeBuilder.create(VaultLockEntity::new, ModBlocks.VAULT_LOCK_BLOCK).build());
+    VAULT_LOCK_ENTITY = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Mod.identifier("vault_lock"),
+        new BlockEntityType<>(VaultLockEntity::new, Set.of(ModBlocks.VAULT_LOCK_BLOCK)));
 
-    BOUNDARY_LOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, ModBlocks.BOUNDARY_LOCK_ID,
-        FabricBlockEntityTypeBuilder.create(BoundaryLockEntity::new, ModBlocks.BOUNDARY_LOCK_BLOCK).build());
+    BOUNDARY_LOCK_ENTITY = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Mod.identifier("boundary_lock"),
+        new BlockEntityType<>(BoundaryLockEntity::new, Set.of(ModBlocks.BOUNDARY_LOCK_BLOCK)));
 
-    CONSUL_RELEASER_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, ModBlocks.CONSUL_RELEASER_ID,
-        FabricBlockEntityTypeBuilder.create(ConsulReleaserEntity::new, ModBlocks.CONSUL_RELEASER_BLOCK).build());
+    CONSUL_RELEASER_ENTITY = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Mod.identifier("consul_releaser"),
+        new BlockEntityType<>(ConsulReleaserEntity::new, Set.of(ModBlocks.CONSUL_RELEASER_BLOCK)));
   }
 }

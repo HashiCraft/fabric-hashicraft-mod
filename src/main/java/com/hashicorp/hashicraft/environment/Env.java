@@ -3,6 +3,8 @@ package com.hashicorp.hashicraft.environment;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class Env {
   // This function attempts to replace the given value with a value from the
@@ -24,7 +26,7 @@ public class Env {
     // check all occurance
     while (matcher.find()) {
       // expr is the full match ${{env.[name]}}
-      // and the text to be replaced with the env var
+      // and the Component to be replaced with the env var
       String expr = matcher.group(1);
 
       // name is the name part of ${{env.[name]}}

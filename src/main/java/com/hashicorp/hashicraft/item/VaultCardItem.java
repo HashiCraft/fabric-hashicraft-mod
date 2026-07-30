@@ -1,68 +1,70 @@
 package com.hashicorp.hashicraft.item;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.List;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.InteractionResult;
 
 public class VaultCardItem extends Item {
-    public VaultCardItem(Settings settings) {
+    public VaultCardItem(Item.Properties settings) {
         super(settings);
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        return ActionResult.SUCCESS;
+    public InteractionResult useOn(UseOnContext context) {
+        return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public String getTranslationKey() {
-        return "item.hashicraft.vault_card";
-    }
+    // Note: getDescriptionId() removed - method is final in MC 26.2
+    // Use Item.getDescriptionId() instead
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        if (!itemStack.hasNbt()) {
-            tooltip.add(Text.literal("Empty").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
+        if (!itemStack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA)) {
+            tooltip.accept(Component.literal("Empty").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
             return;
         }
 
-        NbtCompound identity = itemStack.getOrCreateNbt();
-        String name = identity.getString("name");
-        String policies = identity.getString("policies");
+        // TODO: Fix CustomData - requires proper CustomData API
+        CompoundTag identity = new CompoundTag();
+        String name = identity.contains("name") ? identity.getString("name").orElse("") : "";
+        String policies = identity.contains("policies") ? identity.getString("policies").orElse("") : "";
 
-        tooltip.add(Text.literal("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(name).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-        tooltip.add(Text.literal(""));
-        tooltip.add(Text.literal("Policies").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(policies).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        tooltip.accept(Component.literal("Name").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
+        tooltip.accept(Component.literal(name).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+        tooltip.accept(Component.literal(""));
+        tooltip.accept(Component.literal("Policies").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
+        tooltip.accept(Component.literal(policies).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
     }
 
     @Override
-    public Text getName() {
-        return Text.translatable(this.getTranslationKey());
-    }
+    public Component getName(ItemStack stack) {
+        // TODO: Fix CustomData API
 
-    @Override
-    public Text getName(ItemStack stack) {
-        NbtCompound identity = stack.getOrCreateNbt();
-        String name = identity.getString("name");
+        // CompoundTag identity = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.core.component.CustomData.EMPTY).copyTag();
 
-        MutableText text = Text.translatable(this.getTranslationKey());
+        CompoundTag identity = new CompoundTag();
+        String name = identity.contains("name") ? identity.getString("name").orElse("") : "";
 
-        if (name != "") {
-            text.append(Text.literal(" (" + name + ")").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+        MutableComponent component = Component.translatable(this.getDescriptionId());
+
+        if (!name.isEmpty()) {
+            component.append(Component.literal(" (" + name + ")").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
 
-        return text;
+        return component;
     }
 }

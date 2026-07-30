@@ -9,15 +9,17 @@ import com.hashicorp.hashicraft.environment.Env;
 import com.hashicorp.hashicraft.vault.Encrypted;
 import com.hashicorp.hashicraft.vault.Login;
 import com.hashicorp.hashicraft.vault.Signature;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPointerImpl;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -59,10 +61,10 @@ public class VaultDispenserEntity extends StatefulBlockEntity {
     super(BlockEntities.VAULT_DISPENSER_ENTITY, pos, state, parent);
   }
 
-  public Login login(PlayerEntity player) {
+  public Login login(Player player) {
     try {
       String username = player.getName().getString();
-      String password = player.getUuidAsString();
+      String password = player.getStringUUID();
 
       String payload = String.format("""
           {
@@ -168,10 +170,11 @@ public class VaultDispenserEntity extends StatefulBlockEntity {
     }
   }
 
-  public void dispense(World world, BlockPointerImpl pointer, ItemStack stack, int offset, Direction side) {
-    double x = pointer.getX() + 0.7D * (double) side.getOffsetX();
-    double y = pointer.getY() + 0.7D * (double) side.getOffsetY();
-    double z = pointer.getZ() + 0.7D * (double) side.getOffsetZ();
+  public void dispense(Level level, BlockSource pointer, ItemStack stack, int offset, Direction side) {
+    BlockPos pos = pointer.pos();
+    double x = pos.getX() + 0.7D * (double) side.getStepX();
+    double y = pos.getY() + 0.7D * (double) side.getStepY();
+    double z = pos.getZ() + 0.7D * (double) side.getStepZ();
 
     if (side.getAxis() == Direction.Axis.Y) {
       y -= 0.425D;
@@ -179,13 +182,13 @@ public class VaultDispenserEntity extends StatefulBlockEntity {
       y -= 0.45625D;
     }
 
-    ItemEntity entity = new ItemEntity(world, x, y, z, stack);
-    double g = world.random.nextDouble() * 0.1D + 0.2D;
-    entity.setVelocity(
-        world.random.nextGaussian() * 0.007499999832361937D * (double) offset + (double) side.getOffsetX() * g,
-        world.random.nextGaussian() * 0.007499999832361937D * (double) offset + 0.20000000298023224D,
-        world.random.nextGaussian() * 0.007499999832361937D * (double) offset + (double) side.getOffsetZ() * g);
-    world.spawnEntity(entity);
+    ItemEntity entity = new ItemEntity(level, x, y, z, stack);
+    double g = level.getRandom().nextDouble() * 0.1D + 0.2D;
+    entity.setDeltaMovement(
+        level.getRandom().nextGaussian() * 0.007499999832361937D * (double) offset + (double) side.getStepX() * g,
+        level.getRandom().nextGaussian() * 0.007499999832361937D * (double) offset + 0.20000000298023224D,
+        level.getRandom().nextGaussian() * 0.007499999832361937D * (double) offset + (double) side.getStepZ() * g);
+    level.addFreshEntity(entity);
   }
 
 }

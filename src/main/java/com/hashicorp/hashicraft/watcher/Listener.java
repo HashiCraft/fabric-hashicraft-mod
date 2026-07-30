@@ -2,6 +2,8 @@ package com.hashicorp.hashicraft.watcher;
 
 import fi.iki.elonen.NanoWSD;
 import fi.iki.elonen.NanoWSD.WebSocketFrame.CloseCode;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import java.io.IOException;
 

@@ -1,50 +1,53 @@
 package com.hashicorp.hashicraft.block;
 
 import com.hashicorp.hashicraft.Mod;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import java.util.function.Function;
 
 public class ModBlocks {
   // Consul
-  public static final Identifier CONSUL_RELEASER_ID = Mod.identifier("consul_releaser");
-  public static final Block CONSUL_RELEASER_BLOCK = new ConsulReleaserBlock(
-      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
+  public static final Block CONSUL_RELEASER_BLOCK = register("consul_releaser",
+      settings -> new ConsulReleaserBlock(settings),
+      BlockBehaviour.Properties.of().strength(4.0f).noOcclusion());
 
   // Nomad
-  public static final Identifier NOMAD_SERVER_ID = Mod.identifier("nomad_server");
-  public static final Block NOMAD_SERVER_BLOCK = new NomadServerBlock(
-      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
+  public static final Block NOMAD_SERVER_BLOCK = register("nomad_server",
+      settings -> new NomadServerBlock(settings),
+      BlockBehaviour.Properties.of().strength(4.0f).noOcclusion());
 
-  public static final Identifier NOMAD_DISPENSER_ID = Mod.identifier("nomad_dispenser");
-  public static final Block NOMAD_DISPENSER_BLOCK = new NomadDispenserBlock(
-      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
+  public static final Block NOMAD_DISPENSER_BLOCK = register("nomad_dispenser",
+      settings -> new NomadDispenserBlock(settings),
+      BlockBehaviour.Properties.of().strength(4.0f).noOcclusion());
 
   // Vault
-  public static final Identifier VAULT_DISPENSER_ID = Mod.identifier("vault_dispenser");
-  public static final Block VAULT_DISPENSER_BLOCK = new VaultDispenserBlock(
-      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
+  public static final Block VAULT_DISPENSER_BLOCK = register("vault_dispenser",
+      settings -> new VaultDispenserBlock(settings),
+      BlockBehaviour.Properties.of().strength(4.0f).noOcclusion());
 
-  public static final Identifier VAULT_LOCK_ID = Mod.identifier("vault_lock");
-  public static final Block VAULT_LOCK_BLOCK = new VaultLockBlock(
-      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
+  public static final Block VAULT_LOCK_BLOCK = register("vault_lock",
+      settings -> new VaultLockBlock(settings),
+      BlockBehaviour.Properties.of().strength(4.0f).noOcclusion());
 
   // Boundary
-  public static final Identifier BOUNDARY_LOCK_ID = Mod.identifier("boundary_lock");
-  public static final Block BOUNDARY_LOCK_BLOCK = new BoundaryLockBlock(
-      FabricBlockSettings.create().strength(4.0f).nonOpaque().solid());
+  public static final Block BOUNDARY_LOCK_BLOCK = register("boundary_lock",
+      settings -> new BoundaryLockBlock(settings),
+      BlockBehaviour.Properties.of().strength(4.0f).noOcclusion());
+
+  private static Block register(String path,
+                                Function<BlockBehaviour.Properties, Block> factory,
+                                BlockBehaviour.Properties settings) {
+    Identifier identifier = Mod.identifier(path);
+    ResourceKey<Block> registryKey = ResourceKey.create(Registries.BLOCK, identifier);
+    return Registry.register(BuiltInRegistries.BLOCK, registryKey, factory.apply(settings.setId(registryKey)));
+  }
 
   public static void register() {
-    Registry.register(Registries.BLOCK, CONSUL_RELEASER_ID, CONSUL_RELEASER_BLOCK);
-
-    Registry.register(Registries.BLOCK, NOMAD_SERVER_ID, NOMAD_SERVER_BLOCK);
-    Registry.register(Registries.BLOCK, NOMAD_DISPENSER_ID, NOMAD_DISPENSER_BLOCK);
-
-    Registry.register(Registries.BLOCK, VAULT_DISPENSER_ID, VAULT_DISPENSER_BLOCK);
-    Registry.register(Registries.BLOCK, VAULT_LOCK_ID, VAULT_LOCK_BLOCK);
-
-    Registry.register(Registries.BLOCK, BOUNDARY_LOCK_ID, BOUNDARY_LOCK_BLOCK);
+    // Blocks are already registered during static initialization
   }
 }

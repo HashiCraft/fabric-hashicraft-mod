@@ -2,153 +2,165 @@ package com.hashicorp.hashicraft.item;
 
 import com.hashicorp.hashicraft.entity.AppMinecartEntity;
 import com.hashicorp.hashicraft.entity.ModEntities;
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.DispenserBehavior;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.block.enums.RailShape;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
-import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+
 
 import java.util.List;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.InteractionResult;
 
 public class AppMinecart extends Item {
 
-    private static final DispenserBehavior DISPENSER_BEHAVIOR = new ItemDispenserBehavior() {
+    private static final DispenseItemBehavior DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior() {
 
-        private final ItemDispenserBehavior defaultBehavior = new ItemDispenserBehavior();
+        private final DefaultDispenseItemBehavior defaultBehavior = new DefaultDispenseItemBehavior();
 
         @Override
-        public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+        protected ItemStack execute(BlockSource pointer, ItemStack stack) {
             double g;
-            Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
-            ServerWorld world = pointer.getWorld();
-            double d = pointer.getX() + (double) direction.getOffsetX() * 1.125;
-            double e = Math.floor(pointer.getY()) + (double) direction.getOffsetY();
-            double f = pointer.getZ() + (double) direction.getOffsetZ() * 1.125;
-            BlockPos blockPos = pointer.getPos().offset(direction);
-            BlockState blockState = world.getBlockState(blockPos);
-            RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock
-                    ? blockState.get(((AbstractRailBlock) blockState.getBlock()).getShapeProperty())
+            Direction direction = pointer.state().getValue(DispenserBlock.FACING);
+            ServerLevel level = pointer.level();
+            double d = pointer.pos().getX() + (double) direction.getStepX() * 1.125;
+            double e = Math.floor(pointer.pos().getY()) + (double) direction.getStepY();
+            double f = pointer.pos().getZ() + (double) direction.getStepZ() * 1.125;
+            BlockPos blockPos = pointer.pos().relative(direction);
+            BlockState blockState = level.getBlockState(blockPos);
+            RailShape railShape = blockState.getBlock() instanceof BaseRailBlock
+                    ? blockState.getValue(((BaseRailBlock) blockState.getBlock()).getShapeProperty())
                     : RailShape.NORTH_SOUTH;
-            if (blockState.isIn(BlockTags.RAILS)) {
-                g = railShape.isAscending() ? 0.6 : 0.1;
-            } else if (blockState.isAir() && world.getBlockState(blockPos.down()).isIn(BlockTags.RAILS)) {
-                BlockState blockState2 = world.getBlockState(blockPos.down());
-                RailShape railShape22 = blockState2.getBlock() instanceof AbstractRailBlock
-                        ? blockState2.get(((AbstractRailBlock) blockState2.getBlock()).getShapeProperty())
+            if (blockState.is(BlockTags.RAILS)) {
+                g = railShape.isSlope() ? 0.6 : 0.1;
+            } else if (blockState.isAir() && level.getBlockState(blockPos.below()).is(BlockTags.RAILS)) {
+                BlockState blockState2 = level.getBlockState(blockPos.below());
+                RailShape railShape22 = blockState2.getBlock() instanceof BaseRailBlock
+                        ? blockState2.getValue(((BaseRailBlock) blockState2.getBlock()).getShapeProperty())
                         : RailShape.NORTH_SOUTH;
-                g = direction == Direction.DOWN || !railShape22.isAscending() ? -0.9 : -0.4;
+                g = direction == Direction.DOWN || !railShape22.isSlope() ? -0.9 : -0.4;
             } else {
                 return this.defaultBehavior.dispense(pointer, stack);
             }
-            AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
+            AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, level);
             entity.setPos(d, e + g, f);
-            if (stack.hasCustomName()) {
-                entity.setCustomName(stack.getName());
+            if (stack.has(DataComponents.CUSTOM_NAME)) {
+                entity.setCustomName(stack.getHoverName());
             }
-            world.spawnEntity(entity);
-            stack.decrement(1);
+            level.addFreshEntity(entity);
+            stack.shrink(1);
             return stack;
         }
 
         @Override
-        protected void playSound(BlockPointer pointer) {
-            pointer.getWorld().syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pointer.getPos(), 0);
+        protected void playSound(BlockSource pointer) {
+            pointer.level().levelEvent(null, 1000, pointer.pos(), 0);
         }
     };
 
-    public AppMinecart(Item.Settings settings) {
+    public AppMinecart(Item.Properties settings) {
         super(settings);
         DispenserBlock.registerBehavior(this, DISPENSER_BEHAVIOR);
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         BlockPos blockPos;
-        World world = context.getWorld();
-        BlockState blockState = world.getBlockState(blockPos = context.getBlockPos());
-        if (!blockState.isIn(BlockTags.RAILS)) {
-            return ActionResult.FAIL;
+        Level level = context.getLevel();
+        BlockState blockState = level.getBlockState(blockPos = context.getClickedPos());
+        if (!blockState.is(BlockTags.RAILS)) {
+            return InteractionResult.FAIL;
         }
-        ItemStack itemStack = context.getStack();
-        if (!world.isClient) {
-            RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock
-                    ? blockState.get(((AbstractRailBlock) blockState.getBlock()).getShapeProperty())
+        ItemStack itemStack = context.getItemInHand();
+        if (!level.isClientSide()) {
+            RailShape railShape = blockState.getBlock() instanceof BaseRailBlock
+                    ? blockState.getValue(((BaseRailBlock) blockState.getBlock()).getShapeProperty())
                     : RailShape.NORTH_SOUTH;
             double d = 0.0;
-            if (railShape.isAscending()) {
+            if (railShape.isSlope()) {
                 d = 0.5;
             }
-            AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
+            AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, level);
             entity.setPos((double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.0625 + d,
                     (double) blockPos.getZ() + 0.5);
-            if (itemStack.hasCustomName()) {
-                entity.setCustomName(itemStack.getName());
+            if (itemStack.has(DataComponents.CUSTOM_NAME)) {
+                entity.setCustomName(itemStack.getHoverName());
             }
-            world.spawnEntity(entity);
-            world.emitGameEvent(context.getPlayer(), GameEvent.ENTITY_PLACE, blockPos);
+            level.addFreshEntity(entity);
+            level.gameEvent(context.getPlayer(), GameEvent.ENTITY_PLACE, blockPos);
         }
-        itemStack.decrement(1);
-        return ActionResult.success(world.isClient);
+        itemStack.shrink(1);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        if (!itemStack.hasNbt()) {
-            tooltip.add(Text.literal("Not valid").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
+        if (!itemStack.has(DataComponents.CUSTOM_DATA)) {
+            tooltip.accept(Component.literal("Not valid").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
             return;
         }
 
         CartNbtData data = CartNbtData.getCustomNbt(itemStack);
 
-        tooltip.add(Text.literal("Name").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(data.getName()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-        tooltip.add(Text.literal(""));
+        tooltip.accept(Component.literal("Name").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
+        tooltip.accept(Component.literal(data.getName()).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+        tooltip.accept(Component.literal(""));
 
-        tooltip.add(Text.literal("Version").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(data.getVersion()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-        tooltip.add(Text.literal(""));
+        tooltip.accept(Component.literal("Version").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
+        tooltip.accept(Component.literal(data.getVersion()).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+        tooltip.accept(Component.literal(""));
 
-        tooltip.add(Text.literal("Nomad Deployment").setStyle(Style.EMPTY.withColor(Formatting.WHITE)));
-        tooltip.add(Text.literal(data.getNomadDeployment()).setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-        tooltip.add(Text.literal(""));
+        tooltip.accept(Component.literal("Nomad Deployment").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
+        tooltip.accept(Component.literal(data.getNomadDeployment()).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+        tooltip.accept(Component.literal(""));
+    }
+
+    public Component getName() {
+        return Component.translatable(this.getDescriptionId());
     }
 
     @Override
-    public Text getName() {
-        return Text.translatable(this.getTranslationKey());
-    }
-
-    @Override
-    public Text getName(ItemStack stack) {
+    public Component getName(ItemStack stack) {
         CartNbtData data = CartNbtData.getCustomNbt(stack);
         String name = data.getName();
         String version = data.getVersion();
 
-        MutableText text = Text.translatable(this.getTranslationKey());
+        MutableComponent component = Component.translatable(this.getDescriptionId());
 
         if (name != "" && version != "") {
-            text.append(
-                    Text.literal(" (" + name + ":" + version + ")").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+            component.append(
+                    Component.literal(" (" + name + ":" + version + ")").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
 
-        return text;
+        return component;
     }
 }

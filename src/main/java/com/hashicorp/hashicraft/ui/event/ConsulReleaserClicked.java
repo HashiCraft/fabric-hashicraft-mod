@@ -1,23 +1,31 @@
 package com.hashicorp.hashicraft.ui.event;
 
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.util.ActionResult;
+// TODO: Fabric API - import net.fabricmc.fabric.api.event.Event;
+// TODO: Fabric API - import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public interface ConsulReleaserClicked {
+  // TODO: Fabric API Event - Uncomment after updating Fabric API
+  /*
+
     Event<ConsulReleaserClicked> EVENT = EventFactory.createArrayBacked(ConsulReleaserClicked.class,
             (listeners) -> (block, callback) -> {
                 for (ConsulReleaserClicked listener : listeners) {
-                    ActionResult result = listener.interact(block, callback);
+                    InteractionResult result = listener.interact(block, callback);
 
-                    if (result != ActionResult.PASS) {
+                    if (result != InteractionResult.PASS) {
                         return result;
                     }
                 }
 
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             });
 
-    ActionResult interact(ConsulReleaserEntity block, SaveCallback callback);
+    InteractionResult interact(ConsulReleaserEntity block, SaveCallback callback);
+  */
+
 }

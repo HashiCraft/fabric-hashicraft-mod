@@ -2,6 +2,8 @@ package com.hashicorp.hashicraft.nomad;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class Chunk implements Serializable {
     public int Index;

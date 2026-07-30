@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
@@ -29,18 +31,18 @@ import com.hashicorp.hashicraft.nomad.Allocation;
 import com.hashicorp.hashicraft.nomad.Chunk;
 import com.hashicorp.hashicraft.nomad.Job;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.enums.RailShape;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.entity.Entity;
 public class NomadServerEntity extends StatefulBlockEntity {
   @Syncable
   private String address = "http://server.local.nomad-cluster.shipyard.run:4646";
@@ -59,18 +61,18 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
   // Used to start the server thread that streams events.
   @Override
-  public void setWorld(World world) {
-    super.setWorld(world);
-    if (!world.isClient) {
+  public void setLevel(Level level) {
+    super.setLevel(level);
+    if (level != null && !level.isClientSide()) {
       this.start();
     }
   }
 
   // Used to stop the server thread that streams events.
   @Override
-  public void markRemoved() {
-    super.markRemoved();
-    if (this.hasWorld() && !this.getWorld().isClient) {
+  public void setRemoved() {
+    super.setRemoved();
+    if (this.level != null && !this.level.isClientSide()) {
       this.stop();
     }
   }
@@ -111,14 +113,14 @@ public class NomadServerEntity extends StatefulBlockEntity {
   }
 
   public void sendStatusMessage(String message) {
-    Box box = new Box(this.getPos()).expand(32.0);
-    List<PlayerEntity> players = this.getWorld().getEntitiesByClass(PlayerEntity.class, box,
+    AABB aabb = new AABB(this.worldPosition).inflate(32.0);
+    List<Player> players = this.level.getEntitiesOfClass(Player.class, aabb,
         (player) -> {
           return true;
         });
 
-    for (PlayerEntity player : players) {
-      player.sendMessage(Text.literal(message), true);
+    for (Player player : players) {
+      player.sendSystemMessage(Component.literal(message));
     }
   }
 
@@ -311,56 +313,56 @@ public class NomadServerEntity extends StatefulBlockEntity {
 
   public boolean createCart(String id, String application, String version) {
     Mod.LOGGER.info(String.format("Created cart: %s, %s, %s", id, application, version));
-    BlockPos pos = this.getPos();
+    BlockPos pos = this.worldPosition;
     BlockPos output = pos.west();
-    BlockState blockState = world.getBlockState(output);
-    if (!blockState.isIn(BlockTags.RAILS)) {
+    BlockState blockState = this.level.getBlockState(output);
+    if (!blockState.is(BlockTags.RAILS)) {
       Mod.LOGGER.warn("NOT RAILS!!!");
       return false;
     }
-    RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock
-        ? blockState.get(((AbstractRailBlock) blockState.getBlock()).getShapeProperty())
+    RailShape railShape = blockState.getBlock() instanceof BaseRailBlock
+        ? blockState.getValue(((BaseRailBlock) blockState.getBlock()).getShapeProperty())
         : RailShape.NORTH_SOUTH;
     double d = 0.0;
-    if (railShape.isAscending()) {
+    if (railShape.isSlope()) {
       d = 0.5;
     }
 
-    AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, world);
+    AppMinecartEntity entity = new AppMinecartEntity(ModEntities.APP_MINECART, this.level);
     entity.setPos(
         (double) output.getX() + 0.5,
         (double) output.getY() + 0.0625 + d,
         (double) output.getZ() + 0.5);
 
-    entity.setAllocationID(Text.literal(id));
-    entity.setApplication(Text.literal(application));
-    entity.setVersion(Text.literal(version));
-    world.spawnEntity(entity);
-    this.getWorld().emitGameEvent(null, GameEvent.ENTITY_PLACE, output);
+    entity.setAllocationID(Component.literal(id));
+    entity.setApplication(Component.literal(application));
+    entity.setVersion(Component.literal(version));
+    this.level.addFreshEntity(entity);
+    this.level.gameEvent(null, GameEvent.ENTITY_PLACE, output);
 
-    BlockState newState = world.getBlockState(pos).with(NomadServerBlock.POWERED, true);
-    world.setBlockState(pos, newState, Block.NOTIFY_ALL);
-    world.scheduleBlockTick(pos, newState.getBlock(), 40);
+    BlockState newState = this.level.getBlockState(pos).setValue(NomadServerBlock.POWERED, true);
+    this.level.setBlock(pos, newState, Block.UPDATE_ALL);
+    this.level.scheduleTick(pos, newState.getBlock(), 40);
 
     return true;
   }
 
   public void destroyAllCarts() {
     Mod.LOGGER.info("Destroying all carts");
-    Box box = new Box(this.getPos()).expand(32.0);
-    List<AppMinecartEntity> minecarts = this.getWorld().getEntitiesByClass(AppMinecartEntity.class, box,
+    AABB aabb = new AABB(this.worldPosition).inflate(32.0);
+    List<AppMinecartEntity> minecarts = this.level.getEntitiesOfClass(AppMinecartEntity.class, aabb,
         (entity) -> {
           return true;
         });
 
     minecarts.forEach((cart) -> {
-      cart.discard();
+      cart.remove(Entity.RemovalReason.DISCARDED);
     });
   }
 
   public boolean destroyCart(String id) {
-    Box box = new Box(this.getPos()).expand(32.0);
-    List<AppMinecartEntity> minecarts = this.getWorld().getEntitiesByClass(AppMinecartEntity.class, box,
+    AABB AABB = new AABB(this.getBlockPos()).inflate(32.0);
+    List<AppMinecartEntity> minecarts = this.getLevel().getEntitiesOfClass(AppMinecartEntity.class, AABB,
         (entity) -> {
           return true;
         });
@@ -373,7 +375,7 @@ public class NomadServerEntity extends StatefulBlockEntity {
                 cart.getApplication().getString(),
                 cart.getVersion().getString()));
         cart.discard();
-        this.getWorld().emitGameEvent(null, GameEvent.ENTITY_DIE, cart.getBlockPos());
+        // TODO: Fix emitGameEvent - this.getLevel().emitGameEvent(null, GameEvent.ENTITY_DIE, cart.blockPosition());
       }
     });
     return true;

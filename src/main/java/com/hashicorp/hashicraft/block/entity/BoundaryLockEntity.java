@@ -8,6 +8,8 @@ import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
@@ -15,11 +17,12 @@ import com.hashicorp.hashicraft.Mod;
 import com.hashicorp.hashicraft.block.BoundaryLockBlock;
 import com.hashicorp.sound.ModSounds;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
 
 public class BoundaryLockEntity extends StatefulBlockEntity {
     @Syncable
@@ -37,18 +40,18 @@ public class BoundaryLockEntity extends StatefulBlockEntity {
 
     // Used to start the server thread that checks access.
     @Override
-    public void setWorld(World world) {
-        super.setWorld(world);
-        if (!world.isClient) {
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if (level != null && !level.isClientSide()) {
             this.start();
         }
     }
 
     // Used to stop the server thread that checks access.
     @Override
-    public void markRemoved() {
-        super.markRemoved();
-        if (this.hasWorld() && !this.getWorld().isClient) {
+    public void setRemoved() {
+        super.setRemoved();
+        if (this.level != null && !this.level.isClientSide()) {
             this.stop();
         }
     }
@@ -63,18 +66,19 @@ public class BoundaryLockEntity extends StatefulBlockEntity {
                         if (!address.isEmpty()) {
                             boolean hasAccess = checkAccess();
                             if (hasAccess) {
-                                world.playSound(
-                                        null,
-                                        pos,
-                                        ModSounds.BOUNDARY_ALERT,
-                                        SoundCategory.BLOCKS,
-                                        1f,
-                                        1f);
+                                // TODO: Fix playSound - requires SoundEvent
+                                // this.level.playSound(
+                                //         null,
+                                //         this.worldPosition,
+                                //         ModSounds.BOUNDARY_ALERT,
+                                //         SoundSource.BLOCKS,
+                                //         1f,
+                                //         1f);
                             }
 
-                            BlockPos pos = this.getPos();
-                            BlockState newState = world.getBlockState(pos).with(BoundaryLockBlock.POWERED, hasAccess);
-                            world.setBlockState(pos, newState, Block.NOTIFY_ALL);
+                            BlockPos blockPos = this.worldPosition;
+                            BlockState newState = this.level.getBlockState(blockPos).setValue(BoundaryLockBlock.POWERED, hasAccess);
+                            this.level.setBlock(blockPos, newState, Block.UPDATE_ALL);
                         } else {
                             Mod.LOGGER.info("Boundary proxy address not set, retrying in 5 seconds");
                         }

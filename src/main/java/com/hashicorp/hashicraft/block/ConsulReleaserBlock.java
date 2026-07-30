@@ -2,55 +2,58 @@ package com.hashicorp.hashicraft.block;
 
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 import com.hashicorp.hashicraft.block.entity.ConsulReleaserEntity;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 public class ConsulReleaserBlock extends StatefulBlock {
-  public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-  public static final BooleanProperty HEALTHY = BooleanProperty.of("healthy");
+  public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+  public static final BooleanProperty HEALTHY = BooleanProperty.create("healthy");
 
-  public ConsulReleaserBlock(Settings settings) {
+  public ConsulReleaserBlock(BlockBehaviour.Properties settings) {
     super(settings);
-    this.setDefaultState(
-        this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(HEALTHY, true));
+    this.registerDefaultState(
+        this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HEALTHY, true));
   }
 
   @Override
-  public BlockRenderType getRenderType(BlockState state) {
-    return BlockRenderType.MODEL;
+  protected RenderShape getRenderShape(BlockState state) {
+    return RenderShape.MODEL;
   }
 
   @Override
-  public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new ConsulReleaserEntity(pos, state);
   }
 
   @Override
-  protected void appendProperties(Builder<Block, BlockState> builder) {
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(FACING, HEALTHY);
   }
 
   @Override
-  public BlockState getPlacementState(ItemPlacementContext ctx) {
-    return getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+  public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+    return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
   }
 
   @Override
-  public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-    if (!state.get(HEALTHY)) {
+  public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+    if (!state.getValue(HEALTHY)) {
       for (int i = 0; i < 4; ++i) {
         double x = (double) pos.getX() + 0.2D + (double) random.nextInt(6) / 10;
         double y = (double) pos.getY() + 1.0D;
@@ -58,17 +61,17 @@ public class ConsulReleaserBlock extends StatefulBlock {
         double vx = 0;
         double vy = ((double) random.nextFloat()) * 0.1D;
         double vz = 0;
-        world.addParticle(ParticleTypes.SMOKE, x, y, z, vx, vy, vz);
+        level.addParticle(net.minecraft.core.particles.ParticleTypes.SMOKE, x, y, z, vx, vy, vz);
       }
 
       for (int i = 0; i < 2; ++i) {
-        double x = (double) pos.getX() + 0.2D + (double) random.nextInt(6) / 10;
+        double x = (double) pos.getX() + 0.2D + (double) level.getRandom().nextInt(6) / 10;
         double y = (double) pos.getY() + 1.0D;
-        double z = (double) pos.getZ() + 0.2D + (double) random.nextInt(6) / 10;
+        double z = (double) pos.getZ() + 0.2D + (double) level.getRandom().nextInt(6) / 10;
         double vx = 0;
-        double vy = ((double) random.nextFloat()) * 0.01D;
+        double vy = ((double) level.getRandom().nextFloat()) * 0.01D;
         double vz = 0;
-        world.addParticle(ParticleTypes.FLAME, x, y, z, vx, vy, vz);
+        level.addParticle(ParticleTypes.FLAME, x, y, z, vx, vy, vz);
       }
     }
   }

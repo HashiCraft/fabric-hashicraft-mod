@@ -8,9 +8,11 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class BoundaryLockGui extends LightweightGuiDescription {
     public BoundaryLockGui(BoundaryLockEntity lock, SaveCallback callback) {
@@ -20,28 +22,27 @@ public class BoundaryLockGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setInsets(Insets.ROOT_PANEL);
 
-        WLabel label = new WLabel(Text.literal("Address"));
+        WLabel label = new WLabel(Component.literal("Address"));
         root.add(label, 0, 0, 4, 1);
 
         WTextField addressField;
-        addressField = new WTextField(Text.literal("Address to connect to"));
+        addressField = new WTextField(Component.literal("Address to connect to"));
         root.add(addressField, 0, 1, 16, 2);
         addressField.setMaxLength(255);
 
-        WButton button = new WButton(Text.literal("Save"));
+        WButton button = new WButton(Component.literal("Save"));
         button.setOnClick(() -> {
-            String text = addressField.getText();
-            if (!text.isEmpty()) {
-                lock.setAddress(text);
+            String Component = addressField.getText();
+            if (!Component.isEmpty()) {
+                lock.setAddress(Component);
             } else {
                 lock.setAddress("");
             }
 
             callback.onSave();
 
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.player.closeScreen();
-            MinecraftClient.getInstance().setScreen((Screen) null);
+            Minecraft.getInstance().gui.setScreen(null);
+            Minecraft.getInstance().gui.setScreen((Screen) null);
         });
 
         root.add(button, 0, 7, 16, 1);

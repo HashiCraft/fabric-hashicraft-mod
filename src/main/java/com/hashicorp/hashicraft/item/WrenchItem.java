@@ -1,21 +1,22 @@
 package com.hashicorp.hashicraft.item;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class WrenchItem extends Item {
-    public WrenchItem(Item.Settings settings) {
+    public WrenchItem(Item.Properties settings) {
         super(settings);
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        return ActionResult.SUCCESS;
+    public InteractionResult useOn(UseOnContext context) {
+        return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public String getTranslationKey() {
-        return "item.hashicraft.wrench";
-    }
+    // Note: getDescriptionId() removed - method is final in MC 26.2
 }
