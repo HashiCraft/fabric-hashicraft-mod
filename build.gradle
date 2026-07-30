@@ -48,8 +48,8 @@ dependencies {
     implementation(include("io.github.cottonmc:LibGui:${project.libgui_version}"))
 
     // HashiCraft
-    implementation(files("..\\fabric-stateful-mod\\build\\libs\\fabric-stateful-mod-1.5.2.jar"))
-    // implementation(include("com.github.hashicraft:fabric-stateful-mod:${stateful_version}"))
+    //implementation(files("..\\fabric-stateful-mod\\build\\libs\\fabric-stateful-mod-1.5.2.jar"))
+    implementation(include("com.github.hashicraft:fabric-stateful-mod:${stateful_version}"))
 
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 }
